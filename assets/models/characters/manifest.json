@@ -1,0 +1,79 @@
+{
+  "provider": "Tripo Studio",
+  "total_credits": 220,
+  "remaining_credits": 2980,
+  "models": [
+    {
+      "character": "bullet_0",
+      "file": "bullet_0.glb",
+      "studio_asset_id": "0b118c44-8988-456d-8018-ffc650efa669",
+      "studio_url": "https://studio.tripo3d.ai/ko/workspace/generate/0b118c44-8988-456d-8018-ffc650efa669",
+      "model": "P1.0",
+      "geometry_credits": 35,
+      "texture_credits": 20,
+      "total_credits": 55,
+      "triangles": 4821,
+      "bytes": 2665496,
+      "textures": 1,
+      "animations": 0,
+      "extensions": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+      ]
+    },
+    {
+      "character": "bullet_1",
+      "file": "bullet_1.glb",
+      "studio_asset_id": "4ffd440d-ac0f-40d3-a1d1-9d9d6d011773",
+      "studio_url": "https://studio.tripo3d.ai/ko/workspace/generate/4ffd440d-ac0f-40d3-a1d1-9d9d6d011773",
+      "model": "P1.0",
+      "geometry_credits": 35,
+      "texture_credits": 20,
+      "total_credits": 55,
+      "triangles": 4735,
+      "bytes": 2492220,
+      "textures": 1,
+      "animations": 0,
+      "extensions": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+      ]
+    },
+    {
+      "character": "bullet_2",
+      "file": "bullet_2.glb",
+      "studio_asset_id": "c9d52863-e1cb-4c46-9c7a-b18ebe7f0c83",
+      "studio_url": "https://studio.tripo3d.ai/ko/workspace/generate/c9d52863-e1cb-4c46-9c7a-b18ebe7f0c83",
+      "model": "P1.0",
+      "geometry_credits": 35,
+      "texture_credits": 20,
+      "total_credits": 55,
+      "triangles": 4509,
+      "bytes": 2418076,
+      "textures": 1,
+      "animations": 0,
+      "extensions": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+      ]
+    },
+    {
+      "character": "bullet_3",
+      "file": "bullet_3.glb",
+      "studio_asset_id": "9607e7c0-ff3c-4259-a9ff-80bc241f898f",
+      "studio_url": "https://studio.tripo3d.ai/ko/workspace/generate/9607e7c0-ff3c-4259-a9ff-80bc241f898f",
+      "model": "P1.0",
+      "geometry_credits": 35,
+      "texture_credits": 20,
+      "total_credits": 55,
+      "triangles": 4792,
+      "bytes": 2708548,
+      "textures": 1,
+      "animations": 0,
+      "extensions": [
+        "KHR_materials_volume",
+        "FB_ngon_encoding"
+      ]
+    }
+  ]
+}

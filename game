@@ -880,7 +880,7 @@ body.vfx-edition.vfx-reduced .vfx-readout{font-size:clamp(17px,2.2vw,31px)}
 <aside id="deckDetail" class="loadout-footer"></aside>
 <div id="deckLibrary" class="deck-library hidden" role="dialog" aria-modal="true" aria-label="덱 선택">
  <button id="deckLibraryBackdrop" class="deck-library-backdrop" type="button" aria-label="덱 목록 닫기"></button>
- <aside class="deck-library-nav"><button id="closeDeckLibrary" class="library-back" type="button" aria-label="돌아가기">‹</button><div><span>PRESET</span><b>저장된 덱</b></div><div class="library-count">20 DECKS<br>80 OPERATIVES</div></aside>
+ <aside class="deck-library-nav"><button id="closeDeckLibrary" class="library-back" type="button" aria-label="돌아가기">‹</button><div><span>PRESET</span><b>저장된 덱</b></div><div class="library-count">24 DECKS<br>96 OPERATIVES</div></aside>
  <section class="deck-library-panel"><div class="deck-library-head"><span>LOADOUT ARCHIVE</span><b>사용할 덱 선택</b></div><div id="deckGrid" class="deck-grid"></div></section>
 </div>
 </section>
@@ -1015,10 +1015,102 @@ if(EXECUTE_DECK){
 }
 
 const CHARACTER_IMAGES={
- bullet_0:"assets/characters/bullet_0-scene.png",
- bullet_1:"assets/characters/bullet_1-scene.png",
- bullet_2:"assets/characters/bullet_2-scene.png",
- bullet_3:"assets/characters/bullet_3-scene.png"
+ "bullet_0": "assets/characters/bullet_0-ld-v4.webp",
+ "bullet_1": "assets/characters/bullet_1-ld-v4.webp",
+ "bullet_2": "assets/characters/bullet_2-ld-v4.webp",
+ "bullet_3": "assets/characters/bullet_3-ld-v4.webp",
+ "poison_0": "assets/characters/poison_0-ld-v4.webp",
+ "poison_1": "assets/characters/poison_1-ld-v4.webp",
+ "poison_2": "assets/characters/poison_2-ld-v4.webp",
+ "poison_3": "assets/characters/poison_3-ld-v4.webp",
+ "counter_0": "assets/characters/counter_0-ld-v4.webp",
+ "counter_1": "assets/characters/counter_1-ld-v4.webp",
+ "counter_2": "assets/characters/counter_2-ld-v4.webp",
+ "counter_3": "assets/characters/counter_3-ld-v4.webp",
+ "follow_0": "assets/characters/follow_0-ld-v4.webp",
+ "follow_1": "assets/characters/follow_1-ld-v4.webp",
+ "follow_2": "assets/characters/follow_2-ld-v4.webp",
+ "follow_3": "assets/characters/follow_3-ld-v4.webp",
+ "freeze_0": "assets/characters/freeze_0-ld-v4.webp",
+ "freeze_1": "assets/characters/freeze_1-ld-v4.webp",
+ "freeze_2": "assets/characters/freeze_2-ld-v4.webp",
+ "freeze_3": "assets/characters/freeze_3-ld-v4.webp",
+ "lifesteal_0": "assets/characters/lifesteal_0-ld-v4.webp",
+ "lifesteal_1": "assets/characters/lifesteal_1-ld-v4.webp",
+ "lifesteal_2": "assets/characters/lifesteal_2-ld-v4.webp",
+ "lifesteal_3": "assets/characters/lifesteal_3-ld-v4.webp",
+ "bounce_0": "assets/characters/bounce_0-ld-v4.webp",
+ "bounce_1": "assets/characters/bounce_1-ld-v4.webp",
+ "bounce_2": "assets/characters/bounce_2-ld-v4.webp",
+ "bounce_3": "assets/characters/bounce_3-ld-v4.webp",
+ "hp_0": "assets/characters/hp_0-ld-v4.webp",
+ "hp_1": "assets/characters/hp_1-ld-v4.webp",
+ "hp_2": "assets/characters/hp_2-ld-v4.webp",
+ "hp_3": "assets/characters/hp_3-ld-v4.webp",
+ "speed_0": "assets/characters/speed_0-ld-v4.webp",
+ "speed_1": "assets/characters/speed_1-ld-v4.webp",
+ "speed_2": "assets/characters/speed_2-ld-v4.webp",
+ "speed_3": "assets/characters/speed_3-ld-v4.webp",
+ "debuff_0": "assets/characters/debuff_0-ld-v4.webp",
+ "debuff_1": "assets/characters/debuff_1-ld-v4.webp",
+ "debuff_2": "assets/characters/debuff_2-ld-v4.webp",
+ "debuff_3": "assets/characters/debuff_3-ld-v4.webp",
+ "ult_0": "assets/characters/ult_0-ld-v4.webp",
+ "ult_1": "assets/characters/ult_1-ld-v4.webp",
+ "ult_2": "assets/characters/ult_2-ld-v4.webp",
+ "ult_3": "assets/characters/ult_3-ld-v4.webp",
+ "enhance_0": "assets/characters/enhance_0-ld-v4.webp",
+ "enhance_1": "assets/characters/enhance_1-ld-v4.webp",
+ "enhance_2": "assets/characters/enhance_2-ld-v4.webp",
+ "enhance_3": "assets/characters/enhance_3-ld-v4.webp",
+ "skill_0": "assets/characters/skill_0-ld-v4.webp",
+ "skill_1": "assets/characters/skill_1-ld-v4.webp",
+ "skill_2": "assets/characters/skill_2-ld-v4.webp",
+ "skill_3": "assets/characters/skill_3-ld-v4.webp",
+ "execute_0": "assets/characters/execute_0-ld-v4.webp",
+ "execute_1": "assets/characters/execute_1-ld-v4.webp",
+ "execute_2": "assets/characters/execute_2-ld-v4.webp",
+ "execute_3": "assets/characters/execute_3-ld-v4.webp",
+ "crit_0": "assets/characters/crit_0-ld-v4.webp",
+ "crit_1": "assets/characters/crit_1-ld-v4.webp",
+ "crit_2": "assets/characters/crit_2-ld-v4.webp",
+ "crit_3": "assets/characters/crit_3-ld-v4.webp",
+ "cleanse_0": "assets/characters/cleanse_0-ld-v4.webp",
+ "cleanse_1": "assets/characters/cleanse_1-ld-v4.webp",
+ "cleanse_2": "assets/characters/cleanse_2-ld-v4.webp",
+ "cleanse_3": "assets/characters/cleanse_3-ld-v4.webp",
+ "burn_0": "assets/characters/burn_0-ld-v4.webp",
+ "burn_1": "assets/characters/burn_1-ld-v4.webp",
+ "burn_2": "assets/characters/burn_2-ld-v4.webp",
+ "burn_3": "assets/characters/burn_3-ld-v4.webp",
+ "bleed_0": "assets/characters/bleed_0-ld-v4.webp",
+ "bleed_1": "assets/characters/bleed_1-ld-v4.webp",
+ "bleed_2": "assets/characters/bleed_2-ld-v4.webp",
+ "bleed_3": "assets/characters/bleed_3-ld-v4.webp",
+ "electric_0": "assets/characters/electric_0-ld-v4.webp",
+ "electric_1": "assets/characters/electric_1-ld-v4.webp",
+ "electric_2": "assets/characters/electric_2-ld-v4.webp",
+ "electric_3": "assets/characters/electric_3-ld-v4.webp",
+ "defense_0": "assets/characters/defense_0-ld-v4.webp",
+ "defense_1": "assets/characters/defense_1-ld-v4.webp",
+ "defense_2": "assets/characters/defense_2-ld-v4.webp",
+ "defense_3": "assets/characters/defense_3-ld-v4.webp",
+ "radiance_0": "assets/characters/radiance_0-ld-v4.webp",
+ "radiance_1": "assets/characters/radiance_1-ld-v4.webp",
+ "radiance_2": "assets/characters/radiance_2-ld-v4.webp",
+ "radiance_3": "assets/characters/radiance_3-ld-v4.webp",
+ "wave_0": "assets/characters/wave_0-ld-v4.webp",
+ "wave_1": "assets/characters/wave_1-ld-v4.webp",
+ "wave_2": "assets/characters/wave_2-ld-v4.webp",
+ "wave_3": "assets/characters/wave_3-ld-v4.webp",
+ "tree_0": "assets/characters/tree_0-ld-v4.webp",
+ "tree_1": "assets/characters/tree_1-ld-v4.webp",
+ "tree_2": "assets/characters/tree_2-ld-v4.webp",
+ "tree_3": "assets/characters/tree_3-ld-v4.webp",
+ "wind_0": "assets/characters/wind_0-ld-v4.webp",
+ "wind_1": "assets/characters/wind_1-ld-v4.webp",
+ "wind_2": "assets/characters/wind_2-ld-v4.webp",
+ "wind_3": "assets/characters/wind_3-ld-v4.webp"
 };
 const BATTLE_CHARACTER_IMAGES={}; // Formation artwork stays out of combat until dedicated assets are ready.
 function portraitHTML(c){const src=BATTLE_CHARACTER_IMAGES[c.id];return `<div class="unit-portrait">${src?`<img src="${src}" alt="SLOT ${String((c.index??0)+1).padStart(2,"0")} 전투 스탠딩" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="portrait-empty hidden">IMAGE READY</div>`:`<div class="portrait-empty">IMAGE READY</div>`}</div>`}
@@ -1040,7 +1132,7 @@ function loadoutCardHTML(c,i,d){
 function deckRowPortraitHTML(c,d,i){
  const src=CHARACTER_IMAGES[c.id];
  const slot=String(i+1).padStart(2,"0");
- return `<div class="deck-row-portrait" style="--accent:${d.color}" aria-label="슬롯 ${slot} · ${c.roleDetail}">${src?`<img src="${src}" alt="" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><span class="hidden">${slot}</span>`:`<span>${slot}</span>`}<small>SLOT ${slot} · ${c.roleDetail}</small></div>`
+ return `<div class="deck-row-portrait" style="--accent:${d.color}" aria-label="슬롯 ${slot} · ${c.roleDetail}">${src?`<img src="${src}" alt="" decoding="async" loading="lazy" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><span class="hidden">${slot}</span>`:`<span>${slot}</span>`}<small>SLOT ${slot} · ${c.roleDetail}</small></div>`
 }
 
 function findCharacter(charId){for(const d of DECKS){const c=d.party.find(x=>x.id===charId);if(c)return {c,d,index:d.party.indexOf(c)}}return null}

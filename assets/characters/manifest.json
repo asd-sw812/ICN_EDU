@@ -1,0 +1,674 @@
+[
+  {
+    "id": "bullet_0",
+    "concept": "탐정",
+    "gender": "female",
+    "file": "bullet_0-ld-v4.webp",
+    "seed": 1592305144
+  },
+  {
+    "id": "bullet_1",
+    "concept": "항구 밀수꾼",
+    "gender": "female",
+    "file": "bullet_1-ld-v4.webp",
+    "seed": 327390969
+  },
+  {
+    "id": "bullet_2",
+    "concept": "야생동물 사진가",
+    "gender": "female",
+    "file": "bullet_2-ld-v4.webp",
+    "seed": 435808748
+  },
+  {
+    "id": "bullet_3",
+    "concept": "사격장 관리인",
+    "gender": "female",
+    "file": "bullet_3-ld-v4.webp",
+    "seed": 3889054251
+  },
+  {
+    "id": "poison_0",
+    "concept": "연금술사",
+    "gender": "female",
+    "file": "poison_0-ld-v4.webp",
+    "seed": 2124916962
+  },
+  {
+    "id": "poison_1",
+    "concept": "염료사",
+    "gender": "female",
+    "file": "poison_1-ld-v4.webp",
+    "seed": 2766449857
+  },
+  {
+    "id": "poison_2",
+    "concept": "조향사",
+    "gender": "female",
+    "file": "poison_2-ld-v4.webp",
+    "seed": 3877860093
+  },
+  {
+    "id": "poison_3",
+    "concept": "균류 채집가",
+    "gender": "female",
+    "file": "poison_3-ld-v4.webp",
+    "seed": 2636821203
+  },
+  {
+    "id": "counter_0",
+    "concept": "펜싱 심판",
+    "gender": "female",
+    "file": "counter_0-ld-v4.webp",
+    "seed": 3485177644
+  },
+  {
+    "id": "counter_1",
+    "concept": "전당포 감정사",
+    "gender": "female",
+    "file": "counter_1-ld-v4.webp",
+    "seed": 3559332003
+  },
+  {
+    "id": "counter_2",
+    "concept": "매듭 수선공",
+    "gender": "female",
+    "file": "counter_2-ld-v4.webp",
+    "seed": 3840377716
+  },
+  {
+    "id": "counter_3",
+    "concept": "야간 경비원",
+    "gender": "male",
+    "file": "counter_3-ld-v4.webp",
+    "seed": 3928010877
+  },
+  {
+    "id": "follow_0",
+    "concept": "곡예사",
+    "gender": "female",
+    "file": "follow_0-ld-v4.webp",
+    "seed": 147913395
+  },
+  {
+    "id": "follow_1",
+    "concept": "메아리 수집가",
+    "gender": "female",
+    "file": "follow_1-ld-v4.webp",
+    "seed": 2560216320
+  },
+  {
+    "id": "follow_2",
+    "concept": "종이 인형극사",
+    "gender": "female",
+    "file": "follow_2-ld-v4.webp",
+    "seed": 3448662216
+  },
+  {
+    "id": "follow_3",
+    "concept": "거리 타악 연주자",
+    "gender": "male",
+    "file": "follow_3-ld-v4.webp",
+    "seed": 4111097074
+  },
+  {
+    "id": "freeze_0",
+    "concept": "피겨 선수",
+    "gender": "female",
+    "file": "freeze_0-ld-v4.webp",
+    "seed": 1464509558
+  },
+  {
+    "id": "freeze_1",
+    "concept": "유리공예가",
+    "gender": "female",
+    "file": "freeze_1-ld-v4.webp",
+    "seed": 3105536866
+  },
+  {
+    "id": "freeze_2",
+    "concept": "냉장 창고 기록원",
+    "gender": "female",
+    "file": "freeze_2-ld-v4.webp",
+    "seed": 1765005806
+  },
+  {
+    "id": "freeze_3",
+    "concept": "눈꽃 원예사",
+    "gender": "female",
+    "file": "freeze_3-ld-v4.webp",
+    "seed": 2041371690
+  },
+  {
+    "id": "lifesteal_0",
+    "concept": "와인 감별사",
+    "gender": "female",
+    "file": "lifesteal_0-ld-v4.webp",
+    "seed": 3484516242
+  },
+  {
+    "id": "lifesteal_1",
+    "concept": "복원화가",
+    "gender": "female",
+    "file": "lifesteal_1-ld-v4.webp",
+    "seed": 1626888148
+  },
+  {
+    "id": "lifesteal_2",
+    "concept": "혈액 약제사",
+    "gender": "female",
+    "file": "lifesteal_2-ld-v4.webp",
+    "seed": 4224795969
+  },
+  {
+    "id": "lifesteal_3",
+    "concept": "밤의 정원사",
+    "gender": "female",
+    "file": "lifesteal_3-ld-v4.webp",
+    "seed": 3671769954
+  },
+  {
+    "id": "bounce_0",
+    "concept": "당구 선수",
+    "gender": "female",
+    "file": "bounce_0-ld-v4.webp",
+    "seed": 684755159
+  },
+  {
+    "id": "bounce_1",
+    "concept": "동전 마술사",
+    "gender": "female",
+    "file": "bounce_1-ld-v4.webp",
+    "seed": 1751961757
+  },
+  {
+    "id": "bounce_2",
+    "concept": "보석 세공사",
+    "gender": "female",
+    "file": "bounce_2-ld-v4.webp",
+    "seed": 357484388
+  },
+  {
+    "id": "bounce_3",
+    "concept": "모자이크 복원가",
+    "gender": "female",
+    "file": "bounce_3-ld-v4.webp",
+    "seed": 1540210910
+  },
+  {
+    "id": "hp_0",
+    "concept": "극장 대역 배우",
+    "gender": "male",
+    "file": "hp_0-ld-v4.webp",
+    "seed": 903313154
+  },
+  {
+    "id": "hp_1",
+    "concept": "촛불 제작자",
+    "gender": "female",
+    "file": "hp_1-ld-v4.webp",
+    "seed": 1120385989
+  },
+  {
+    "id": "hp_2",
+    "concept": "서약 기록관",
+    "gender": "female",
+    "file": "hp_2-ld-v4.webp",
+    "seed": 4280970957
+  },
+  {
+    "id": "hp_3",
+    "concept": "봉합 자수사",
+    "gender": "female",
+    "file": "hp_3-ld-v4.webp",
+    "seed": 685125682
+  },
+  {
+    "id": "speed_0",
+    "concept": "우편 배달원",
+    "gender": "female",
+    "file": "speed_0-ld-v4.webp",
+    "seed": 901802
+  },
+  {
+    "id": "speed_1",
+    "concept": "육상 선수",
+    "gender": "female",
+    "file": "speed_1-ld-v4.webp",
+    "seed": 3122193260
+  },
+  {
+    "id": "speed_2",
+    "concept": "바람 연 제작자",
+    "gender": "female",
+    "file": "speed_2-ld-v4.webp",
+    "seed": 1914979122
+  },
+  {
+    "id": "speed_3",
+    "concept": "새벽 신문 배달원",
+    "gender": "male",
+    "file": "speed_3-ld-v4.webp",
+    "seed": 2339472307
+  },
+  {
+    "id": "debuff_0",
+    "concept": "가면 제작자",
+    "gender": "female",
+    "file": "debuff_0-ld-v4.webp",
+    "seed": 58525341
+  },
+  {
+    "id": "debuff_1",
+    "concept": "수면 연구자",
+    "gender": "female",
+    "file": "debuff_1-ld-v4.webp",
+    "seed": 4130090770
+  },
+  {
+    "id": "debuff_2",
+    "concept": "매듭 점술가",
+    "gender": "female",
+    "file": "debuff_2-ld-v4.webp",
+    "seed": 2960820180
+  },
+  {
+    "id": "debuff_3",
+    "concept": "쓴 차 감별사",
+    "gender": "female",
+    "file": "debuff_3-ld-v4.webp",
+    "seed": 1572491965
+  },
+  {
+    "id": "ult_0",
+    "concept": "오케스트라 지휘자",
+    "gender": "female",
+    "file": "ult_0-ld-v4.webp",
+    "seed": 481620468
+  },
+  {
+    "id": "ult_1",
+    "concept": "천문력 편집자",
+    "gender": "male",
+    "file": "ult_1-ld-v4.webp",
+    "seed": 677460591
+  },
+  {
+    "id": "ult_2",
+    "concept": "축제 종지기",
+    "gender": "female",
+    "file": "ult_2-ld-v4.webp",
+    "seed": 78339428
+  },
+  {
+    "id": "ult_3",
+    "concept": "불꽃놀이 설계사",
+    "gender": "female",
+    "file": "ult_3-ld-v4.webp",
+    "seed": 1299248477
+  },
+  {
+    "id": "enhance_0",
+    "concept": "시계 수리사",
+    "gender": "female",
+    "file": "enhance_0-ld-v4.webp",
+    "seed": 1849027342
+  },
+  {
+    "id": "enhance_1",
+    "concept": "요리 경연자",
+    "gender": "female",
+    "file": "enhance_1-ld-v4.webp",
+    "seed": 2176735731
+  },
+  {
+    "id": "enhance_2",
+    "concept": "문신 도안가",
+    "gender": "female",
+    "file": "enhance_2-ld-v4.webp",
+    "seed": 2498977520
+  },
+  {
+    "id": "enhance_3",
+    "concept": "악기 조율사",
+    "gender": "male",
+    "file": "enhance_3-ld-v4.webp",
+    "seed": 665751110
+  },
+  {
+    "id": "skill_0",
+    "concept": "무대 소품 설계자",
+    "gender": "female",
+    "file": "skill_0-ld-v4.webp",
+    "seed": 3677047122
+  },
+  {
+    "id": "skill_1",
+    "concept": "카드 딜러",
+    "gender": "female",
+    "file": "skill_1-ld-v4.webp",
+    "seed": 3000419463
+  },
+  {
+    "id": "skill_2",
+    "concept": "열쇠 장인",
+    "gender": "female",
+    "file": "skill_2-ld-v4.webp",
+    "seed": 3988571503
+  },
+  {
+    "id": "skill_3",
+    "concept": "기록 속기사",
+    "gender": "female",
+    "file": "skill_3-ld-v4.webp",
+    "seed": 824905240
+  },
+  {
+    "id": "execute_0",
+    "concept": "장의사",
+    "gender": "female",
+    "file": "execute_0-ld-v4.webp",
+    "seed": 4013688010
+  },
+  {
+    "id": "execute_1",
+    "concept": "지붕 철거공",
+    "gender": "female",
+    "file": "execute_1-ld-v4.webp",
+    "seed": 3431936202
+  },
+  {
+    "id": "execute_2",
+    "concept": "판결 속기사",
+    "gender": "female",
+    "file": "execute_2-ld-v4.webp",
+    "seed": 3607357094
+  },
+  {
+    "id": "execute_3",
+    "concept": "도축장 퇴직 경비원",
+    "gender": "male",
+    "file": "execute_3-ld-v4.webp",
+    "seed": 2427876484
+  },
+  {
+    "id": "crit_0",
+    "concept": "잠금장치 해제사",
+    "gender": "female",
+    "file": "crit_0-ld-v4.webp",
+    "seed": 2948696219
+  },
+  {
+    "id": "crit_1",
+    "concept": "표본 채집가",
+    "gender": "female",
+    "file": "crit_1-ld-v4.webp",
+    "seed": 895588836
+  },
+  {
+    "id": "crit_2",
+    "concept": "사기 도박사",
+    "gender": "female",
+    "file": "crit_2-ld-v4.webp",
+    "seed": 3945714029
+  },
+  {
+    "id": "crit_3",
+    "concept": "흔적 감식가",
+    "gender": "female",
+    "file": "crit_3-ld-v4.webp",
+    "seed": 476323098
+  },
+  {
+    "id": "cleanse_0",
+    "concept": "세탁소 주인",
+    "gender": "female",
+    "file": "cleanse_0-ld-v4.webp",
+    "seed": 674801605
+  },
+  {
+    "id": "cleanse_1",
+    "concept": "향 제조사",
+    "gender": "female",
+    "file": "cleanse_1-ld-v4.webp",
+    "seed": 2857736263
+  },
+  {
+    "id": "cleanse_2",
+    "concept": "우물 관리인",
+    "gender": "female",
+    "file": "cleanse_2-ld-v4.webp",
+    "seed": 4266462368
+  },
+  {
+    "id": "cleanse_3",
+    "concept": "문화재 청소가",
+    "gender": "female",
+    "file": "cleanse_3-ld-v4.webp",
+    "seed": 4288666156
+  },
+  {
+    "id": "burn_0",
+    "concept": "불꽃 곡예사",
+    "gender": "female",
+    "file": "burn_0-ld-v4.webp",
+    "seed": 3561154320
+  },
+  {
+    "id": "burn_1",
+    "concept": "도자기 가마지기",
+    "gender": "female",
+    "file": "burn_1-ld-v4.webp",
+    "seed": 1708750425
+  },
+  {
+    "id": "burn_2",
+    "concept": "숯 그림 화가",
+    "gender": "female",
+    "file": "burn_2-ld-v4.webp",
+    "seed": 1255458043
+  },
+  {
+    "id": "burn_3",
+    "concept": "향초 조각가",
+    "gender": "female",
+    "file": "burn_3-ld-v4.webp",
+    "seed": 3896409906
+  },
+  {
+    "id": "bleed_0",
+    "concept": "재단사",
+    "gender": "female",
+    "file": "bleed_0-ld-v4.webp",
+    "seed": 1640245909
+  },
+  {
+    "id": "bleed_1",
+    "concept": "장미 정원사",
+    "gender": "female",
+    "file": "bleed_1-ld-v4.webp",
+    "seed": 4123319696
+  },
+  {
+    "id": "bleed_2",
+    "concept": "서예가",
+    "gender": "female",
+    "file": "bleed_2-ld-v4.webp",
+    "seed": 3279495813
+  },
+  {
+    "id": "bleed_3",
+    "concept": "가시 울타리 관리인",
+    "gender": "female",
+    "file": "bleed_3-ld-v4.webp",
+    "seed": 3177999647
+  },
+  {
+    "id": "electric_0",
+    "concept": "도시 라디오 DJ",
+    "gender": "female",
+    "file": "electric_0-ld-v4.webp",
+    "seed": 1061136084
+  },
+  {
+    "id": "electric_1",
+    "concept": "전차 정비사",
+    "gender": "female",
+    "file": "electric_1-ld-v4.webp",
+    "seed": 3387093773
+  },
+  {
+    "id": "electric_2",
+    "concept": "번개 사진가",
+    "gender": "female",
+    "file": "electric_2-ld-v4.webp",
+    "seed": 2576876519
+  },
+  {
+    "id": "electric_3",
+    "concept": "변전소 야간 관리자",
+    "gender": "female",
+    "file": "electric_3-ld-v4.webp",
+    "seed": 983192475
+  },
+  {
+    "id": "defense_0",
+    "concept": "방화문 검사원",
+    "gender": "female",
+    "file": "defense_0-ld-v4.webp",
+    "seed": 2839037929
+  },
+  {
+    "id": "defense_1",
+    "concept": "제본가",
+    "gender": "female",
+    "file": "defense_1-ld-v4.webp",
+    "seed": 3449960121
+  },
+  {
+    "id": "defense_2",
+    "concept": "보존 처리사",
+    "gender": "female",
+    "file": "defense_2-ld-v4.webp",
+    "seed": 3774212838
+  },
+  {
+    "id": "defense_3",
+    "concept": "댐 관리인",
+    "gender": "male",
+    "file": "defense_3-ld-v4.webp",
+    "seed": 431449490
+  },
+  {
+    "id": "radiance_0",
+    "concept": "등대 렌즈 연마사",
+    "gender": "female",
+    "file": "radiance_0-ld-v4.webp",
+    "seed": 1671766640
+  },
+  {
+    "id": "radiance_1",
+    "concept": "무대 조명 기사",
+    "gender": "female",
+    "file": "radiance_1-ld-v4.webp",
+    "seed": 881165640
+  },
+  {
+    "id": "radiance_2",
+    "concept": "금박 복원가",
+    "gender": "female",
+    "file": "radiance_2-ld-v4.webp",
+    "seed": 3541062739
+  },
+  {
+    "id": "radiance_3",
+    "concept": "일식 관측 기록가",
+    "gender": "female",
+    "file": "radiance_3-ld-v4.webp",
+    "seed": 1201466559
+  },
+  {
+    "id": "wave_0",
+    "concept": "해류 지도사",
+    "gender": "female",
+    "file": "wave_0-ld-v4.webp",
+    "seed": 4210449754
+  },
+  {
+    "id": "wave_1",
+    "concept": "수문 측량사",
+    "gender": "female",
+    "file": "wave_1-ld-v4.webp",
+    "seed": 2089414852
+  },
+  {
+    "id": "wave_2",
+    "concept": "유목 조각가",
+    "gender": "female",
+    "file": "wave_2-ld-v4.webp",
+    "seed": 293394738
+  },
+  {
+    "id": "wave_3",
+    "concept": "유리병 편지 수집가",
+    "gender": "male",
+    "file": "wave_3-ld-v4.webp",
+    "seed": 1995342573
+  },
+  {
+    "id": "tree_0",
+    "concept": "종자 보관사",
+    "gender": "female",
+    "file": "tree_0-ld-v4.webp",
+    "seed": 3999166116
+  },
+  {
+    "id": "tree_1",
+    "concept": "나무 나이테 기록가",
+    "gender": "female",
+    "file": "tree_1-ld-v4.webp",
+    "seed": 2410302470
+  },
+  {
+    "id": "tree_2",
+    "concept": "목판 인쇄가",
+    "gender": "female",
+    "file": "tree_2-ld-v4.webp",
+    "seed": 2447185019
+  },
+  {
+    "id": "tree_3",
+    "concept": "분재 수형사",
+    "gender": "female",
+    "file": "tree_3-ld-v4.webp",
+    "seed": 454317258
+  },
+  {
+    "id": "wind_0",
+    "concept": "풍향 깃발 재봉사",
+    "gender": "female",
+    "file": "wind_0-ld-v4.webp",
+    "seed": 1208916118
+  },
+  {
+    "id": "wind_1",
+    "concept": "구름 관측 기록가",
+    "gender": "female",
+    "file": "wind_1-ld-v4.webp",
+    "seed": 3468646477
+  },
+  {
+    "id": "wind_2",
+    "concept": "풍차 날개 수선공",
+    "gender": "female",
+    "file": "wind_2-ld-v4.webp",
+    "seed": 4095237059
+  },
+  {
+    "id": "wind_3",
+    "concept": "항구 도선사",
+    "gender": "male",
+    "file": "wind_3-ld-v4.webp",
+    "seed": 240488994
+  }
+]

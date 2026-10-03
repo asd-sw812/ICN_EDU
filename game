@@ -859,12 +859,6 @@ body.vfx-edition .vfx-readout{font-size:clamp(24px,3vw,43px);-webkit-text-stroke
 body.vfx-edition .vfx-readout.critical{font-size:clamp(30px,3.6vw,54px);text-shadow:0 3px #6d3217,0 0 20px #edaa4766}
 body.vfx-edition.vfx-reduced .vfx-readout{font-size:clamp(17px,2.2vw,31px)}
 </style>
-<style id="combat-model-style">
-body.battle-mode .fighter-art:has(model-viewer){transform:none}
-body.battle-mode .fighter-art model-viewer{width:100%;height:100%;background:transparent;pointer-events:auto;--poster-color:transparent;--progress-bar-color:#d7c38a;touch-action:pan-y}
-.combat-model-status{position:absolute;left:50%;top:50%;translate:-50% -50%;color:#d7c38a;font:12px ui-monospace,monospace;pointer-events:none}
-</style>
-<script type="module" src="assets/vendor/model-viewer/model-viewer.min.js"></script>
 </head>
 <body class="selection-mode">
 <!-- VFX Edition 01: standalone copy; original combat balance retained. -->
@@ -1118,23 +1112,16 @@ const CHARACTER_IMAGES={
  "wind_2": "assets/characters/wind_2-ld-v4.webp",
  "wind_3": "assets/characters/wind_3-ld-v4.webp"
 };
-const BATTLE_CHARACTER_MODELS={
- "bullet_0": "assets/models/characters/bullet_0.glb",
- "bullet_1": "assets/models/characters/bullet_1.glb",
- "bullet_2": "assets/models/characters/bullet_2.glb",
- "bullet_3": "assets/models/characters/bullet_3.glb"
-};
 const BATTLE_CHARACTER_IMAGES={}; // Formation artwork stays out of combat until dedicated assets are ready.
 function portraitHTML(c){const src=BATTLE_CHARACTER_IMAGES[c.id];return `<div class="unit-portrait">${src?`<img src="${src}" alt="SLOT ${String((c.index??0)+1).padStart(2,"0")} 전투 스탠딩" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="portrait-empty hidden">IMAGE READY</div>`:`<div class="portrait-empty">IMAGE READY</div>`}</div>`}
 function deckArtHTML(d){const lead=d.party[0],src=CHARACTER_IMAGES[lead.id],sigil=d.name.slice(0,1);return `<div class="deck-art" style="--accent:${d.color}">${src?`<img src="${src}" alt="${d.name} 대표 캐릭터" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><span class="deck-sigil hidden">${sigil}</span>`:`<span class="deck-sigil">${sigil}</span>`}</div>`}
 function activeFighterHTML(p){
  if(!p)return "";
  const src=BATTLE_CHARACTER_IMAGES[p.id];
- const model=BATTLE_CHARACTER_MODELS[p.id];
  const slot=String((p.index??0)+1).padStart(2,"0");
  const stack=p.resourceLabel?`${p.resourceLabel} ${Math.round(p.resource)}${p.resourceMax==null?"":`/${p.resourceMax}`}`:"전용 스택 없음";
  const target=selectedAlly(),targetSlot=target?String(target.index+1).padStart(2,"0"):"--";
- return `<div class="fighter-art">${model?`<model-viewer src="${model}" alt="SLOT ${slot} 3D 캐릭터" camera-controls disable-zoom disable-pan interaction-prompt="none" camera-orbit="-20deg 82deg auto" field-of-view="28deg" shadow-intensity="1" shadow-softness=".7" exposure="1.15" environment-image="neutral" loading="eager"><span slot="progress-bar" class="combat-model-status">3D 모델 불러오는 중</span></model-viewer>`:src?`<img src="${src}" alt="전투 캐릭터 슬롯 ${slot}" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="fighter-placeholder hidden" data-initial="${slot}"></div>`:`<div class="fighter-placeholder" data-initial="${slot}"></div>`}</div><div class="fighter-label"><span>ACTIVE OPERATIVE · ${p.element} · ${attackTypeLabel(p.attackType)}</span><b>SLOT ${slot} · ${p.roleDetail}</b><div class="fighter-resources"><i>ATK <strong>${Math.round(effAtk(p))}</strong></i><i>HP <strong>${p.hp}/${p.maxHp}</strong></i><i>CRIT <strong>${Math.round(critChance(p))}% / ${Math.round(critDmg(p))}%</strong></i><i>DEF <strong>${Math.round(effDef(p,"reality"))}/${Math.round(effDef(p,"mental"))}</strong></i><i>SP <strong>${p.sp}/${p.maxSp}</strong></i><i>EN <strong>${p.energy}%</strong></i><i>STACK <strong>${stack}</strong></i><i>지원 대상 <strong>SLOT ${targetSlot}</strong></i></div><div class="fighter-effects"><small>현재 효과</small>${effectChipsHTML(playerStatuses(p),"버프·디버프 없음")}</div></div>`
+ return `<div class="fighter-art">${src?`<img src="${src}" alt="전투 캐릭터 슬롯 ${slot}" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="fighter-placeholder hidden" data-initial="${slot}"></div>`:`<div class="fighter-placeholder" data-initial="${slot}"></div>`}</div><div class="fighter-label"><span>ACTIVE OPERATIVE · ${p.element} · ${attackTypeLabel(p.attackType)}</span><b>SLOT ${slot} · ${p.roleDetail}</b><div class="fighter-resources"><i>ATK <strong>${Math.round(effAtk(p))}</strong></i><i>HP <strong>${p.hp}/${p.maxHp}</strong></i><i>CRIT <strong>${Math.round(critChance(p))}% / ${Math.round(critDmg(p))}%</strong></i><i>DEF <strong>${Math.round(effDef(p,"reality"))}/${Math.round(effDef(p,"mental"))}</strong></i><i>SP <strong>${p.sp}/${p.maxSp}</strong></i><i>EN <strong>${p.energy}%</strong></i><i>STACK <strong>${stack}</strong></i><i>지원 대상 <strong>SLOT ${targetSlot}</strong></i></div><div class="fighter-effects"><small>현재 효과</small>${effectChipsHTML(playerStatuses(p),"버프·디버프 없음")}</div></div>`
 }
 function loadoutCardHTML(c,i,d){
  const src=CHARACTER_IMAGES[c.id];
@@ -3068,13 +3055,7 @@ function render(){
  <div class="boss-effect-tray">${effectChipsHTML(bossStatuses(),"상태이상 없음")}</div></div>`;
  const focus=cur&&cur.side==="player"?cur:state.players.find(p=>!p.dead);
  document.getElementById("activeFighter").classList.toggle("preparing",!!focus&&state.pendingActorId===focus.id&&state.pendingSkill!==null);
- const fighterHost=document.getElementById("activeFighter");
- const previousModel=fighterHost.querySelector('model-viewer');
- fighterHost.innerHTML=activeFighterHTML(focus);
- const nextModel=fighterHost.querySelector('model-viewer');
- if(previousModel&&nextModel&&previousModel.getAttribute('src')===nextModel.getAttribute('src'))nextModel.replaceWith(previousModel);
- const viewer=fighterHost.querySelector('model-viewer');
- if(viewer&&!viewer.dataset.errorBound){viewer.dataset.errorBound='1';viewer.addEventListener('load',()=>{const progress=viewer.querySelector('[slot="progress-bar"]');if(progress)progress.remove()},{once:true});viewer.addEventListener('error',()=>{viewer.insertAdjacentHTML('afterend','<div class="combat-model-status">3D 모델을 불러오지 못했습니다</div>');viewer.style.display='none'},{once:true})}
+ document.getElementById("activeFighter").innerHTML=activeFighterHTML(focus);
  const partyGrid=document.getElementById("partyGrid");
  partyGrid.innerHTML=state.players.map(p=>`<div class="unit ${p.id===state.currentId?"current":""} ${p.id===state.selectedTargetId&&!p.dead?"targeted":""} ${p.dead?"dead":""}" data-ally-target="${p.id}" role="button" tabindex="${p.dead?"-1":"0"}" aria-label="지원 대상 SLOT ${String(p.index+1).padStart(2,"0")} 선택" title="지원 대상 지정 · 패시브 · ${p.passiveDesc}">
  ${portraitHTML(p)}
@@ -3341,9 +3322,6 @@ const VFX = (() => {
   if(reduced)return;const root=el('vfxStage');const source=document.querySelector(actor.side==='enemy'?'.boss-figure':'#activeFighter .fighter-art');if(!root||!source)return;
   if(actor.side==='enemy'){
    animate(source,[{translate:'0 0',scale:'1'},{translate:'12px -4px',scale:'1.03',offset:.45},{translate:'-18px 0',scale:'1.01',offset:.72},{translate:'0 0',scale:'1'}],{duration:meta.total,easing:'ease-in-out'});return;
-  }
-  if(source.querySelector('model-viewer')){
-   animate(source,[{translate:'0 0',scale:'1'},{translate:meta.support?'0 -8px':'-12px 2px',scale:'.985',offset:.35},{translate:meta.support?'0 -12px':'22px -4px',scale:'1.03',offset:.6},{translate:'0 0',scale:'1'}],{duration:meta.total,easing:'ease-in-out'});return;
   }
   const b=bounds(),r=source.getBoundingClientRect();if(!r.width)return;
   const clone=source.cloneNode(true);clone.className='vfx-sprite';clone.style.left=(r.left-b.left)/b.sx+'px';clone.style.top=(r.top-b.top)/b.sy+'px';clone.style.width=r.width/b.sx+'px';clone.style.height=r.height/b.sy+'px';clone.setAttribute('aria-hidden','true');root.appendChild(clone);source.style.visibility='hidden';

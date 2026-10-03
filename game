@@ -855,14 +855,9 @@ body.vfx-edition .boss-figure.vfx-staggered{filter:grayscale(.45) brightness(.7)
 body.selection-mode .loadout-card-art img{object-position:50% 12%;filter:saturate(1.02) contrast(1.02)}
 body.selection-mode .deck-row-portrait img{object-position:50% 8%;filter:saturate(1.02)}
 body.battle-mode .unit-portrait img{object-position:50% 8%}
-.vfx-cutin{position:absolute;left:0;top:10%;width:66%;height:48%;overflow:hidden;pointer-events:none;border-top:2px solid var(--vfx-color);border-bottom:2px solid var(--vfx-color);background:linear-gradient(105deg,#071018fa,#132431f2 60%,transparent);clip-path:polygon(0 0,100% 0,88% 100%,0 100%);box-shadow:0 0 45px #0008}
-.vfx-cutin img{position:absolute;left:0;top:-18%;width:64%;height:195%;object-fit:cover;object-position:center top;mask-image:linear-gradient(90deg,#000 55%,transparent 100%)}
-.vfx-cutin span{position:absolute;right:14%;top:36%;font:800 clamp(18px,3vw,46px)/1.2 Georgia,serif;letter-spacing:.07em;color:#fff;text-shadow:0 2px 8px #000}
-.vfx-cutin small{display:block;font:700 10px/2 ui-monospace,monospace;letter-spacing:.25em;color:var(--vfx-color)}
 body.vfx-edition .vfx-readout{font-size:clamp(24px,3vw,43px);-webkit-text-stroke:.7px #06101d;filter:drop-shadow(0 3px 4px #000)}
 body.vfx-edition .vfx-readout.critical{font-size:clamp(30px,3.6vw,54px);text-shadow:0 3px #6d3217,0 0 20px #edaa4766}
 body.vfx-edition.vfx-reduced .vfx-readout{font-size:clamp(17px,2.2vw,31px)}
-@media(max-height:600px){.vfx-cutin{top:7%;height:48%}.vfx-cutin span{font-size:26px}}
 </style>
 </head>
 <body class="selection-mode">
@@ -1020,16 +1015,17 @@ if(EXECUTE_DECK){
 }
 
 const CHARACTER_IMAGES={
- bullet_0:"assets/characters/bullet_0.png",
- bullet_1:"assets/characters/bullet_1.png",
- bullet_2:"assets/characters/bullet_2.png",
- bullet_3:"assets/characters/bullet_3.png"
+ bullet_0:"assets/characters/bullet_0-scene.png",
+ bullet_1:"assets/characters/bullet_1-scene.png",
+ bullet_2:"assets/characters/bullet_2-scene.png",
+ bullet_3:"assets/characters/bullet_3-scene.png"
 };
-function portraitHTML(c){const src=CHARACTER_IMAGES[c.id];return `<div class="unit-portrait">${src?`<img src="${src}" alt="SLOT ${String((c.index??0)+1).padStart(2,"0")} 전투 스탠딩" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="portrait-empty hidden">IMAGE READY</div>`:`<div class="portrait-empty">IMAGE READY</div>`}</div>`}
+const BATTLE_CHARACTER_IMAGES={}; // Formation artwork stays out of combat until dedicated assets are ready.
+function portraitHTML(c){const src=BATTLE_CHARACTER_IMAGES[c.id];return `<div class="unit-portrait">${src?`<img src="${src}" alt="SLOT ${String((c.index??0)+1).padStart(2,"0")} 전투 스탠딩" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="portrait-empty hidden">IMAGE READY</div>`:`<div class="portrait-empty">IMAGE READY</div>`}</div>`}
 function deckArtHTML(d){const lead=d.party[0],src=CHARACTER_IMAGES[lead.id],sigil=d.name.slice(0,1);return `<div class="deck-art" style="--accent:${d.color}">${src?`<img src="${src}" alt="${d.name} 대표 캐릭터" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><span class="deck-sigil hidden">${sigil}</span>`:`<span class="deck-sigil">${sigil}</span>`}</div>`}
 function activeFighterHTML(p){
  if(!p)return "";
- const src=CHARACTER_IMAGES[p.id];
+ const src=BATTLE_CHARACTER_IMAGES[p.id];
  const slot=String((p.index??0)+1).padStart(2,"0");
  const stack=p.resourceLabel?`${p.resourceLabel} ${Math.round(p.resource)}${p.resourceMax==null?"":`/${p.resourceMax}`}`:"전용 스택 없음";
  const target=selectedAlly(),targetSlot=target?String(target.index+1).padStart(2,"0"):"--";
@@ -3189,14 +3185,6 @@ const VFX = (() => {
    },i*55);
   }
  }
- function characterCutin(actor,total){
-  if(reduced||!CHARACTER_IMAGES[actor.id])return;
-  const root=el('vfxStage');if(!root)return;
-  const panel=document.createElement('div');panel.className='vfx-cutin';
-  const art=document.createElement('img');art.src=CHARACTER_IMAGES[actor.id];art.alt='';
-  const label=document.createElement('span'),tag=document.createElement('small');tag.textContent='ULTIMATE / FULL BURST';label.textContent=actor.roleDetail||actor.role;label.prepend(tag);panel.append(art,label);root.appendChild(panel);
-  animate(panel,[{opacity:0,transform:'translateX(-100%)'},{opacity:1,transform:'translateX(0)',offset:.2},{opacity:1,transform:'translateX(0)',offset:.7},{opacity:0,transform:'translateX(20%)'}],{duration:Math.min(total,1000),easing:'cubic-bezier(.16,.8,.35,1)',fill:'forwards'});later(()=>panel.remove(),Math.min(total,1000)+30);
- }
  function event(kind,target,amount=0,extra={}){
   if(typeof DAMAGE_PREVIEW!=='undefined'&&DAMAGE_PREVIEW)return;
   if(!state||!target)return;
@@ -3274,7 +3262,7 @@ const VFX = (() => {
   const support=isSupportAction(state.deckId,actor.index,which),windup=reduced?70:which===2?510:which===1?230:140,total=reduced?350:which===2?1280:which===1?790:610;
   const meta={battle:state,deck:state.deckId,tier:which,index:actor.index,allyId:state.selectedTargetId,support,origin:point(actor),windup,total,boss:false};
   action=meta;until=now()+total;setBusy(true);setColor(colors[meta.deck]);sync();spriteMotion(actor,meta);
-  if(which===2){characterCutin(actor,total);title('ULTIMATE',deck().name,`SLOT ${String(actor.index+1).padStart(2,'0')} · ${support?'지원 궁극기':'궁극기 발동'}`);glyph(meta.origin,meta.deck,135);if(!reduced)animate(el('vfxDim'),[{opacity:0},{opacity:.78,offset:.25},{opacity:.78,offset:.60},{opacity:0}],{duration:total,fill:'forwards'})}
+  if(which===2){title('ULTIMATE',deck().name,`SLOT ${String(actor.index+1).padStart(2,'0')} · ${support?'지원 궁극기':'궁극기 발동'}`);glyph(meta.origin,meta.deck,135);if(!reduced)animate(el('vfxDim'),[{opacity:0},{opacity:.78,offset:.25},{opacity:.78,offset:.60},{opacity:0}],{duration:total,fill:'forwards'})}
   else ring(meta.origin,which===1?85:55);
   later(()=>resolve(meta,()=>useSkill(which)),windup);
   later(finish,total);return true;
@@ -3292,7 +3280,7 @@ const VFX = (() => {
   later(finish,total);
  }
  function queue(fn,delay){const battle=state;later(()=>{if(state===battle&&!state.over)fn()},Math.max(delay,busy?until-now()+35:0))}
- function reset(){session++;for(const t of timers)clearTimeout(t);timers.clear();for(const a of Array.from(animations))a.cancel();animations.clear();finish();events=[];capturing=false;resolving=false;const c=canvas();if(c)c.replaceChildren();const root=el('vfxStage');if(root)root.querySelectorAll('.vfx-readout,.vfx-sprite,.vfx-cutin').forEach(n=>n.remove());}
+ function reset(){session++;for(const t of timers)clearTimeout(t);timers.clear();for(const a of Array.from(animations))a.cancel();animations.clear();finish();events=[];capturing=false;resolving=false;const c=canvas();if(c)c.replaceChildren();const root=el('vfxStage');if(root)root.querySelectorAll('.vfx-readout,.vfx-sprite').forEach(n=>n.remove());}
  function setColor(c){const root=el('vfxStage');if(root)root.style.setProperty('--vfx-color',c||'#b2d6ee')}
  function scene(id){
   const tint=id==='devourer'?'#8a374a':id==='observer'?'#7469a4':'#345978';

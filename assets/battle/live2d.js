@@ -10,10 +10,10 @@
    const C=window.Live2DCubismCore;
    if(!C)throw Error('Cubism Core unavailable');
    for(let i=0;i<80;i++){try{C.Version.csmGetVersion();break}catch(e){if(i===79)throw e;await new Promise(r=>setTimeout(r,100))}}
-   const base=new URL(paths[id],document.baseURI);base.searchParams.set('v','motion3');const json=await fetch(base).then(check).then(r=>r.json());
+   const base=new URL(paths[id],document.baseURI);base.searchParams.set('v','motion4');const json=await fetch(base).then(check).then(r=>r.json());
    const data=await fetch(new URL(json.FileReferences.Moc,base)).then(check).then(r=>r.arrayBuffer());
    const moc=C.Moc.fromArrayBuffer(data);if(!moc)throw Error('Invalid MOC3');
-   const textures=await Promise.all(json.FileReferences.Textures.map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=new URL(src,base)})));
+   const textures=await Promise.all(json.FileReferences.Textures.map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;const textureURL=new URL(src,base);textureURL.searchParams.set("v","motion4");im.src=textureURL})));
    return {moc,textures,regions:json.MotionRegions||{}};
   })();assets.set(paths[id],task);try{
    const loaded=await task;
@@ -49,7 +49,7 @@
    const d=model.drawables,buffers=d.ids.map((_,i)=>{const pos=gl.createBuffer(),tex=gl.createBuffer(),ind=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,tex);gl.bufferData(gl.ARRAY_BUFFER,d.vertexUvs[i],gl.STATIC_DRAW);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ind);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,d.indices[i],gl.STATIC_DRAW);return {pos,tex,ind,warp:new Float32Array(d.vertexPositions[i].length)}});
    const indices=['ParamAngleX','ParamAngleY','ParamAngleZ'].map(id=>model.parameters.ids.indexOf(id));
    const phase=Array.from(id).reduce((n,c)=>n+c.charCodeAt(0),0)*.13;
-   const run={id,container,model,gl,frame:0,recoilAt:-Infinity,lastTime:0,phase,ticks:0,springs:[{value:0,velocity:0},{value:0,velocity:0},{value:0,velocity:0}]};current=run;container.append(canvas);container.classList.add('live2d-ready');container.dataset.live2d=id;
+   const run={id,container,model,gl,frame:0,recoilAt:-Infinity,lastTime:0,phase,ticks:0,springs:[{value:0,velocity:0},{value:0,velocity:0},{value:0,velocity:0}]};current=run;container.append(canvas);container.dataset.live2d=id;
    gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);
    const draw=now=>{
     if(current!==run)return;if(!container.isConnected){dispose();return}
@@ -64,7 +64,7 @@
     const breath=Math.sin(t*1.35+phase),sway=Math.sin(t*.78+phase);
     const kick=firing?Math.sin(shot*Math.PI)*14:0;
     // Drive the exported Cubism cloth/body/hair keyforms with separate damped responses.
-    const targets=layered?[gentle*(sway*14+breath*3)+kick, gentle*breath*17-kick*.45,gentle*(Math.sin(t*1.02+phase+.8)*19+sway*3)-kick*.6]:[gentle*(sway*9)+(firing?kick*1.6:preparing?6:0),gentle*breath*17,gentle*Math.sin(t*1.02+phase+.8)*17];
+    const targets=layered?[kick, 0,-kick*.6]:[gentle*(sway*9)+(firing?kick*1.6:preparing?6:0),0,gentle*Math.sin(t*1.02+phase+.8)*17];
     const stiffness=[30,22,18],damping=[8,9,6.5];
     const values=run.springs.map((spring,i)=>{
      if(reduced){spring.value=0;spring.velocity=0;return 0}
@@ -73,7 +73,7 @@
     });
     indices.forEach((index,i)=>{if(index>=0)model.parameters.values[index]=values[i]});model.update();
     const info=model.canvasinfo,mw=info.CanvasWidth/info.PixelsPerUnit,mh=info.CanvasHeight/info.PixelsPerUnit,fit=Math.min(w/mw,h/mh)*.98;
-    const pixel=ratio/fit,bodyLift=reduced?0:breath*1.8*gentle*pixel;
+    const pixel=ratio/fit;
     if(++run.ticks%20===0){container.dataset.motionFrame=String(run.ticks);container.dataset.motionState=reduced?'reduced':'running'}
     gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
     [...d.ids.keys()].sort((a,b)=>layered?(['Rear_Body','Rear_Cloth','Rear_Hair'].indexOf(d.ids[a])-['Rear_Body','Rear_Cloth','Rear_Hair'].indexOf(d.ids[b])):model.renderOrders[a]-model.renderOrders[b]).forEach(i=>{
@@ -84,15 +84,34 @@
      if(region&&!reduced)for(let v=0;v<b.warp.length;v+=2){
       const x=b.warp[v],y=b.warp[v+1],weight=Math.pow(Math.max(0,Math.min(1,(region.Top-y)/Math.max(.02,region.Top-region.Bottom))),1.6);
       const sign=d.ids[i].includes('Left')?-1:1;
-      if(region.Kind==='hair'){const pinned=layered?weight:Math.pow(1-Math.max(0,Math.min(1,(region.Top-y)/Math.max(.02,region.Top-region.Bottom))),1.6);b.warp[v]+=Math.sin(t*1.02+phase+.8)*3.2*gentle*pixel*pinned;b.warp[v+1]+=Math.sin(t*1.35+phase+1)*.7*gentle*pixel*pinned}
-      if(region.Kind==='cloth'){b.warp[v]+=Math.sin(t*.88+phase+sign*.8)*(layered?2.8:4.8)*gentle*pixel*weight;b.warp[v+1]+=Math.cos(t*.88+phase)*.8*gentle*pixel*weight}
-      b.warp[v]+=(x-region.CenterX)*Math.sin(t*.78+phase)*.004*gentle;
-      b.warp[v+1]+=bodyLift;
+      if(region.Kind==='hair'){const pinned=layered?weight:Math.pow(1-Math.max(0,Math.min(1,(region.Top-y)/Math.max(.02,region.Top-region.Bottom))),1.6);b.warp[v]+=Math.sin(t*1.02+phase+.8)*9*gentle*pixel*pinned;b.warp[v+1]+=Math.sin(t*1.35+phase+1)*.7*gentle*pixel*pinned}
+      if(region.Kind==='cloth'){b.warp[v]+=Math.sin(t*.88+phase+sign*.8)*(layered?8:10)*gentle*pixel*weight;b.warp[v+1]+=Math.cos(t*.88+phase)*.8*gentle*pixel*weight}
+      if(region.Kind==='arm'){
+       const theta=(Math.sin(t*.93+phase)*.035-(firing?Math.sin(shot*Math.PI)*.075:0))*gentle;
+       b.warp[v]+=(Math.cos(theta)-1)*(x-region.CenterX)-Math.sin(theta)*(y-region.Bottom);
+       b.warp[v+1]+=Math.sin(theta)*(x-region.CenterX)+(Math.cos(theta)-1)*(y-region.Bottom);
+      }
+      if(layered&&(region.Kind==='body'||region.Kind==='cloth')){
+       // Smooth lateral weights flex the upper-arm areas while keeping the torso anchored.
+       const lateral=Math.max(0,Math.min(1,(Math.abs(x-region.CenterX)-.11)/.12));
+       const vertical=Math.max(0,1-Math.abs(y-.12)/.30);
+       b.warp[v]+=Math.sin(t*.93+phase+(x<region.CenterX?.5:-.5))*3*pixel*lateral*vertical*gentle;
+      }
+      if(region.Kind==='body'){
+       const level=Math.max(0,Math.min(1,(y-region.Bottom)/(region.Top-region.Bottom)));
+       const chest=Math.sin(Math.PI*level)**2;
+       b.warp[v]+=(x-region.CenterX)*breath*.014*gentle*chest+sway*3*pixel*level*level;
+       b.warp[v+1]+=breath*.7*pixel*chest;
+       const lower=Math.max(0,1-level/.43),leg=Math.sin(Math.PI*lower);
+       b.warp[v]+=Math.sin(t*.67+phase+(x<region.CenterX?0:Math.PI))*2.5*pixel*leg*gentle;
+      }
      }
      gl.bindBuffer(gl.ARRAY_BUFFER,b.pos);gl.bufferData(gl.ARRAY_BUFFER,b.warp,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
      gl.bindBuffer(gl.ARRAY_BUFFER,b.tex);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.ind);gl.bindTexture(gl.TEXTURE_2D,textures[d.textureIndices[i]]);gl.uniform1f(opacity,d.opacities[i]);gl.drawElements(gl.TRIANGLES,d.indices[i].length,gl.UNSIGNED_SHORT,0);
-    });d.resetDynamicFlags();run.frame=requestAnimationFrame(draw);
-   };run.frame=requestAnimationFrame(draw);
+    });container.classList.add('live2d-ready');d.resetDynamicFlags();run.frame=requestAnimationFrame(safeDraw);
+   };
+   const safeDraw=now=>{try{draw(now)}catch(error){console.error('Cubism frame failed',error);container.dataset.live2dError=error.message;dispose()}};
+   run.frame=requestAnimationFrame(safeDraw);
   }catch(e){console.warn('Live2D loading failed; rear illustration retained.',e);container?.classList.remove('live2d-ready')}
  }
  window.BattleLive2D={mount,dispose,recoil,paths};

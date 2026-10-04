@@ -1,0 +1,110 @@
+[
+  {
+    "id": "bullet_0",
+    "seed": 1346596944,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, transparent background, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "girl, adult woman, solo, silver bob hair, navy tailored detective coat, cream shirt, dark trousers, leather boots, holding a classic steel revolver with wooden grip, 5::from behind, back view, facing away, face not visible::, standing ready, gun pointing toward upper right, full body, feet visible, 4::tall adult proportions, long legs, small head, anime game battle sprite, cel shading, clean lineart::, isolated, transparent background, -5::chibi, sd, realistic, 3d, sci-fi, futuristic, cyberpunk, neon, diorama, scenery::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full",
+    "anlas": 0,
+    "view": "rear",
+    "animation": "Cubism 5.3 MOC3 mesh deformation: breathing and attack recoil; basic rig"
+  },
+  {
+    "id": "bullet_1",
+    "seed": 3942410477,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, transparent background, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "girl, adult woman, solo, auburn ponytail, burgundy sailor jacket, striped shirt, dark cargo trousers, canvas satchel, holding a traditional wooden-stock submachine gun, 5::from behind, back view, facing away, face not visible::, gun pointing toward upper right, full body, feet visible, 4::tall adult proportions, long legs, small head, anime game battle sprite, cel shading, clean lineart::, isolated, transparent background, -5::chibi, sd, realistic, 3d, sci-fi, futuristic, cyberpunk, neon, diorama, scenery::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full",
+    "anlas": 0,
+    "view": "rear",
+    "animation": "Cubism 5.3 MOC3 mesh deformation: breathing and attack recoil; basic rig"
+  },
+  {
+    "id": "bullet_2",
+    "seed": 2020490306,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, transparent background, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "girl, adult woman, solo, long navy hair, grey outdoor jacket, leather camera strap, olive trousers, antique camera hanging at waist, wooden bolt-action rifle with simple scope, 5::from behind, back view, facing away, face not visible::, rifle held pointing toward upper right, full body, feet visible, 4::tall adult proportions, long legs, small head, anime game battle sprite, cel shading, clean lineart::, isolated, transparent background, -5::chibi, sd, realistic, 3d, sci-fi, futuristic, cyberpunk, neon, diorama, scenery::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full",
+    "anlas": 0,
+    "view": "rear",
+    "animation": "Cubism 5.3 MOC3 mesh deformation: breathing and attack recoil; basic rig"
+  },
+  {
+    "id": "bullet_3",
+    "seed": 2067450879,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, transparent background, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "girl, adult woman, solo, blonde braid, beige work vest over black shirt, long dark trousers, ear protectors around neck, traditional belt-fed machine gun with wooden stock, 5::from behind, back view, facing away, face not visible::, bracing gun pointing toward upper right, full body, feet visible, 4::tall adult proportions, long legs, small head, anime game battle sprite, cel shading, clean lineart::, isolated, transparent background, -5::chibi, sd, realistic, 3d, sci-fi, futuristic, cyberpunk, neon, diorama, scenery::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full",
+    "anlas": 0,
+    "view": "rear",
+    "animation": "Cubism 5.3 MOC3 mesh deformation: breathing and attack recoil; basic rig"
+  }
+]

@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "bullet_support.moc3",
+		"Textures": [
+			"bullet_support.2048/texture_00.png"
+		],
+		"DisplayInfo": "bullet_support.cdi3.json"
+	}
+}

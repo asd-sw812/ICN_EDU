@@ -1132,7 +1132,7 @@ const CHARACTER_IMAGES={
  "wind_2": "assets/characters/wind_2-ld-v4.webp",
  "wind_3": "assets/characters/wind_3-ld-v4.webp"
 };
-const BATTLE_CHARACTER_IMAGES={"bullet_0": "assets/battle/bullet_0-rear.webp", "bullet_1": "assets/battle/bullet_1-rear.webp", "bullet_2": "assets/battle/bullet_2-rear.webp", "bullet_3": "assets/battle/bullet_3-rear.webp"}; // Formation artwork stays out of combat until dedicated assets are ready.
+const BATTLE_CHARACTER_IMAGES={"bullet_0": "assets/battle/bullet_0-rear.webp", "bullet_1": "assets/battle/bullet_1-rear.webp", "bullet_2": "assets/battle/bullet_2-rear.webp", "bullet_3": "assets/battle/bullet_3-rear.webp", "poison_0": "assets/battle/poison_0-rear.webp", "poison_1": "assets/battle/poison_1-rear.webp", "poison_2": "assets/battle/poison_2-rear.webp", "poison_3": "assets/battle/poison_3-rear.webp", "counter_0": "assets/battle/counter_0-rear.webp", "counter_1": "assets/battle/counter_1-rear.webp", "counter_2": "assets/battle/counter_2-rear.webp", "counter_3": "assets/battle/counter_3-rear.webp", "follow_0": "assets/battle/follow_0-rear.webp", "follow_1": "assets/battle/follow_1-rear.webp"}; // Formation artwork stays out of combat until dedicated assets are ready.
 function portraitHTML(c){const src=BATTLE_CHARACTER_IMAGES[c.id];return `<div class="unit-portrait">${src?`<img src="${src}" alt="SLOT ${String((c.index??0)+1).padStart(2,"0")} 전투 스탠딩" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><div class="portrait-empty hidden">IMAGE READY</div>`:`<div class="portrait-empty">IMAGE READY</div>`}</div>`}
 function deckArtHTML(d){const lead=d.party[0],src=CHARACTER_IMAGES[lead.id],sigil=d.name.slice(0,1);return `<div class="deck-art" style="--accent:${d.color}">${src?`<img src="${src}" alt="${d.name} 대표 캐릭터" decoding="async" onerror="this.classList.add('hidden');this.nextElementSibling.classList.remove('hidden')"><span class="deck-sigil hidden">${sigil}</span>`:`<span class="deck-sigil">${sigil}</span>`}</div>`}
 function activeFighterHTML(p){
@@ -3381,8 +3381,9 @@ const VFX = (() => {
  function ultimateFilm(actor,meta){
   const src=CHARACTER_IMAGES[actor.id];if(!src)return;
   const film=document.createElement('div');film.className='ultimate-film';film.setAttribute('aria-hidden','true');film.style.setProperty('--film-color',colors[meta.deck]||'#e8c989');
+  const cutinNames={"poison_0": "유리 속의 독무", "poison_1": "보랏빛 번짐", "poison_2": "금지된 향의 잔향", "poison_3": "마지막 약초 처방", "counter_0": "되돌아오는 칼끝", "counter_1": "거울 너머의 반격", "counter_2": "빈틈 없는 그물", "counter_3": "굽히지 않는 철재", "follow_0": "이어지는 화살", "follow_1": "연쇄의 종소리"};
   const rear=BATTLE_CHARACTER_IMAGES[actor.id];const names=['최후의 증언','항구의 일제사격','침묵의 셔터','마지막 방어선'];
-  film.innerHTML=`<div class="film-lines"></div><img class="film-art" src="${src}" alt=""><img class="film-rear" src="${rear||src}" alt=""><div class="film-copy"><small>ULTIMATE · SLOT ${String(actor.index+1).padStart(2,'0')}</small><strong>${meta.deck==='bullet'?names[actor.index]:deck().name}</strong><span>${actor.roleDetail} · ${meta.support?'지원 궁극기':'공격 궁극기'}</span></div><div class="film-flash"></div>`;
+  film.innerHTML=`<div class="film-lines"></div><img class="film-art" src="${src}" alt=""><img class="film-rear" src="${rear||src}" alt=""><div class="film-copy"><small>ULTIMATE · SLOT ${String(actor.index+1).padStart(2,'0')}</small><strong>${cutinNames[actor.id]||(meta.deck==='bullet'?names[actor.index]:deck().name)}</strong><span>${actor.roleDetail} · ${meta.support?'지원 궁극기':'공격 궁극기'}</span></div><div class="film-flash"></div>`;
   document.body.appendChild(film);
   animate(film,[{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.87},{opacity:0}],{duration:meta.total,fill:'forwards'});
   if(!reduced){

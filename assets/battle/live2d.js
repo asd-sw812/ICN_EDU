@@ -1,6 +1,7 @@
 /* Cubism 5.3 MOC renderer for the unmasked rear character meshes. */
 (()=>{
  const paths={bullet_0:'assets/battle/live2d/bullet_0/bullet_0.model3.json',bullet_1:'assets/battle/live2d/support/bullet_support.model3.json',bullet_2:'assets/battle/live2d/support/bullet_support.model3.json',bullet_3:'assets/battle/live2d/support/bullet_support.model3.json'};
+ ["poison_0", "poison_1", "poison_2", "poison_3", "counter_0", "counter_1", "counter_2", "counter_3", "follow_0", "follow_1"].forEach(id=>paths[id]=`assets/battle/live2d/rear/${id}.model3.json`);
  let current=null,sequence=0;
  const assets=new Map();
  async function load(id){
@@ -46,12 +47,13 @@
     const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches||document.body.classList.contains('vfx-reduced');
     const t=now/1000,preparing=container.closest('.active-fighter')?.classList.contains('preparing');
     const shot=(now-run.recoilAt)/420,firing=shot>=0&&shot<1;
-    const values=[reduced?0:firing?Math.sin(shot*Math.PI)*30:preparing?6:0,reduced||firing?0:Math.sin(t*1.6)*23,reduced?0:Math.sin(t*1.1)*14];
+    const layered=d.ids.includes('Rear_Body');
+    const values=[reduced?0:layered?Math.sin(t*1.25+.9)*18:firing?Math.sin(shot*Math.PI)*30:preparing?6:0,reduced||firing?0:Math.sin(t*1.6)*23,reduced?0:Math.sin(t*1.1)*14];
     indices.forEach((index,i)=>{if(index>=0)model.parameters.values[index]=values[i]});model.update();
     const info=model.canvasinfo,mw=info.CanvasWidth/info.PixelsPerUnit,mh=info.CanvasHeight/info.PixelsPerUnit,fit=Math.min(w/mw,h/mh)*.98;
     gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
-    [...d.ids.keys()].sort((a,b)=>model.renderOrders[a]-model.renderOrders[b]).forEach(i=>{
-     if(!d.opacities[i]||(id!=='bullet_0'&&!d.ids[i].startsWith(id+'_')))return;const b=buffers[i];gl.bindBuffer(gl.ARRAY_BUFFER,b.pos);gl.bufferData(gl.ARRAY_BUFFER,d.vertexPositions[i],gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
+    [...d.ids.keys()].sort((a,b)=>layered?(['Rear_Body','Rear_Cloth','Rear_Hair'].indexOf(d.ids[a])-['Rear_Body','Rear_Cloth','Rear_Hair'].indexOf(d.ids[b])):model.renderOrders[a]-model.renderOrders[b]).forEach(i=>{
+     if(!d.opacities[i]||(!layered&&id!=='bullet_0'&&!d.ids[i].startsWith(id+'_')))return;const b=buffers[i];gl.bindBuffer(gl.ARRAY_BUFFER,b.pos);gl.bufferData(gl.ARRAY_BUFFER,d.vertexPositions[i],gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
      gl.bindBuffer(gl.ARRAY_BUFFER,b.tex);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,b.ind);gl.bindTexture(gl.TEXTURE_2D,textures[d.textureIndices[i]]);gl.uniform1f(opacity,d.opacities[i]);gl.drawElements(gl.TRIANGLES,d.indices[i].length,gl.UNSIGNED_SHORT,0);
     });d.resetDynamicFlags();run.frame=requestAnimationFrame(draw);
    };run.frame=requestAnimationFrame(draw);

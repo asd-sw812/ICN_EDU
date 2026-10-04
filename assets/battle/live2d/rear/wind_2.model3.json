@@ -5,5 +5,25 @@
     "Textures": [
       "wind_2.png"
     ]
+  },
+  "MotionRegions": {
+    "Rear_Body": {
+      "Kind": "body",
+      "Top": 0.716796875,
+      "Bottom": -0.73046875,
+      "CenterX": 0.0078125
+    },
+    "Rear_Cloth": {
+      "Kind": "cloth",
+      "Top": 0.31640625,
+      "Bottom": -0.404296875,
+      "CenterX": -0.0205078125
+    },
+    "Rear_Hair": {
+      "Kind": "hair",
+      "Top": 0.701171875,
+      "Bottom": 0.232421875,
+      "CenterX": 0.0390625
+    }
   }
 }

@@ -5,5 +5,25 @@
     "Textures": [
       "bounce_2.png"
     ]
+  },
+  "MotionRegions": {
+    "Rear_Body": {
+      "Kind": "body",
+      "Top": 0.73046875,
+      "Bottom": -0.71875,
+      "CenterX": 0.0234375
+    },
+    "Rear_Cloth": {
+      "Kind": "cloth",
+      "Top": 0.314453125,
+      "Bottom": -0.404296875,
+      "CenterX": -0.015625
+    },
+    "Rear_Hair": {
+      "Kind": "hair",
+      "Top": 0.716796875,
+      "Bottom": 0.232421875,
+      "CenterX": 0.05859375
+    }
   }
 }

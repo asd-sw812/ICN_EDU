@@ -5,5 +5,25 @@
     "Textures": [
       "poison_2.png"
     ]
+  },
+  "MotionRegions": {
+    "Rear_Body": {
+      "Kind": "body",
+      "Top": 0.705078125,
+      "Bottom": -0.73046875,
+      "CenterX": 0.0078125
+    },
+    "Rear_Cloth": {
+      "Kind": "cloth",
+      "Top": 0.3359375,
+      "Bottom": -0.404296875,
+      "CenterX": -0.01953125
+    },
+    "Rear_Hair": {
+      "Kind": "hair",
+      "Top": 0.705078125,
+      "Bottom": 0.203125,
+      "CenterX": 0.0234375
+    }
   }
 }

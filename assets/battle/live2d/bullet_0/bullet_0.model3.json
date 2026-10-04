@@ -1,10 +1,42 @@
 {
-	"Version": 3,
-	"FileReferences": {
-		"Moc": "bullet_0.moc3",
-		"Textures": [
-			"bullet_0.2048/texture_00.png"
-		],
-		"DisplayInfo": "bullet_0.cdi3.json"
-	}
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "bullet_0.moc3",
+    "Textures": [
+      "bullet_0.2048/texture_00.png"
+    ],
+    "DisplayInfo": "bullet_0.cdi3.json"
+  },
+  "MotionRegions": {
+    "Coat_Left": {
+      "Kind": "cloth",
+      "Top": 0.14903846153846154,
+      "Bottom": -0.19110576923076922,
+      "CenterX": -0.22415865384615385
+    },
+    "Coat_Right": {
+      "Kind": "cloth",
+      "Top": 0.16947115384615385,
+      "Bottom": -0.25841346153846156,
+      "CenterX": 0.11899038461538461
+    },
+    "Arm_Gun": {
+      "Kind": "arm",
+      "Top": 0.4951923076923077,
+      "Bottom": 0.18629807692307693,
+      "CenterX": 0.21875
+    },
+    "Head_Hair": {
+      "Kind": "hair",
+      "Top": 0.6959134615384616,
+      "Bottom": 0.4411057692307692,
+      "CenterX": -0.03365384615384615
+    },
+    "Body_Legs": {
+      "Kind": "body",
+      "Top": 0.5024038461538461,
+      "Bottom": -0.6838942307692307,
+      "CenterX": -0.02283653846153846
+    }
+  }
 }

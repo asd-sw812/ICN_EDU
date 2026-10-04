@@ -5,5 +5,25 @@
     "Textures": [
       "ult_0.png"
     ]
+  },
+  "MotionRegions": {
+    "Rear_Body": {
+      "Kind": "body",
+      "Top": 0.697265625,
+      "Bottom": -0.72265625,
+      "CenterX": 0.0
+    },
+    "Rear_Cloth": {
+      "Kind": "cloth",
+      "Top": 0.357421875,
+      "Bottom": -0.404296875,
+      "CenterX": 0.0498046875
+    },
+    "Rear_Hair": {
+      "Kind": "hair",
+      "Top": 0.697265625,
+      "Bottom": 0.232421875,
+      "CenterX": 0.029296875
+    }
   }
 }

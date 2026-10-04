@@ -5,5 +5,25 @@
     "Textures": [
       "lifesteal_1.png"
     ]
+  },
+  "MotionRegions": {
+    "Rear_Body": {
+      "Kind": "body",
+      "Top": 0.73046875,
+      "Bottom": -0.728515625,
+      "CenterX": -0.0283203125
+    },
+    "Rear_Cloth": {
+      "Kind": "cloth",
+      "Top": 0.3125,
+      "Bottom": -0.404296875,
+      "CenterX": 0.01171875
+    },
+    "Rear_Hair": {
+      "Kind": "hair",
+      "Top": 0.73046875,
+      "Bottom": 0.232421875,
+      "CenterX": 0.052734375
+    }
   }
 }

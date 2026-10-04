@@ -1,0 +1,49 @@
+{
+  "Version": 1,
+  "Method": "continuous-cubism-surface",
+  "Moc": "assets/battle/live2d/rear/rear.moc3",
+  "Texture": "assets/battle/freeze_3-rear.webp",
+  "Weights": {
+    "center": 0.5,
+    "hairRoot": [
+      0.5,
+      0.1
+    ],
+    "hairTip": [
+      0.57,
+      0.34
+    ],
+    "hairWidth": 0.19,
+    "waist": [
+      0.5,
+      0.42
+    ],
+    "hem": [
+      0.51,
+      0.69
+    ],
+    "clothWidth": 0.25,
+    "arms": [
+      [
+        [
+          0.35,
+          0.25
+        ],
+        [
+          0.25,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.65,
+          0.25
+        ],
+        [
+          0.77,
+          0.37
+        ]
+      ]
+    ]
+  }
+}

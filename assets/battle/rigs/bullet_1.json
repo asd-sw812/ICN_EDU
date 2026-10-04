@@ -1,0 +1,53 @@
+{
+  "Version": 1,
+  "Method": "continuous-cubism-surface",
+  "Moc": "assets/battle/live2d/rear/rear.moc3",
+  "Texture": "assets/battle/bullet_1-rear.webp",
+  "Weights": {
+    "center": 0.5,
+    "hairRoot": [
+      0.4,
+      0.09
+    ],
+    "hairTip": [
+      0.08,
+      0.36
+    ],
+    "hairWidth": 0.16,
+    "waist": [
+      0.5,
+      0.42
+    ],
+    "hem": [
+      0.51,
+      0.69
+    ],
+    "clothWidth": 0.25,
+    "arms": [
+      [
+        [
+          0.36,
+          0.27
+        ],
+        [
+          0.29,
+          0.4
+        ]
+      ],
+      [
+        [
+          0.6,
+          0.24
+        ],
+        [
+          0.88,
+          0.2
+        ]
+      ]
+    ],
+    "muzzle": [
+      0.995,
+      0.14
+    ]
+  }
+}

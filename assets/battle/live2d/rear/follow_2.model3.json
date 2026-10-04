@@ -1,0 +1,9 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "rear.moc3",
+    "Textures": [
+      "follow_2.png"
+    ]
+  }
+}

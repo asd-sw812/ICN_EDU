@@ -1,11 +1,11 @@
 /* Cubism 5.3 MOC renderer for the unmasked rear character meshes. */
 (()=>{
  const paths={bullet_0:'assets/battle/live2d/bullet_0/bullet_0.model3.json',bullet_1:'assets/battle/live2d/support/bullet_support.model3.json',bullet_2:'assets/battle/live2d/support/bullet_support.model3.json',bullet_3:'assets/battle/live2d/support/bullet_support.model3.json'};
- ["poison_0", "poison_1", "poison_2", "poison_3", "counter_0", "counter_1", "counter_2", "counter_3", "follow_0", "follow_1"].forEach(id=>paths[id]=`assets/battle/live2d/rear/${id}.model3.json`);
+ ["poison_0", "poison_1", "poison_2", "poison_3", "counter_0", "counter_1", "counter_2", "counter_3", "follow_0", "follow_1", "follow_2", "follow_3", "freeze_0", "freeze_1", "freeze_2", "freeze_3", "lifesteal_0", "lifesteal_1", "lifesteal_2", "lifesteal_3", "bounce_0", "bounce_1", "bounce_2", "bounce_3", "hp_0", "hp_1", "hp_2", "hp_3", "speed_0", "speed_1", "speed_2", "speed_3", "debuff_0", "debuff_1", "debuff_2", "debuff_3", "ult_0", "ult_1", "ult_2", "ult_3", "enhance_0", "enhance_1", "enhance_2", "enhance_3", "skill_0", "skill_1", "skill_2", "skill_3", "execute_0", "execute_1", "execute_2", "execute_3", "crit_0", "crit_1", "crit_2", "crit_3", "cleanse_0", "cleanse_1", "cleanse_2", "cleanse_3", "burn_0", "burn_1", "burn_2", "burn_3", "bleed_0", "bleed_1", "bleed_2", "bleed_3", "electric_0", "electric_1", "electric_2", "electric_3", "defense_0", "defense_1", "defense_2", "defense_3", "radiance_0", "radiance_1", "radiance_2", "radiance_3", "wave_0", "wave_1", "wave_2", "wave_3", "tree_0", "tree_1", "tree_2", "tree_3", "wind_0", "wind_1", "wind_2", "wind_3"].forEach(id=>paths[id]=`assets/battle/live2d/rear/${id}.model3.json`);
  let current=null,sequence=0;
  const assets=new Map();
  async function load(id){
-  if(assets.has(paths[id]))return assets.get(paths[id]);
+  if(assets.has(paths[id])){const cached=assets.get(paths[id]);assets.delete(paths[id]);assets.set(paths[id],cached);return cached}
   const task=(async()=>{
    const C=window.Live2DCubismCore;
    if(!C)throw Error('Cubism Core unavailable');
@@ -15,7 +15,17 @@
    const moc=C.Moc.fromArrayBuffer(data);if(!moc)throw Error('Invalid MOC3');
    const textures=await Promise.all(json.FileReferences.Textures.map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=new URL(src,base)})));
    return {moc,textures};
-  })();assets.set(paths[id],task);try{return await task}catch(e){assets.delete(paths[id]);throw e}
+  })();assets.set(paths[id],task);try{
+   const loaded=await task;
+   // Keep decoded character atlases bounded while moving between the 24 decks.
+   for(const key of [...assets.keys()]){
+    if(assets.size<=8)break;
+    if(key===paths[id]||key===paths[current?.id])continue;
+    const old=assets.get(key);assets.delete(key);
+    old.then(asset=>asset.moc._release()).catch(()=>{});
+   }
+   return loaded;
+  }catch(e){assets.delete(paths[id]);throw e}
  }
  function check(r){if(!r.ok)throw Error('Live2D asset '+r.status);return r}
  function dispose(){sequence++;if(!current)return;cancelAnimationFrame(current.frame);current.container.querySelector('.cubism-character')?.remove();current.container.classList.remove('live2d-ready');current.model.release();current.gl.getExtension('WEBGL_lose_context')?.loseContext();current=null}

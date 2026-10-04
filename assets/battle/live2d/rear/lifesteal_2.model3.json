@@ -1,0 +1,9 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "rear.moc3",
+    "Textures": [
+      "lifesteal_2.png"
+    ]
+  }
+}

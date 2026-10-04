@@ -1,0 +1,9 @@
+{
+  "Version": 3,
+  "FileReferences": {
+    "Moc": "rear.moc3",
+    "Textures": [
+      "radiance_2.png"
+    ]
+  }
+}

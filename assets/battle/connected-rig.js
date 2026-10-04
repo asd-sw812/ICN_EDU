@@ -51,6 +51,11 @@
    const legs=smooth((y-.57)/.12)*(1-smooth((y-.86)/.10));
    dx+=Math.sin(time*.7+phase+(x-p.center)*8)*.002*legs;
    const shot=action?.type==='shot',melee=action?.type==='melee';
+   const dash=action?.type==='dash',brace=action?.type==='brace',draw=action?.type==='draw';
+   const reach=action?.reach||1,direction=action?.direction||0;
+   dx+=power*upper*(dash?gesture.hit*.012*reach:brace?-gesture.prepare*.004:draw?-gesture.hit*.004:0);
+   dy+=power*torso*(brace?gesture.prepare*.004:draw?-gesture.prepare*.002:0);
+   dx+=power*gesture.hit*direction*.002*torso;
    if(p.muzzle){const weapon=capsule(x,y,p.arms[1][1],p.muzzle,.08);dx-=gesture.hit*power*.007*weapon.w;}
    dx+=power*upper*(gesture.prepare*-.003+gesture.hit*(melee?.018:shot?-.008:.005)+gesture.settle*.002);
    dy+=power*gesture.prepare*.002*torso;

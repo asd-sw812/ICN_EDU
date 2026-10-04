@@ -868,7 +868,7 @@ body.vfx-reduced .fighter-art img{animation:none}
 .ultimate-film{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 70% 40%,#463329,#09090ee8 70%);--film-color:#e8c989}
 .ultimate-film:before,.ultimate-film:after{content:"";position:absolute;left:0;right:0;height:11vh;background:#030407;z-index:5}
 .ultimate-film:before{top:0}.ultimate-film:after{bottom:0}
-.film-art{position:absolute;inset:7% 7% 7% 27%;width:66%;height:86%;object-fit:cover;object-position:50% 28%;clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);opacity:.95}
+.film-art{position:absolute;inset:7% 7% 7% 27%;width:66%;height:86%;object-fit:cover;object-position:50% 10%;clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);opacity:.95}
 .film-rear{position:absolute;right:12%;bottom:10%;height:70%;max-width:60%;object-fit:contain;opacity:0;filter:drop-shadow(0 0 18px #d5b57a80)}
 .film-copy{position:absolute;left:8%;top:44%;z-index:4;max-width:55%;text-shadow:0 4px 30px #000}
 .film-copy small{display:block;color:var(--film-color);font:12px ui-monospace,monospace;letter-spacing:.3em}.film-copy strong{display:block;font:700 clamp(24px,4.7vw,78px) Georgia,serif;color:#fff9e9;margin:12px 0}.film-copy span{font:12px ui-monospace,monospace;color:#d9d2c0}

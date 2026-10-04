@@ -865,15 +865,16 @@ body.battle-mode .fighter-art img{object-fit:contain;object-position:center bott
 body.battle-mode .active-fighter.preparing .fighter-art img{animation:none;transform:translateX(6px) rotate(-1deg)}
 @keyframes rear-idle{0%,100%{transform:translateY(0) rotate(-.35deg)}50%{transform:translateY(-4px) rotate(.35deg)}}
 body.vfx-reduced .fighter-art img{animation:none}
-.ultimate-film{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 70% 40%,#463329,#09090ee8 70%);--film-color:#e8c989}
-.ultimate-film:before,.ultimate-film:after{content:"";position:absolute;left:0;right:0;height:11vh;background:#030407;z-index:5}
-.ultimate-film:before{top:0}.ultimate-film:after{bottom:0}
-.film-art{position:absolute;inset:7% 7% 7% 27%;width:66%;height:86%;object-fit:cover;object-position:50% 10%;clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);opacity:.95}
-.film-rear{position:absolute;right:12%;bottom:10%;height:70%;max-width:60%;object-fit:contain;opacity:0;filter:drop-shadow(0 0 18px #d5b57a80)}
-.film-copy{position:absolute;left:8%;top:44%;z-index:4;max-width:55%;text-shadow:0 4px 30px #000}
-.film-copy small{display:block;color:var(--film-color);font:12px ui-monospace,monospace;letter-spacing:.3em}.film-copy strong{display:block;font:700 clamp(24px,4.7vw,78px) Georgia,serif;color:#fff9e9;margin:12px 0}.film-copy span{font:12px ui-monospace,monospace;color:#d9d2c0}
-.film-lines{position:absolute;inset:0;opacity:.5;background:repeating-linear-gradient(-15deg,transparent 0 75px,#e6c78533 76px 77px,transparent 78px 150px)}
-.film-flash{position:absolute;inset:0;background:#fff6dc;opacity:0;z-index:6}
+.ultimate-film{position:fixed;inset:0;z-index:100;overflow:hidden;pointer-events:none;background:#07070b;--film-color:#e8c989;isolation:isolate}
+.film-panel{position:absolute;inset:-20%;background:#c52235;clip-path:polygon(0 24%,100% 0,100% 76%,0 100%)}
+.film-panel:after{content:"";position:absolute;inset:8%;background:#09090c;clip-path:polygon(0 28%,100% 4%,100% 69%,0 94%)}
+.film-streaks{position:absolute;inset:-30%;background:repeating-linear-gradient(-16deg,transparent 0 55px,#fff7ed 56px 60px,transparent 61px 115px);opacity:.18}
+.film-emblem{position:absolute;inset:0;width:100%;height:100%;overflow:visible;filter:drop-shadow(7px 7px 0 #c52235)}
+.film-emblem .accent{stroke:var(--film-color)}
+.film-shards{position:absolute;inset:0;overflow:hidden}
+.film-shards i{position:absolute;left:50%;top:50%;width:38vw;height:5px;background:#fff7ed;transform-origin:left center;transform:rotate(var(--a)) translateX(9vw);clip-path:polygon(0 45%,100% 0,85% 100%)}
+.film-swipe{position:absolute;inset:-35%;background:#fff7ed;clip-path:polygon(0 44%,100% 8%,100% 20%,0 61%);opacity:0}
+.film-flash{position:absolute;inset:0;background:#fff7ed;opacity:0}
 @media(prefers-reduced-motion:reduce){body.battle-mode .fighter-art img{animation:none}}
 body.battle-mode .fighter-art .cubism-character{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(12px 16px 12px #0009)}
 body.battle-mode .fighter-art.live2d-ready>img,body.battle-mode .fighter-art.live2d-ready>.fighter-placeholder{display:none}
@@ -3379,17 +3380,45 @@ const VFX = (() => {
   setBusy(false);action=null;until=0;
  }
  function ultimateFilm(actor,meta){
-  const src=CHARACTER_IMAGES[actor.id];if(!src)return;
   const film=document.createElement('div');film.className='ultimate-film';film.setAttribute('aria-hidden','true');film.style.setProperty('--film-color',colors[meta.deck]||'#e8c989');
-  const cutinNames={"poison_0": "유리 속의 독무", "poison_1": "보랏빛 번짐", "poison_2": "금지된 향의 잔향", "poison_3": "마지막 약초 처방", "counter_0": "되돌아오는 칼끝", "counter_1": "거울 너머의 반격", "counter_2": "빈틈 없는 그물", "counter_3": "굽히지 않는 철재", "follow_0": "이어지는 화살", "follow_1": "연쇄의 종소리"};
-  const rear=BATTLE_CHARACTER_IMAGES[actor.id];const names=['최후의 증언','항구의 일제사격','침묵의 셔터','마지막 방어선'];
-  film.innerHTML=`<div class="film-lines"></div><img class="film-art" src="${src}" alt=""><img class="film-rear" src="${rear||src}" alt=""><div class="film-copy"><small>ULTIMATE · SLOT ${String(actor.index+1).padStart(2,'0')}</small><strong>${cutinNames[actor.id]||(meta.deck==='bullet'?names[actor.index]:deck().name)}</strong><span>${actor.roleDetail} · ${meta.support?'지원 궁극기':'공격 궁극기'}</span></div><div class="film-flash"></div>`;
+  // Pure graphic cutscene: no portrait, rear illustration, name or combat HUD.
+  const symbols={
+   bullet:'<circle r="83"/><circle r="49"/><path d="M-125 0H125M0-125V125M-90-65L90 65M-90 65L90-65"/>',
+   counter:'<path d="M-110-60H50L10-100M50-60L10-20M110 60H-50L-10 20M-50 60L-10 100"/><path d="M0-120V120" stroke-width="3"/>',
+   follow:'<path d="M-125-55H-20L-55-90M-20-55L-55-20M-85 0H40L0-40M40 0L0 40M-35 55H110L75 20M110 55L75 90"/>',
+   lifesteal:'<path d="M0 115L-85 25Q-130-45-70-75Q-20-95 0-50Q20-95 70-75Q130-45 85 25ZM-105 0H-40L-15-40L15 45L40 0H105"/>',
+   bounce:'<path d="M-120 75L-65-70L5 70L65-75L120 70M-90 85H-25M25 85H90M-95-80H-35M35-90H95"/>',
+   hp:'<path d="M-105-50Q0 80 105-50M-105 50Q0-80 105 50M-60-40V40M-20-23V23M20-23V23M60-40V40"/>',
+   speed:'<path d="M-100-100L0 0L-100 100M0-100L100 0L0 100M-130-50H-95M-145 0H-60M-130 50H-95"/>',
+   debuff:'<path d="M-95-25L-25-95Q0-120 25-95L95-25Q120 0 95 25L25 95Q0 120-25 95L-95 25Q-120 0-95-25ZM-45-45L45 45M-45 45L45-45"/>',
+   ult:'<path d="M-75 70V-70L70-105V40M-75-25L70-60"/><ellipse cx="-93" cy="74" rx="27" ry="19"/><ellipse cx="52" cy="44" rx="27" ry="19"/>',
+   enhance:'<path d="M-100-45L-55-100H55L100-45L0 115ZM-100-45H100M-55-100L-30-45L0 115L30-45L55-100"/>',
+   skill:'<path d="M0-75Q-60-115-110-85V90Q-55 65 0 105Q55 65 110 90V-85Q60-115 0-75V105M-82-40L-25-22M25-22L82-40M-82 3L-25 21M25 21L82 3"/>',
+   execute:'<path d="M-25 65L-25-90L35-120L25 65ZM-75 65H75M0 65V120M-25 120H25"/>',
+   crit:'<path d="M-80-110H70V90H-80ZM-80-40L-115-18L-15 125L110 37L70-18M-5-70L35-15L-5 40L-45-15Z"/>',
+   cleanse:'<path d="M0-120L22-22L120 0L22 22L0 120L-22 22L-120 0L-22-22ZM85-105V-60M63-83H108M-85 65V110M-108 88H-63"/>',
+   bleed:'<path d="M0-120Q-45-40-65 5Q-108 100 0 115Q108 100 65 5Q45-40 0-120ZM-35 35Q-45 73-8 85"/>',
+   poison:'<path d="M-35-105H35M-20-105V-40L-76 63Q-88 100-48 100H48Q88 100 76 63L20-40V-105M-58 38H58"/><circle cx="-18" cy="58" r="9"/><circle cx="26" cy="76" r="12"/>',
+   electric:'<path d="M20-125L-73 15H-8L-30 125L83-30H18Z"/>',
+   freeze:'<path d="M0-115V115M-100-58L100 58M-100 58L100-58M-20-95L0-70L20-95M-20 95L0 70L20 95M-88-28L-61-35L-65-62M88 28L61 35L65 62"/>',
+   burn:'<path d="M0-120Q25-55 61-85Q60-20 87 26Q110 100 0 115Q-110 100-84 18Q-55-31-51-67Q-18-32 0-120ZM0-22Q55 55 0 84Q-55 55 0-22Z"/>',
+   wave:'<path d="M-125-55Q-65-110 0-55T125-55M-125 0Q-65-55 0 0T125 0M-125 55Q-65 0 0 55T125 55"/>',
+   tree:'<path d="M0 120V-100M0 70L-70 10L-95-50M0 28L78-35L105-90M0-24L-43-68M-70 10L-110 15M78-35L112-15"/>',
+   wind:'<path d="M-125-60H60Q130-60 100-105Q65-135 47-95M-125 0H90Q155 0 113 51Q90 73 60 55M-125 60H10Q70 60 47 102Q25 129 0 105"/>',
+   defense:'<path d="M0-120L95-80V15Q95 83 0 125Q-95 83-95 15V-80ZM-48-50L48 50M48-50L-48 50"/>',
+   radiance:'<circle r="55"/><path d="M0-130V-85M0 85V130M-130 0H-85M85 0H130M-92-92L-60-60M60 60L92 92M-92 92L-60 60M60-60L92-92"/>'
+  };
+  const symbol=symbols[meta.deck]||'<path d="M0-120L100 0L0 120L-100 0ZM-65 0H65M0-75V75"/><circle r="36"/>';
+  const shards=Array.from({length:12},(_,i)=>`<i style="--a:${i*30+actor.index*7}deg"></i>`).join('');
+  film.innerHTML=`<div class="film-panel"></div><div class="film-streaks"></div><svg class="film-emblem" viewBox="0 0 1280 720" fill="none" stroke="#fff7ed" stroke-width="8" stroke-linecap="square" stroke-linejoin="miter"><g transform="translate(640 360)"><g class="accent" stroke-width="3"><path d="M-230-150L200-205L240 140L-190 210Z"/><circle r="180" stroke-dasharray="30 16"/></g><g class="film-symbol">${symbol}</g></g></svg><div class="film-shards">${shards}</div><div class="film-swipe"></div><div class="film-flash"></div>`;
   document.body.appendChild(film);
-  animate(film,[{opacity:0},{opacity:1,offset:.12},{opacity:1,offset:.87},{opacity:0}],{duration:meta.total,fill:'forwards'});
+  animate(film,[{opacity:1},{opacity:1,offset:.92},{opacity:0}],{duration:meta.total,fill:'forwards'});
   if(!reduced){
-   animate(film.querySelector('.film-art'),[{transform:'translateX(18%) scale(1.1)',opacity:0},{transform:'translateX(0) scale(1.04)',opacity:1,offset:.2},{transform:'translateX(-2%) scale(1.09)',opacity:1,offset:.5},{transform:'translateX(-12%) scale(1.12)',opacity:0,offset:.65},{opacity:0}],{duration:meta.total,fill:'forwards'});
-   animate(film.querySelector('.film-rear'),[{opacity:0,transform:'translateX(-20px)'},{opacity:0,offset:.48},{opacity:1,transform:'translateX(0)',offset:.63},{opacity:1,transform:'translateX(15px) rotate(-2deg)',offset:.79},{opacity:0}],{duration:meta.total,fill:'forwards'});
-   animate(film.querySelector('.film-flash'),[{opacity:0},{opacity:0,offset:.74},{opacity:.92,offset:.78},{opacity:0,offset:.84},{opacity:0}],{duration:meta.total,fill:'forwards'});
+   animate(film.querySelector('.film-panel'),[{transform:'translateX(-120%) skewX(-8deg)'},{transform:'translateX(0)',offset:.18},{transform:'translateX(0)',offset:.82},{transform:'translateX(120%)'}],{duration:meta.total,fill:'forwards'});
+   animate(film.querySelector('.film-emblem'),[{transform:'scale(.25) rotate(-28deg)',opacity:0},{transform:'scale(1.12) rotate(3deg)',opacity:1,offset:.28},{transform:'scale(1) rotate(0)',offset:.4},{transform:'scale(1.05)',offset:.74},{transform:'scale(1.8)',opacity:0}],{duration:meta.total,fill:'forwards'});
+   animate(film.querySelector('.film-shards'),[{transform:'scale(.15)',opacity:0},{transform:'scale(.15)',opacity:0,offset:.29},{transform:'scale(.9)',opacity:1,offset:.36},{transform:'scale(1.6)',opacity:0,offset:.7},{opacity:0}],{duration:meta.total,fill:'forwards'});
+   animate(film.querySelector('.film-swipe'),[{opacity:0,transform:'translateX(-100%)'},{opacity:0,offset:.7},{opacity:1,transform:'translateX(0)',offset:.78},{opacity:0,transform:'translateX(100%)',offset:.9},{opacity:0}],{duration:meta.total,fill:'forwards'});
+   animate(film.querySelector('.film-flash'),[{opacity:0},{opacity:0,offset:.32},{opacity:.75,offset:.35},{opacity:0,offset:.4},{opacity:0}],{duration:meta.total,fill:'forwards'});
   }
   later(()=>film.remove(),meta.total);
  }
@@ -3400,7 +3429,7 @@ const VFX = (() => {
   const meta={battle:state,deck:state.deckId,tier:which,index:actor.index,allyId:state.selectedTargetId,support,origin:point(actor),windup,total,boss:false};
   action=meta;until=now()+total;setBusy(true);setColor(colors[meta.deck]);sync();spriteMotion(actor,meta);
   if(!support)later(()=>window.BattleLive2D?.recoil(actor.id),windup);
-  if(which===2){ultimateFilm(actor,meta);title('ULTIMATE',deck().name,`SLOT ${String(actor.index+1).padStart(2,'0')} · ${support?'지원 궁극기':'궁극기 발동'}`);glyph(meta.origin,meta.deck,135);if(!reduced)animate(el('vfxDim'),[{opacity:0},{opacity:.78,offset:.25},{opacity:.78,offset:.60},{opacity:0}],{duration:total,fill:'forwards'})}
+  if(which===2){ultimateFilm(actor,meta);if(!reduced)animate(el('vfxDim'),[{opacity:0},{opacity:.78,offset:.25},{opacity:.78,offset:.60},{opacity:0}],{duration:total,fill:'forwards'})}
   else ring(meta.origin,which===1?85:55);
   later(()=>resolve(meta,()=>useSkill(which)),windup);
   later(finish,total);return true;

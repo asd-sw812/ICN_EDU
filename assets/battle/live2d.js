@@ -48,17 +48,29 @@
    const textures=asset.textures.map(im=>{const t=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,t);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,im);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t});
    const d=model.drawables,buffers=d.ids.map((_,i)=>{const pos=gl.createBuffer(),tex=gl.createBuffer(),ind=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,tex);gl.bufferData(gl.ARRAY_BUFFER,d.vertexUvs[i],gl.STATIC_DRAW);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ind);gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,d.indices[i],gl.STATIC_DRAW);return {pos,tex,ind}});
    const indices=['ParamAngleX','ParamAngleY','ParamAngleZ'].map(id=>model.parameters.ids.indexOf(id));
-   const run={id,container,model,gl,frame:0,recoilAt:-Infinity};current=run;container.append(canvas);container.classList.add('live2d-ready');container.dataset.live2d=id;
+   const phase=Array.from(id).reduce((n,c)=>n+c.charCodeAt(0),0)*.13;
+   const run={id,container,model,gl,frame:0,recoilAt:-Infinity,lastTime:0,phase,springs:[{value:0,velocity:0},{value:0,velocity:0},{value:0,velocity:0}]};current=run;container.append(canvas);container.classList.add('live2d-ready');container.dataset.live2d=id;
    gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);
    const draw=now=>{
     if(current!==run)return;if(!container.isConnected){dispose();return}
     const rect=container.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(rect.width*ratio)),h=Math.max(1,Math.round(rect.height*ratio));
     if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-    const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches||document.body.classList.contains('vfx-reduced');
+    const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const gentle=document.body.classList.contains('vfx-reduced')?.65:1;
     const t=now/1000,preparing=container.closest('.active-fighter')?.classList.contains('preparing');
     const shot=(now-run.recoilAt)/420,firing=shot>=0&&shot<1;
     const layered=d.ids.includes('Rear_Body');
-    const values=[reduced?0:layered?Math.sin(t*1.25+.9)*18:firing?Math.sin(shot*Math.PI)*30:preparing?6:0,reduced||firing?0:Math.sin(t*1.6)*23,reduced?0:Math.sin(t*1.1)*14];
+    const dt=Math.min(Math.max((now-run.lastTime)/1000,0),1/30);run.lastTime=now;
+    const breath=Math.sin(t*1.35+phase),sway=Math.sin(t*.78+phase);
+    const kick=firing?Math.sin(shot*Math.PI)*14:0;
+    // Drive the exported Cubism cloth/body/hair keyforms with separate damped responses.
+    const targets=layered?[gentle*(sway*14+breath*3)+kick, gentle*breath*17-kick*.45,gentle*(Math.sin(t*1.02+phase+.8)*19+sway*3)-kick*.6]:[gentle*(sway*9)+(firing?kick*1.6:preparing?6:0),gentle*breath*17,gentle*Math.sin(t*1.02+phase+.8)*17];
+    const stiffness=[30,22,18],damping=[8,9,6.5];
+    const values=run.springs.map((spring,i)=>{
+     if(reduced){spring.value=0;spring.velocity=0;return 0}
+     spring.velocity+=(stiffness[i]*(targets[i]-spring.value)-damping[i]*spring.velocity)*dt;
+     spring.value=Math.max(-30,Math.min(30,spring.value+spring.velocity*dt));return spring.value;
+    });
     indices.forEach((index,i)=>{if(index>=0)model.parameters.values[index]=values[i]});model.update();
     const info=model.canvasinfo,mw=info.CanvasWidth/info.PixelsPerUnit,mh=info.CanvasHeight/info.PixelsPerUnit,fit=Math.min(w/mw,h/mh)*.98;
     gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);

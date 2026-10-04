@@ -1,6 +1,6 @@
 /* Cubism surface with continuous regional weights. No rectangular part cut-outs. */
 (()=>{
- const VERSION='connected5',cache=new Map();let current=null,sequence=0,pendingPose=null;
+ const VERSION='fabric7',cache=new Map();let current=null,sequence=0,pendingPose=null;
  async function checked(url){const r=await fetch(url);if(!r.ok)throw Error('Character asset '+r.status);return r}
  async function load(id){
   if(cache.has(id)){const a=cache.get(id);cache.delete(id);cache.set(id,a);return a}

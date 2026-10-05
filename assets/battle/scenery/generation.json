@@ -1,0 +1,28 @@
+{
+  "service": "NovelAI",
+  "model": "V5 Full",
+  "steps": 23,
+  "guidance": 7,
+  "sampler": "Euler Ancestral",
+  "resolution": [
+    1344,
+    768
+  ],
+  "assets": [
+    {
+      "id": "warden-arena",
+      "seed": 262716799,
+      "prompt": "masterpiece, best quality, highly detailed hand-painted anime dark fantasy RPG battle background, wide cinematic environment, empty battlefield, ominous gothic horror atmosphere, nearly black shadows with readable painterly detail, low-key lighting, broad unobstructed ground across lower half for character combat, distant architecture in upper half, no foreground objects obstructing characters, no people, no creatures, no text, no UI, vast subterranean prison sanctuary, towering ruined black stone arches and sealed cell doorways, colossal rusted chains suspended in darkness, cracked slate floor, ancient bone-white carved stone reliquary far behind, dim cold blue moonlight shafts from broken ceiling, sparse dying candles with muted amber light, deep shadowed vault, oppressive sacred confinement, asymmetrical weathered architecture, grim dark fantasy"
+    },
+    {
+      "id": "devourer-arena",
+      "seed": 1125041841,
+      "prompt": "masterpiece, best quality, highly detailed hand-painted anime dark fantasy RPG battle background, wide cinematic environment, empty battlefield, ominous gothic horror atmosphere, nearly black shadows with readable painterly detail, low-key lighting, broad unobstructed ground across lower half for character combat, distant architecture in upper half, no foreground objects obstructing characters, no people, no creatures, no text, no UI, interior of an immense dead leviathan transformed into a cursed feeding cavern, asymmetrical rib-bone arches embedded in dark wet red sinewy walls, grotesque fleshy architecture, ragged membranes hanging high in background, old blood stains and dark crimson shallow pools between cracked black stone slabs, exposed bone fragments on distant edges, smoky stagnant air, faint crimson bioluminescence from deep crevices, visceral gore atmosphere, no victims or bodies, open flat combat ground, dark red and near-black palette, unsettling dark fantasy"
+    },
+    {
+      "id": "observer-arena",
+      "seed": 665095264,
+      "prompt": "masterpiece, best quality, highly detailed hand-painted anime dark fantasy RPG battle background, wide cinematic environment, empty battlefield, ominous gothic horror atmosphere, nearly black shadows with readable painterly detail, low-key lighting, broad unobstructed ground across lower half for character combat, distant architecture in upper half, no foreground objects obstructing characters, no people, no creatures, no text, no UI, abandoned abyssal observatory suspended above an endless void, broken dark stone terrace with wide flat foreground, huge ancient skeletal armillary machinery and fractured astronomical lenses far in background, tall thin crooked pillars, floating ruined gothic platforms in distant black mist, an ominous eclipsed pale moon with an eye-like dark center high in background, faint sickly violet starlight, subtle silver-cyan rim light, impossible architecture and vast negative space, cold cosmic horror, charcoal black and muted violet palette, deep dark fantasy night"
+    }
+  ]
+}

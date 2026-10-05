@@ -19,11 +19,12 @@
  function dispose(){sequence++;if(!current)return;cancelAnimationFrame(current.frame);current.canvas.remove();current.container.classList.remove('live2d-ready');current.model.release();current.gl.getExtension('WEBGL_lose_context')?.loseContext();current=null}
  function perform(id,options){pendingPose={id,...options,start:performance.now()/1000};if(current?.id===id)current.action=pendingPose}
  function recoil(id){perform(id,{type:'shot',windup:0,total:550,strength:1})}
+ function motionGain(){return document.body.classList.contains('character-motion-off')?0:matchMedia('(prefers-reduced-motion:reduce)').matches?.5:1}
  function anchor(id,name='hand'){
   if(current?.id!==id)return null;const run=current,p=run.profile;
   const uv=name==='muzzle'?(p.muzzle||[.78,.22]):p.arms[1][1];
   const a=new Float32Array([uv[0]-.5,(.5-uv[1])*run.aspect]),out=new Float32Array(2);
-  window.ConnectedRig.deform(a,out,run.aspect,p,performance.now()/1000,run.phase,run.action,1);
+  window.ConnectedRig.deform(a,out,run.aspect,p,performance.now()/1000,run.phase,run.action,motionGain());
   const r=run.container.getBoundingClientRect(),fit=Math.min(r.width,r.height/run.aspect)*.97;
   return {x:r.left+r.width/2+out[0]*fit,y:r.top+r.height/2-out[1]*fit};
  }
@@ -57,8 +58,8 @@
     try{
      const r=container.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));
      if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
-     const disabled=document.body.classList.contains('character-motion-off'),gentle=matchMedia('(prefers-reduced-motion:reduce)').matches?.5:1;
-     if(disabled)out.set(base);else rig.deform(base,out,aspect,profile,now/1000,phase,run.action,gentle);
+     const gain=motionGain();
+     if(!gain)out.set(base);else rig.deform(base,out,aspect,profile,now/1000,phase,run.action,gain);
      const fit=Math.min(w,h/aspect)*.97;gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
      gl.bindBuffer(gl.ARRAY_BUFFER,pos);gl.bufferData(gl.ARRAY_BUFFER,out,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
      gl.bindBuffer(gl.ARRAY_BUFFER,tex);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ind);gl.bindTexture(gl.TEXTURE_2D,texture);gl.drawElements(gl.TRIANGLES,mesh.indices.length,gl.UNSIGNED_SHORT,0);

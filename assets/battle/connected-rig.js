@@ -31,25 +31,27 @@
    const x=base[i]+.5,y=.5-base[i+1]/aspect;
    const upper=smooth((.9-y)/.65),foot=smooth((.985-y)/.07);
    const torso=smooth(1-Math.abs(x-p.center)/.28)*smooth(1-Math.abs(y-.43)/.3);
-   let dx=(x-p.center)*breath*.005*torso,dy=breath*.0009*torso;
+   // Broad, slow weight shift stays anchored at the feet; tips lag behind the torso.
+   const sway=Math.sin(time*.82+phase);
+   let dx=sway*.010*upper+(x-p.center)*breath*.009*torso,dy=breath*.0022*torso;
    const hw=capsule(x,y,p.hairRoot,p.hairTip,p.hairWidth);
    const hairLag=Math.sin(time*1.2+phase+.7-hw.t*.85)+Math.sin(time*2.1+phase+hw.t*2)*.16;
-   dx+=hairLag*.019*hw.w*smooth(hw.t);dy+=Math.cos(time*1.1+phase)*.002*hw.w*hw.t;
+   dx+=hairLag*.040*hw.w*smooth(hw.t);dy+=Math.cos(time*1.1+phase)*.0045*hw.w*hw.t;
    const cw=capsule(x,y,p.waist,p.hem,p.clothWidth);
    const hemWeight=cw.w*smooth(cw.t),fold=Math.sin(time*1.23+phase+(x-p.center)*9);
-   dx+=(cloth*.020+fold*.005)*hemWeight*Math.sin((x-p.center)*5+1.2);dy+=Math.sin(time*.91+phase+(x-p.center)*7)*.0035*hemWeight;
+   dx+=(cloth*.038+fold*.009)*hemWeight*Math.sin((x-p.center)*5+1.2);dy+=Math.sin(time*.91+phase+(x-p.center)*7)*.0065*hemWeight;
    for(let side=0;side<2;side++){
     const a=p.arms[side],aw=capsule(x,y,a[0],a[1],.105),lever=smooth(aw.t)*aw.w;
-    const idle=Math.sin(time*.85+phase+side*.8)*.0028,sign=side?1:-1;
+    const idle=Math.sin(time*.85+phase+side*.8)*.0055,sign=side?1:-1;
     const melee=action?.type==='melee',shot=action?.type==='shot';
     dx+=(idle+power*(gesture.prepare*-.004+gesture.hit*(melee?.022:shot?-.010:.006)+gesture.settle*.003))*lever;
     dy+=sign*(idle*.45-power*gesture.prepare*(shot?.002:.007)+power*gesture.hit*.004)*lever;
    }
    // Small secondary motion follows cloth at cuffs and hem; attachment roots stay pinned.
-   const accessory=Math.sin(time*1.6+phase-y*4)*.0035;
-   dx+=accessory*hemWeight;dy+=Math.cos(time*1.6+phase-y*4)*.002*hemWeight;
+   const accessory=Math.sin(time*1.6+phase-y*4)*.007;
+   dx+=accessory*hemWeight;dy+=Math.cos(time*1.6+phase-y*4)*.004*hemWeight;
    const legs=smooth((y-.57)/.12)*(1-smooth((y-.86)/.10));
-   dx+=Math.sin(time*.7+phase+(x-p.center)*8)*.002*legs;
+   dx+=Math.sin(time*.7+phase+(x-p.center)*8)*.0035*legs;
    const shot=action?.type==='shot',melee=action?.type==='melee';
    const dash=action?.type==='dash',brace=action?.type==='brace',draw=action?.type==='draw';
    const reach=action?.reach||1,direction=action?.direction||0;

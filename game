@@ -905,9 +905,7 @@ body.battle-mode .boss-figure.live2d-ready>.boss-image{display:none}
 
 <section id="battleScreen" class="hidden">
 <div id="raidHud" class="raid-hud"></div>
-<div class="battle-top">
-<div id="deckCore" class="panel deck-core"></div>
-</div>
+<button id="deckInfoBtn" class="btn" type="button" aria-haspopup="dialog">덱 설명</button>
 <div class="arena">
 <aside id="turnOrder" class="turn-order" aria-label="행동 순서"></aside>
 <section class="player-stage">
@@ -930,6 +928,22 @@ body.battle-mode .boss-figure.live2d-ready>.boss-image{display:none}
 </section>
 </div>
 <div id="overlayRoot"></div>
+<dialog id="deckInfoDialog" aria-labelledby="deckInfoTitle">
+ <div class="deck-info-heading"><h2 id="deckInfoTitle">덱 설명</h2><button id="closeDeckInfo" class="btn" type="button" aria-label="덱 설명 닫기">닫기</button></div>
+ <div id="deckCore" class="panel deck-core"></div>
+</dialog>
+<style>
+ #deckInfoBtn{position:absolute;right:20px;top:116px;z-index:65;padding:8px 14px;background:#081522e8;border:1px solid #7f9bb35c;color:#d5e5f1;font-size:11px}
+ #deckInfoDialog{width:min(520px,calc(100vw - 40px));max-height:calc(100vh - 40px);overflow:auto;padding:22px;border:1px solid #7895ad75;border-radius:8px;background:#0b1724;color:#d5e5f1;box-shadow:0 20px 80px #000a}
+ #deckInfoDialog::backdrop{background:#020710b3}
+ .deck-info-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+ .deck-info-heading h2{margin:0;font-size:17px}
+ body.battle-mode #deckInfoDialog .deck-core{height:auto;max-width:none;padding:0;text-align:left;border:0;background:none;overflow:visible}
+ body.battle-mode #deckInfoDialog .deck-core b{font-size:12px;line-height:1.6;white-space:normal;color:#d6e7f4;letter-spacing:.05em}
+ body.battle-mode #deckInfoDialog .core-main{font-size:14px;line-height:1.8;white-space:normal;overflow:visible;margin-top:12px;color:#bdcfdd}
+ body.battle-mode #deckInfoDialog .core-sub{display:block;font-size:11px;line-height:1.7;margin-top:16px;color:#8fa9be}
+ @media(orientation:landscape) and (max-height:600px){#deckInfoBtn{top:88px;right:12px;padding:6px 10px;font-size:10px}}
+</style>
 
 <script src="https://cubism.live2d.com/sdk-web/core/06/live2dcubismcore.min.js"></script>
 <script src="assets/battle/connected-rig.js?v=20261005-bossrig1"></script>
@@ -3369,6 +3383,10 @@ VFX.init();
  function syncMotion(){document.body.classList.toggle('character-motion-off',!enabled);button.textContent=enabled?'움직임: 켜짐':'움직임: 꺼짐';button.setAttribute('aria-pressed',String(enabled))}
  button.onclick=()=>{enabled=!enabled;try{localStorage.setItem('archive-character-motion',enabled?'on':'off')}catch(_){}syncMotion()};syncMotion()})();
 document.getElementById("selectBtn").onclick=returnSelect;
+const deckInfoDialog=document.getElementById('deckInfoDialog');
+document.getElementById('deckInfoBtn').onclick=()=>deckInfoDialog.showModal();
+document.getElementById('closeDeckInfo').onclick=()=>deckInfoDialog.close();
+deckInfoDialog.addEventListener('click',event=>{if(event.target===deckInfoDialog){const r=deckInfoDialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)deckInfoDialog.close()}});
 document.getElementById("restartBtn").onclick=startBattle;
 window.addEventListener("resize",syncMobileViewport,{passive:true});
 window.addEventListener("orientationchange",()=>{syncMobileViewport();setTimeout(syncMobileViewport,180)},{passive:true});

@@ -77,5 +77,38 @@
   poison_0:{hairRoot:[.5,.08],hairTip:[.5,.22],hairWidth:.14},poison_1:{hairTip:[.55,.38],hem:[.55,.60]},poison_2:{hairTip:[.72,.31],hem:[.50,.67]},
   counter_2:{hairTip:[.74,.35]},freeze_0:{hairTip:[.62,.43]},freeze_1:{hairTip:[.5,.21],hairWidth:.14},lifesteal_0:{hairTip:[.5,.45]},lifesteal_2:{hairTip:[.5,.20],hairWidth:.14},bounce_0:{hairTip:[.25,.57]}
  };
- window.ConnectedRig={subdivide,deform,pose,profile:id=>({...defaults,...profiles[id]})};
+ // Boss weights follow their actual silhouettes, with continuous shared vertices.
+ function deformBoss(base,out,aspect,p,time,phase,action,gain=1){
+  const t=time*.65,g=pose(time,action),power=action?.strength||1,hurt=action?.type==='hurt';
+  const strike=hurt?0:g.hit*power,prepare=hurt?0:g.prepare*power;
+  for(let i=0;i<base.length;i+=2){
+   const x=base[i]+.5,y=.5-base[i+1]/aspect,upper=smooth((.98-y)/.8);
+   const region=(cx,cy,rx,ry)=>smooth(1-Math.hypot((x-cx)/rx,(y-cy)/ry));
+   const torso=region(p.center,.43,.31,.4),breath=Math.sin(t*1.1+phase);
+   let dx=Math.sin(t*.75+phase)*.014*upper,dy=breath*.007*torso;
+   if(p.kind==='warden'){
+    dx+=(x-p.center)*breath*.018*torso;
+    for(let s=0;s<2;s++){const a=p.arms[s],w=capsule(x,y,a[0],a[1],.14);dx+=(Math.sin(t*.9+phase+s*.8-w.t)*.032+strike*-.055)*w.w*smooth(w.t);dy+=Math.sin(t*.9+phase+s)*.01*w.w*w.t;}
+    const head=region(.46,.09,.16,.17);dx+=Math.sin(t*.62+phase)*.012*head;
+    const chain=region(.5,.40,.32,.13);dy+=Math.sin(t*1.6+phase+x*6)*.009*chain;
+   }else if(p.kind==='devourer'){
+    const maw=region(.54,.26,.3,.35),pulse=Math.sin(t*1.35+phase);
+    dx+=(x-.54)*(pulse*.045+prepare*-.08+strike*.16)*maw;
+    dy+=(y-.26)*(pulse*.028+strike*.08)*maw;
+    for(let s=0;s<2;s++){const a=p.arms[s],w=capsule(x,y,a[0],a[1],.18);dx+=(Math.sin(t*1.15+phase+s*2)*.029-strike*.045)*w.w*smooth(w.t);dy+=(Math.cos(t*.95+phase+s)*.014-prepare*.012)*w.w*w.t;}
+    dy+=Math.sin(t*.8+phase)*.008*upper;
+   }else{
+    // Observer floats freely; hanging ribbons lag behind the head and plates.
+    dy+=Math.sin(t*.85+phase)*.018;
+    const head=region(.52,.17,.18,.22);dx+=Math.sin(t*.72+phase)*.025*head;
+    for(const [j,a] of p.plates.entries()){const w=region(a[0],a[1],.14,.12);dx+=Math.sin(t*1.25+phase+j)*.024*w;dy+=Math.cos(t*1.1+phase+j*.9)*.018*w;}
+    const ribbons=smooth((y-.39)/.2)*smooth(1-Math.abs(x-.52)/.25);dx+=Math.sin(t*1.25+phase-y*5)*.042*ribbons;dy+=Math.cos(t*.95+phase-y*3)*.009*ribbons;
+   }
+   dx+=(-prepare*.012-strike*.047+g.settle*.009)*upper;
+   if(hurt){dx+=Math.sin((time-action.start)*24)*g.hit*.034*upper;dy-=g.hit*.012*torso;}
+   const pin=p.kind==='observer'?1:smooth((.99-y)/.10);
+   out[i]=base[i]+dx*pin*gain;out[i+1]=base[i+1]-dy*aspect*pin*gain;
+  }return out;
+ }
+ window.ConnectedRig={subdivide,deform,deformBoss,pose,profile:id=>({...defaults,...profiles[id]})};
 })();

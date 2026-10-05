@@ -1,6 +1,7 @@
 /* Cubism surface with continuous regional weights. No rectangular part cut-outs. */
 (()=>{
- const VERSION='fabric7',cache=new Map();let current=null,sequence=0,pendingPose=null;
+ function renderer(isBoss=false){
+ const VERSION='boss1',cache=new Map();let current=null,sequence=0,pendingPose=null;
  async function checked(url){const r=await fetch(url);if(!r.ok)throw Error('Character asset '+r.status);return r}
  async function load(id){
   if(cache.has(id)){const a=cache.get(id);cache.delete(id);cache.set(id,a);return a}
@@ -37,11 +38,11 @@
    const model=Live2DCubismCore.Model.fromMoc(asset.moc);model.parameters.values.set(model.parameters.defaultValues);model.update();
    const d=model.drawables,index=d.ids.indexOf('Rear_Body');if(index<0){model.release();throw Error('Connected Cubism surface missing')}
    const rig=window.ConnectedRig,mesh=rig.subdivide(d.vertexPositions[index],d.indices[index],2);
-   const info=model.canvasinfo,aspect=info.CanvasHeight/info.CanvasWidth,mw=info.CanvasWidth/info.PixelsPerUnit;
-   const base=mesh.positions;for(let i=0;i<base.length;i++)base[i]/=mw;
+   const info=model.canvasinfo,sourceAspect=info.CanvasHeight/info.CanvasWidth,aspect=isBoss?asset.image.height/asset.image.width:sourceAspect,mw=info.CanvasWidth/info.PixelsPerUnit;
+   const base=mesh.positions;for(let i=0;i<base.length;i++){base[i]/=mw;if(isBoss&&i%2)base[i]*=aspect/sourceAspect;}
    const uvs=new Float32Array(base.length),out=new Float32Array(base.length);
    for(let i=0;i<base.length;i+=2){uvs[i]=base[i]+.5;uvs[i+1]=.5-base[i+1]/aspect}
-   const canvas=document.createElement('canvas');canvas.className='cubism-character';canvas.setAttribute('aria-label','전투 캐릭터');
+   const canvas=document.createElement('canvas');canvas.className='cubism-character'+(isBoss?' boss-surface':'');canvas.setAttribute('aria-label',isBoss?'움직이는 보스':'전투 캐릭터');
    const gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:true});if(!gl){model.release();throw Error('WebGL unavailable')}
    const program=gl.createProgram();gl.attachShader(program,shader(gl,gl.VERTEX_SHADER,'attribute vec2 p;attribute vec2 uv;uniform vec2 scale;varying vec2 tex;void main(){gl_Position=vec4(p*scale,0.,1.);tex=uv;}'));
    gl.attachShader(program,shader(gl,gl.FRAGMENT_SHADER,'precision mediump float;uniform sampler2D image;varying vec2 tex;void main(){if(tex.x<0.||tex.x>1.||tex.y<0.||tex.y>1.)discard;gl_FragColor=texture2D(image,tex);}'));
@@ -56,10 +57,10 @@
    const draw=now=>{
     if(current!==run)return;if(!container.isConnected){dispose();return}
     try{
-     const r=container.getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));
+     const r=(isBoss?canvas:container).getBoundingClientRect(),ratio=Math.min(devicePixelRatio||1,2),w=Math.max(1,Math.round(r.width*ratio)),h=Math.max(1,Math.round(r.height*ratio));
      if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
      const gain=motionGain();
-     if(!gain)out.set(base);else rig.deform(base,out,aspect,profile,now/1000,phase,run.action,gain);
+     if(!gain)out.set(base);else if(isBoss)rig.deformBoss(base,out,aspect,profile,now/1000,phase,run.action,gain);else rig.deform(base,out,aspect,profile,now/1000,phase,run.action,gain);
      const fit=Math.min(w,h/aspect)*.97;gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
      gl.bindBuffer(gl.ARRAY_BUFFER,pos);gl.bufferData(gl.ARRAY_BUFFER,out,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
      gl.bindBuffer(gl.ARRAY_BUFFER,tex);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ind);gl.bindTexture(gl.TEXTURE_2D,texture);gl.drawElements(gl.TRIANGLES,mesh.indices.length,gl.UNSIGNED_SHORT,0);
@@ -68,5 +69,8 @@
    };run.frame=requestAnimationFrame(draw);
   }catch(e){console.warn('Character rig unavailable',e);container.classList.remove('live2d-ready')}
  }
- window.BattleLive2D={mount,dispose,perform,recoil,anchor};
+ return {mount,dispose,perform,recoil,anchor};
+ }
+ window.BattleLive2D=renderer();
+ window.BossLive2D=renderer(true);
 })();

@@ -39,6 +39,7 @@
      api.later(()=>{
       if(deck==='bullet'&&custom.origin)window.ParticleVFX?.muzzle(custom.origin,deck,custom);
       window.ParticleVFX?.contact(p,deck,presentation.tier,custom);
+      if(!e.dot){const bossId=document.querySelector('.boss-figure')?.dataset.bossId;if(bossId)window.BossLive2D?.perform('boss_'+bossId,{type:'hurt',windup:0,total:750,strength:e.crit?1.3:1});}
      },index++*gap+(reactive&&!api.reduced?90:0));
     }else{
      api.later(()=>window.ParticleVFX?.incoming(p,deck,{...presentation,slot:e.index,shield:e.shield,spent:0}),index++*gap);

@@ -1,0 +1,28 @@
+{
+  "service": "NovelAI",
+  "model": "V5 Full",
+  "steps": 23,
+  "guidance": 7,
+  "sampler": "Euler Ancestral",
+  "assets": [
+    {
+      "id": "warden",
+      "seed": 871499379
+    },
+    {
+      "id": "devourer",
+      "seed": 4180747307,
+      "prompt": "masterpiece, best quality, detailed hand-painted dark fantasy RPG enemy illustration, full body, single nonhuman entity, isolated, centered, entire silhouette visible with generous empty margin, three-quarter front view facing slightly left, grotesque surreal modernist sculpture, asymmetrical brutalist forms, weathered ivory ceramic and blackened bronze, subtle uncanny horror, elegant disturbing silhouette, strong readable contour, painterly shadows, restrained burgundy and antique gold accents, studio rim light, no scenery, no text, no frame, massive predatory devourer, squat heavy hunched creature, enormous vertical tooth-lined maw opens through its torso, headless organic ceramic sculpture, layered hollow shells like broken porcelain ribs, thick bent limbs with mismatched joints, oversized hooked claws, a few thin crimson tendons, heavy forward-leaning silhouette, no human face, no gore"
+    },
+    {
+      "id": "observer",
+      "seed": 3764797262,
+      "prompt": "masterpiece, best quality, detailed hand-painted dark fantasy RPG enemy illustration, full body, single nonhuman entity, isolated, centered, entire silhouette visible with generous empty margin, three-quarter front view facing slightly left, grotesque surreal modernist sculpture, asymmetrical brutalist forms, weathered ivory ceramic and blackened bronze, subtle uncanny horror, elegant disturbing silhouette, strong readable contour, painterly shadows, restrained burgundy and antique gold accents, studio rim light, no scenery, no text, no frame, levitating otherworldly observer, tall spindly asymmetrical silhouette, huge single watchful eye embedded in a hollow oval porcelain head, broken ivory architectural plates floating around its narrow body, long dark hanging ribbon tendrils instead of legs, delicate elongated skeletal hands, off-center black aperture in chest, uncanny impossible anatomy, sparse antique gold mechanical joints, no human face"
+    },
+    {
+      "id": "archive-arena",
+      "seed": 1043825659,
+      "prompt": "masterpiece, best quality, highly detailed hand-painted dark fantasy RPG battle environment, wide cinematic composition, empty surreal modernist museum interior, monumental brutalist gallery, asymmetrical ivory concrete walls, tall black void doorways, impossible suspended architectural fragments in far background, muted charcoal blue and weathered bone colors, very subtle burgundy light in distant recesses, low soft atmospheric lighting, broad unobstructed dark stone floor occupies lower half, horizon at upper third, room for characters in foreground, elegant uncanny liminal space, painterly anime game background, crisp architectural detail, no people, no creatures, no text, no UI"
+    }
+  ]
+}

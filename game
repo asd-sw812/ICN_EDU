@@ -867,6 +867,12 @@ body.vfx-reduced .fighter-art img{animation:none}
 @media(prefers-reduced-motion:reduce){body.battle-mode .fighter-art img{animation:none}}
 body.battle-mode .fighter-art .cubism-character{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(12px 16px 12px #0009)}
 body.battle-mode .fighter-art.live2d-ready>img,body.battle-mode .fighter-art.live2d-ready>.fighter-placeholder{display:none}
+</style><style id="novelai-battle-art">
+body.battle-mode #vfxEnvironment{background:linear-gradient(180deg,#060b142e,#050b1112 45%,#03070b55),url('assets/battle/scenery/archive-arena.webp') center/cover no-repeat}
+body.battle-mode #vfxEnvironment>svg{display:none}
+body.battle-mode .boss-figure.has-boss-art{background:none}
+body.battle-mode .boss-figure.has-boss-art:before,body.battle-mode .boss-figure.has-boss-art:after{display:none}
+body.battle-mode .boss-image{display:block;width:100%;height:100%;min-height:0;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 18px 12px #0009);pointer-events:none}
 </style></head>
 <body class="selection-mode">
 <!-- VFX Edition 01: standalone copy; original combat balance retained. -->
@@ -3056,7 +3062,7 @@ function render(){
  const raidBar=raidBarState(state.score),raidHpRemain=raidBar.inside===0?RAID_BAR_HP:RAID_BAR_HP-raidBar.inside;
  const clearHpColor=clearHpPct>66?"#d84a4a":clearHpPct>33?"#e8883f":"#e6c84e";
  const bossHpHTML=state.mode==="clear"?`<div class="raid-hp-line clear-hp-line"><span>HP</span><div class="raid-layer-bar" style="--remain:${pct(b.hp,b.maxHp)}%;--current-color:${clearHpColor};--next-color:#111820"><i class="raid-layer-current"></i><i class="raid-layer-glint"></i></div><b class="raid-layer-count">${clearHpPct}%</b></div><div class="raid-layer-sub"><span>${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()}</span><span>고정 체력</span></div>`:`<div class="raid-hp-line"><span>HP</span><div class="raid-layer-bar" style="--remain:${raidBar.remain}%;--current-color:${raidBar.current};--next-color:${raidBar.next}"><i class="raid-layer-current"></i><i class="raid-layer-glint"></i></div><b class="raid-layer-count">BAR ×${raidBar.cleared+1}</b></div><div class="raid-layer-sub"><span>${raidHpRemain.toLocaleString()} / ${RAID_BAR_HP.toLocaleString()}</span><span>누적 파괴 ${raidBar.cleared}줄</span></div>`;
- document.getElementById("bossCard").innerHTML=`<div class="boss-figure" data-initial="${String(b.displayIndex).padStart(2,"0")}" aria-label="BOSS ${String(b.displayIndex).padStart(2,"0")} 이미지 영역"></div><div class="boss-card ${b.staggered?"staggered":""}"><div class="boss-head"><h2>BOSS ${String(b.displayIndex).padStart(2,"0")}</h2><span class="phase">PHASE ${b.phase}</span></div>
+ document.getElementById("bossCard").innerHTML=`<div class="boss-figure has-boss-art" data-initial="${String(b.displayIndex).padStart(2,"0")}" aria-label="BOSS ${String(b.displayIndex).padStart(2,"0")}"><img class="boss-image" src="assets/battle/bosses/${b.bossId}.webp" alt="BOSS ${String(b.displayIndex).padStart(2,"0")}" draggable="false" onerror="this.parentElement.classList.remove('has-boss-art');this.remove()"></div><div class="boss-card ${b.staggered?"staggered":""}"><div class="boss-head"><h2>BOSS ${String(b.displayIndex).padStart(2,"0")}</h2><span class="phase">PHASE ${b.phase}</span></div>
  <div class="badges"><span class="badge element">${b.element}</span><span class="badge">${b.weaknessLabel}</span></div>
  ${b.staggered?`<div class="stagger-banner">GROGGY · DAMAGE x${b.staggerMultiplier.toFixed(1)} · NEXT ACTION SKIP</div>`:""}
  <div class="intent">다음 행동: <b>${b.staggered?"그로기로 행동 불가":intent.type==="ultimate"?"보스 궁극기":intent.type==="special"?"보스 특수 행동":"보스 일반 공격"}</b> · ${b.staggered?"BREAK":`${intent.type==="ultimate"?"궁극기":intent.type==="special"?"특수 행동":"일반 스킬"} · ${bossIntentDetail(intent)}`}</div>

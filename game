@@ -621,28 +621,7 @@ body.battle-mode .boss-effect-tray{width:82%;display:flex;justify-content:center
  body.battle-mode .fighter-label{display:none}.battle-mode .active-fighter{inset:42px -2% 100px -3%}.battle-mode .boss-card{top:39px}.battle-mode .party-grid{height:90px}.battle-mode .unit{height:90px}.battle-mode .skill-panel{height:68px}.battle-mode .skill{flex-basis:50px;width:50px;height:50px}.battle-mode .skill.ult{flex-basis:58px;width:58px;height:58px}
 }
 </style>
-<style id="mobile-fit-fix-v10">
-:root{--mobile-game-scale:1}
-@media (orientation:landscape) and (max-width:1200px), (orientation:landscape) and (max-height:700px){
- html,body{width:100%;height:100%;overflow:hidden;background:#020407;touch-action:manipulation}
- body.selection-mode .app,body.battle-mode .app{position:absolute;left:50%;top:50%;width:900px;height:500px;min-width:900px;min-height:500px;transform:translate(-50%,-50%) scale(var(--mobile-game-scale));transform-origin:center;contain:layout paint;overflow:hidden}
- body.selection-mode .loadout-screen,body.battle-mode #battleScreen{width:900px;height:500px}
- body.selection-mode .loadout-topbar{left:10px;right:10px;top:6px}
- body.selection-mode .loadout-cards{top:54px;width:880px;height:353px;min-height:0}
- body.selection-mode .loadout-footer{left:8px;right:8px;bottom:5px;width:auto;height:76px;grid-template-columns:minmax(150px,1fr) 260px 170px}
- body.selection-mode .deck-library-panel{left:151px;right:8px;top:8px;bottom:8px}
- body.selection-mode .deck-library-nav{left:8px;top:8px}
- body.battle-mode .arena{width:900px;height:500px;grid-template-columns:64px minmax(0,1fr) 260px}
- body.battle-mode .party-grid{width:585px;height:94px}
- body.battle-mode .unit{height:94px}
- body.battle-mode .active-fighter{inset:42px -2% 100px -3%}
- body.battle-mode .fighter-label{display:block;bottom:106px}
- body.battle-mode .boss-figure:before{width:170px;height:230px}
- body.battle-mode .boss-figure:after{width:150px}
- body.battle-mode .skill-panel{right:7px;bottom:8px}
- body.battle-mode .overlay{width:900px;height:500px}
-}
-</style>
+
 <style id="combat-polish-v14">
 /* Larger combat copy and a single non-overlapping skill description. */
 body.selection-mode .loadout-card-info>span{font-size:9px}
@@ -959,7 +938,41 @@ body.battle-mode .stat-modal .character-skills .skill-coefficient,body.battle-mo
 #activeFighter:focus-visible{outline:2px solid #f2d38c;outline-offset:4px}
 body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail .skill-effect-values{display:none}
 @media(max-height:700px){.character-skills{padding:10px 14px;gap:8px}.character-skills section{padding:10px}.character-skills p{font-size:13px}}
-</style></head>
+</style>
+<style id="responsive-game-viewport">
+:root{--safe-left:env(safe-area-inset-left,0px);--safe-right:env(safe-area-inset-right,0px);--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--game-ui-scale:1;--game-width:100dvw;--game-height:100dvh;--game-left:0px;--game-top:0px}
+@media (orientation:landscape) and (max-width:1200px), (orientation:landscape) and (max-height:700px){
+ html,body{width:100%;height:100%;overflow:hidden;background:#020407}
+ body.selection-mode .app,body.battle-mode .app{position:absolute;left:var(--game-left);top:var(--game-top);width:var(--game-width);height:var(--game-height);min-width:0;min-height:0;padding:0;transform:scale(var(--game-ui-scale));transform-origin:top left;contain:layout paint;overflow:hidden}
+ body.selection-mode .loadout-screen,body.battle-mode #battleScreen,body.battle-mode .arena,body.battle-mode .overlay{width:100%;height:100%;min-width:0;min-height:0}
+ body.selection-mode .loadout-topbar{left:10px;right:10px;top:6px}
+ body.selection-mode .loadout-cards{top:60px;bottom:94px;width:calc(100% - 24px);height:auto;min-height:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+ body.selection-mode .loadout-card:nth-child(n){transform:none}
+ body.selection-mode .loadout-footer{left:8px;right:8px;bottom:6px;width:auto;height:78px;grid-template-columns:minmax(0,1fr) minmax(240px,.8fr) minmax(165px,.5fr)}
+ body.selection-mode .deck-library-panel{left:151px;right:8px;top:8px;bottom:8px}
+ body.selection-mode .deck-library-nav{left:8px;top:8px}
+ body.battle-mode header .actions{left:72px;top:6px}
+ body.battle-mode .raid-hud{top:6px;right:10px}
+ body.battle-mode .arena{grid-template-columns:64px minmax(0,1fr) minmax(280px,34%)}
+ body.battle-mode .turn-order{top:48px;bottom:8px}
+ body.battle-mode .boss-panel{grid-column:3;position:relative;inset:auto}
+ body.battle-mode .active-fighter{inset:48px -2% 175px -3%}
+ body.battle-mode .fighter-label{display:none}
+ /* Party belongs to player-stage; use the stage width, not its narrower parent. */
+ body.battle-mode .party-grid{left:8px;bottom:10px;width:calc(var(--game-width) - 80px);height:150px;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+ body.battle-mode .unit{height:150px;min-width:0}
+ body.battle-mode .skill-panel{right:16px;bottom:195px;width:330px;height:68px;flex-direction:row}
+ body.battle-mode .skill-detail{position:fixed;left:80px;right:auto;top:52px;bottom:auto;width:min(350px,calc(50% - 90px));max-height:calc(var(--game-height) - 235px);overflow:auto}
+ body.battle-mode .shared-gauge{position:fixed;left:80px;top:auto;bottom:180px;width:min(350px,calc(50% - 90px));max-height:80px;overflow:auto}
+ body.battle-mode .boss-card{position:fixed;left:auto;right:16px;top:86px;width:330px;max-height:calc(var(--game-height) - 370px);overflow:auto}
+ body.battle-mode #deckInfoBtn{top:10px;right:245px}
+ body.battle-mode .boss-figure{top:24%;bottom:32%}
+ body.battle-mode .boss-figure:before{width:170px;height:230px}
+ body.battle-mode .boss-figure:after{width:150px}
+ body.battle-mode .result{width:min(480px,calc(100% - 32px));max-height:calc(100% - 24px);overflow:auto}
+}
+</style>
+</head>
 <body class="selection-mode">
 <!-- VFX Edition 01: standalone copy; original combat balance retained. -->
 <div id="vfxEnvironment" aria-hidden="true"></div>
@@ -2072,11 +2085,19 @@ function checkEnd(){
  return false
 }
 function syncMobileViewport(){
- const viewport=window.visualViewport;
+ const viewport=window.visualViewport,root=document.documentElement;
  const width=viewport?viewport.width:window.innerWidth,height=viewport?viewport.height:window.innerHeight;
- const compact=width<=1200||height<=700,landscape=width>height;
- const scale=compact&&landscape?Math.min(1,width/900,height/500):1;
- document.documentElement.style.setProperty("--mobile-game-scale",String(Math.max(.25,scale)));
+ const css=getComputedStyle(root),inset=name=>parseFloat(css.getPropertyValue(name))||0;
+ const left=inset("--safe-left"),right=inset("--safe-right"),top=inset("--safe-top"),bottom=inset("--safe-bottom");
+ const availableWidth=Math.max(1,width-left-right),availableHeight=Math.max(1,height-top-bottom);
+ // Scale UI density, but let the stage expand to the actual screen aspect ratio.
+ // There is no fixed-size canvas and no minimum scale that can crop small screens.
+ const scale=Math.min(1,availableWidth/900,availableHeight/500);
+ root.style.setProperty("--game-ui-scale",String(scale));
+ root.style.setProperty("--game-width",`${availableWidth/scale}px`);
+ root.style.setProperty("--game-height",`${availableHeight/scale}px`);
+ root.style.setProperty("--game-left",`${(viewport?viewport.offsetLeft:0)+left}px`);
+ root.style.setProperty("--game-top",`${(viewport?viewport.offsetTop:0)+top}px`);
 }
 function requestMobileLandscape(){
  const touchDevice=navigator.maxTouchPoints>0||matchMedia("(hover:none) and (pointer:coarse)").matches;
@@ -3547,7 +3568,11 @@ deckInfoDialog.addEventListener('click',event=>{if(event.target===deckInfoDialog
 document.getElementById("restartBtn").onclick=startBattle;
 window.addEventListener("resize",syncMobileViewport,{passive:true});
 window.addEventListener("orientationchange",()=>{syncMobileViewport();setTimeout(syncMobileViewport,180)},{passive:true});
-if(window.visualViewport)window.visualViewport.addEventListener("resize",syncMobileViewport,{passive:true});
+if(window.visualViewport){
+ window.visualViewport.addEventListener("resize",syncMobileViewport,{passive:true});
+ window.visualViewport.addEventListener("scroll",syncMobileViewport,{passive:true});
+}
+document.addEventListener("fullscreenchange",syncMobileViewport);
 syncMobileViewport();
 renderSelect();
 </script>

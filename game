@@ -1077,23 +1077,18 @@ for(const d of DECKS){
  for(const c of d.party){
   if(SHARED_ONLY_DECKS.has(d.id)){c.resourceLabel='';c.resourceInitial=0;c.resourceMax=null;continue}
   if(c.resourceLabel&&!CORE_RESOURCE_NAMES.has(c.resourceLabel)){
-   RESOURCE_ALIASES[d.id].push(c.resourceLabel);c.resourceLabel='전술';
+   const oldName=c.resourceLabel;
+   RESOURCE_ALIASES[d.id].push(oldName);c.resourceLabel='';c.resourceInitial=0;c.resourceMax=null;
+   c.passiveDesc=c.passiveDesc.split('。').join('.').split('.').filter(x=>x.trim()&&!x.includes(oldName)).join('. ');
+   if(!c.passiveDesc)c.passiveDesc='개인 자원 없이 SP와 에너지로 스킬을 사용한다.';
+   c.note=c.roleDetail+' · 개인 자원 관리 없이 스킬의 고정 효과를 사용한다.';
   }
  }
 }
-function simplifiedResourceText(text,id){
- for(const term of [...new Set(RESOURCE_ALIASES[id]||[])].sort((a,b)=>b.length-a.length)){
-  text=text.replaceAll('['+term+']','[전술]');
-  // Replace explicit counter references, while retaining ordinary combat terms such as 강화/정화.
-  const escaped=term.replace(/[.*+?^${}()|[\]\\]/g,match=>'\\'+match);
-  text=text.replace(new RegExp(escaped+'(?=\\s*(?:\\d|[+−-]|최대|소모|스택|자원))','g'),'전술');
-  if(term.length>1&&!['강화','정화','연구','집중','반사','휴식','의지'].includes(term)){
-   text=text.replace(new RegExp(escaped+'(?:을|를)(?=\\s*(?:얻|획득|소모|모|축적|사용|전달|제공|회복|장전))','g'),'전술을');
-  }
- }
- return text.replaceAll('[전술]를','[전술]을').replaceAll('[전술]가','[전술]이').replaceAll('[전술]는','[전술]은');
-}
+function simplifiedResourceText(text){return text}
 for(const d of DECKS)for(const c of d.party){c.passiveDesc=simplifiedResourceText(c.passiveDesc,d.id);c.note=simplifiedResourceText(c.note,d.id)}
+const SIMPLE_MECHANICS={follow:'추가공격과 연속 타격으로 피해를 누적한다. 개인 추격 스택 없이 스킬마다 정해진 횟수로 공격한다.',bounce:'정해진 횟수의 분산 타격으로 정신피해를 준다. 타격 피해는 한 보스에게 집중된다.',hp:'스킬로 체력을 소모해 공격하고 회복한다. 궁극기는 별도 희생량 대신 현재 잃은 체력을 기준으로 강화된다.',skill:'SP를 회복하거나 최대 SP를 늘려 2스킬을 활용한다. 궁극기로 공격·버프·에너지·회복을 지원한다.',execute:'방어 감소와 취약으로 보스를 약화시킨다. 메인딜 궁극기는 남은 HP 25% 이하에서 처형한다.'};
+for(const d of DECKS)if(SIMPLE_MECHANICS[d.id])d.mechanic=SIMPLE_MECHANICS[d.id];
 
 function roleBaseStats(c){
  if(c.roleDetail.includes("탱커"))return {atk:850,maxHp:6500,pdef:750,mdef:700};
@@ -1851,7 +1846,6 @@ function passiveOnTurnStart(a){
   const gainedEnergy=a.energy-oldEnergy;
   if(gainedEnergy||spGain)log(`${unitLabel(a)} 속도 세팅 보너스 → 에너지 +${gainedEnergy}${spGain?` · SP +${spGain}`:""}.`)
  }
- if(id==="speed"&&effSpeed(a)>effSpeed(state.boss)){resGain(a,1);log(`${unitLabel(a)} 패시브 → 개인 자원 +1.`)}
  if(id==="hp"&&s===1&&a.hp/a.maxHp<=.5){resGain(a,1)}
  if(id==="execute"&&s===3&&alivePlayers().some(p=>p.hp/p.maxHp<=.3)){resGain(a,1);addShield(a,6,a)}
 }
@@ -2207,20 +2201,20 @@ function useSkill(which,previewOnly=false){
    return Math.random()*100<chance?damage(a,b,base,opt):0
  };
  const shield=(target,percent,taunt=0)=>{const gained=addShield(target,percent,a);if(taunt)addTaunt(target,taunt);return gained};
- const spendRes=(who,n)=>{const x=resSpend(who,n);if(who===a)ctx.spent+=x;return x};
- const allRes=(who)=>{const x=resAll(who);if(who===a)ctx.spent+=x;return x};
+ const skillStrength=(who,n)=>{if(!who.resourceLabel)return Math.min(2,n||2);const x=resSpend(who,n);if(who===a)ctx.spent+=x;return x};
+ const ultimateStrength=(who)=>{if(!who.resourceLabel)return 3;const x=resAll(who);if(who===a)ctx.spent+=x;return x};
 
  // 1. Bullet - every character owns a separate magazine.
  if(id==="bullet"){
    if(which===0){hit(55);resGain(a,2);log(`${unitLabel(a)} [탄환] +2.`)}
    if(which===1){
-     if(slot===0){const n=Math.max(1,spendRes(a,6));for(let i=0;i<n;i++)hit(35+n*5,{attackRatio:.38,defenseWeight:.38});log(`${unitLabel(a)} 자기 탄환 ${n}발 소비.`)}
-     if(slot===1){const n=spendRes(a,3);hit(70+n*28);resGain(ally(),Math.max(1,n));ctx.resourceTransferred+=Math.max(1,n);log(`${unitLabel(a)} 탄환을 소비해 선택 대상에게 ${Math.max(1,n)}발 장전.`)}
-     if(slot===2){const n=spendRes(a,3);hit(75+n*22,{pen:.12+n*.05});addBuff(ally(),"atkUp",8+n*4,2)}
-     if(slot===3){const n=spendRes(a,2);shield(ally(),15+n*7,1);hit(40+n*15)}
+     if(slot===0){const n=Math.max(1,skillStrength(a,6));for(let i=0;i<n;i++)hit(35+n*5,{attackRatio:.38,defenseWeight:.38});log(`${unitLabel(a)} 자기 탄환 ${n}발 소비.`)}
+     if(slot===1){const n=skillStrength(a,3);hit(70+n*28);resGain(ally(),Math.max(1,n));ctx.resourceTransferred+=Math.max(1,n);log(`${unitLabel(a)} 탄환을 소비해 선택 대상에게 ${Math.max(1,n)}발 장전.`)}
+     if(slot===2){const n=skillStrength(a,3);hit(75+n*22,{pen:.12+n*.05});addBuff(ally(),"atkUp",8+n*4,2)}
+     if(slot===3){const n=skillStrength(a,2);shield(ally(),15+n*7,1);hit(40+n*15)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0)hit(180+n*34,{pen:Math.min(.55,n*.05),forceCrit:n>=7});
      if(slot===1){hit(110+n*18);resGain(ally(),Math.min(4,n+1));resGain(support2(),Math.min(2,Math.ceil(n/2)))}
      if(slot===2){hit(140+n*26,{pen:.2});addBuff(ally(),"critUp",10+n*3,2)}
@@ -2232,13 +2226,13 @@ function useSkill(which,previewOnly=false){
  if(id==="poison"){
    if(which===0){hit(45);addPoison(3);resGain(a,1)}
    if(which===1){
-     if(slot===0){const n=spendRes(a,2);poisonSettle(1.15+n*.25)}
-     if(slot===1){const n=spendRes(a,2);hit(65+n*18);let i=b.poison.findIndex(x=>x===3);if(i>=0){b.poison.splice(i,1);addPoison(3,true)}else addPoison(3)}
-     if(slot===2){const n=spendRes(a,1);b.poison=b.poison.map(x=>x+1+n);b.miasma=b.miasma.map(x=>x+1+n);hit(40)}
-     if(slot===3){const n=spendRes(a,1);const h=heal(ally(),150+n*45);log(`선택 대상 회복 ${h}.`)}
+     if(slot===0){const n=skillStrength(a,2);poisonSettle(1.15+n*.25)}
+     if(slot===1){const n=skillStrength(a,2);hit(65+n*18);let i=b.poison.findIndex(x=>x===3);if(i>=0){b.poison.splice(i,1);addPoison(3,true)}else addPoison(3)}
+     if(slot===2){const n=skillStrength(a,1);b.poison=b.poison.map(x=>x+1+n);b.miasma=b.miasma.map(x=>x+1+n);hit(40)}
+     if(slot===3){const n=skillStrength(a,1);const h=heal(ally(),150+n*45);log(`선택 대상 회복 ${h}.`)}
    }
    if(which===2){
-     if(slot===0){const n=allRes(a);poisonSettle(1.8+n*.22)}
+     if(slot===0){const n=ultimateStrength(a);poisonSettle(1.8+n*.22)}
      if(slot===1){while(b.poison.includes(3)&&b.miasma.length<3){b.poison.splice(b.poison.indexOf(3),1);addPoison(3,true)}hit(115)}
      if(slot===2){b.poison=b.poison.map(x=>x+2);b.miasma=b.miasma.map(x=>x+2);resGain(ally(),2)}
      if(slot===3){partyHeal(210);resGain(ally(),1)}
@@ -2249,16 +2243,16 @@ function useSkill(which,previewOnly=false){
  if(id==="counter"){
    if(which===0){hit(48,{defScale:.45});shield(a,7);resGain(a,1)}
    if(which===1){
-     if(slot===0){const t=ally();t.counterReady=90+spendRes(a,120)*.2;shield(t,16,1)}
-     if(slot===1){const n=spendRes(a,2);hit(80+n*25);ally().counterReady+=80+n*20}
+     if(slot===0){const t=ally();t.counterReady=90+skillStrength(a,120)*.2;shield(t,16,1)}
+     if(slot===1){const n=skillStrength(a,2);hit(80+n*25);ally().counterReady+=80+n*20}
      if(slot===2){shield(ally(),12);resGain(a,100);hit(50)}
-     if(slot===3){const n=spendRes(a,2),t=ally();shield(t,23+n*5,1);t.counterReady=120+n*25}
+     if(slot===3){const n=skillStrength(a,2),t=ally();shield(t,23+n*5,1);t.counterReady=120+n*25}
    }
    if(which===2){
-     if(slot===0){const n=allRes(a);hit(155+n*.8,{defScale:1.2})}
-     if(slot===1){const n=allRes(a);hit(130+n*28);alivePlayers().forEach(p=>p.counterReady+=80)}
-     if(slot===2){const n=allRes(a);hit(120+n*.9);resGain(ally(),Math.round(n*.35))}
-     if(slot===3){const n=allRes(a);alivePlayers().forEach(p=>shield(p,17+n*2));addTaunt(a,2);a.counterReady=170}
+     if(slot===0){const n=ultimateStrength(a);hit(155+n*.8,{defScale:1.2})}
+     if(slot===1){const n=ultimateStrength(a);hit(130+n*28);alivePlayers().forEach(p=>p.counterReady+=80)}
+     if(slot===2){const n=ultimateStrength(a);hit(120+n*.9);resGain(ally(),Math.round(n*.35))}
+     if(slot===3){const n=ultimateStrength(a);alivePlayers().forEach(p=>shield(p,17+n*2));addTaunt(a,2);a.counterReady=170}
    }
  }
 
@@ -2266,14 +2260,14 @@ function useSkill(which,previewOnly=false){
  if(id==="follow"){
    if(which===0){hit(50);resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,Math.min(a.resource,4));
+     const n=skillStrength(a,Math.min(a.resource,4));
      if(slot===0){for(let i=0;i<Math.max(1,n);i++)hit(45+n*4,{attackRatio:.42,defenseWeight:.42})}
      if(slot===1){hit(70+n*18);if(n>=2)damage(a,b,55)}
      if(slot===2){hit(60+n*15);chanceDamage(35+n*12,70)}
      if(slot===3){const t=ally();shield(t,17+n*4,1);t.counterReady=40+n*20}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){for(let i=0;i<4+Math.floor(n/2);i++)hit(52,{attackRatio:.38,defenseWeight:.38})}
      if(slot===1){for(let i=0;i<2+Math.floor(n/2);i++)hit(60,{attackRatio:.45,defenseWeight:.45})}
      if(slot===2){hit(130+n*30);damage(a,b,70+n*10)}
@@ -2285,14 +2279,14 @@ function useSkill(which,previewOnly=false){
  if(id==="freeze"){
    if(which===0){hit(46);addChill(1);resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){hit(85+n*25);addChill(2+n)}
      if(slot===1){hit(55+n*18);addBossDebuff("speedDown",18+n*4,2);addChill(2)}
      if(slot===2){b.freezeGuard=1+n;hit(45);addChill(1)}
      if(slot===3){shield(ally(),20+n*5,1);addChill(1+n)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){hit(135+n*28);addChill(3+Math.floor(n/2))}
      if(slot===1){hit(100+n*20);addBossDebuff("speedDown",28,3);addChill(3)}
      if(slot===2){b.freezeGuard=2;addChill(4);resGain(ally(),1)}
@@ -2304,14 +2298,14 @@ function useSkill(which,previewOnly=false){
  if(id==="lifesteal"){
    if(which===0){const d=hit(58);resGain(a,1);heal(a,d*.12)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){const d=hit(130+n*30);heal(a,d*.38)}
      if(slot===1){hit(82+n*22);partyHeal(105+n*25);addBuff(ally(),"atkUp",10+n*3,2)}
      if(slot===2){hit(70+n*20);addBossDebuff("vulnerable",10+n*2,2)}
      if(slot===3){hit(55+n*12);partyHeal(115+n*25)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){const d=hit(230+n*35,{bonus:(a.maxHp-a.hp)*.25});heal(a,d*.65)}
      if(slot===1){hit(145+n*25);alivePlayers().forEach(p=>addBuff(p,"atkUp",15,2));partyHeal(110)}
      if(slot===2){hit(150+n*28);addBossDebuff("vulnerable",20,3)}
@@ -2332,14 +2326,14 @@ function useSkill(which,previewOnly=false){
      bounceAttack(count,115+a.resource*16);
    }
    if(which===1){
-     const n=spendRes(a,3);
+     const n=skillStrength(a,3);
      if(slot===0)bounceAttack(5+n,210+n*30);
      if(slot===1){bounceAttack(4+n,175+n*25);resGain(ally(),1)}
      if(slot===2){bounceAttack(4+n,185+n*25);addBossDebuff("vulnerable",7+n*2,2)}
      if(slot===3){bounceAttack(3+n,130+n*18);partyHeal(80+n*22)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      const count=6+n;
      if(slot===0)bounceAttack(count,330+n*38);
      if(slot===1)bounceAttack(count,285+n*32,{critBonus:15});
@@ -2360,7 +2354,7 @@ function useSkill(which,previewOnly=false){
      if(slot===3){hit(45+c*.12,{type:"mental"});heal(a,c*.85);resGain(a,1)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=Math.max(0,a.maxHp-a.hp);
      if(slot===0)hit(175,{type:"mental",hpScale:.2,bonus:n*.22});
      if(slot===1){hit(135+n*.18,{type:"mental"});const t=ally();t.maxHp+=120;t.hp+=120}
      if(slot===2){hit(130+n*.18,{type:"mental"});addBuff(ally(),"atkUp",25,3)}
@@ -2372,14 +2366,14 @@ function useSkill(which,previewOnly=false){
  if(id==="speed"){
    if(which===0){hit(38,{speedScale:.72});resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){addBuff(a,"speedUp",25+n*4,2);hit(55+n*15,{speedScale:.95})}
      if(slot===1){hit(58+n*13,{speedScale:.65});addBuff(ally(),"speedUp",20+n*3,2);a.evade++}
      if(slot===2){hit(52+n*12,{speedScale:.6});alivePlayers().forEach(p=>addBuff(p,"speedUp",12+n*2,2))}
      if(slot===3){const t=ally();shield(t,14+n*4,1);t.evade+=1;hit(38+n*10,{speedScale:.4})}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){hit(105+n*24,{speedScale:1.35});a.evade++}
      if(slot===1){hit(125+n*20,{speedScale:.9});alivePlayers().forEach(p=>p.evade++)}
      if(slot===2){hit(115+n*20,{speedScale:.8});alivePlayers().forEach(p=>addBuff(p,"speedUp",22,2))}
@@ -2391,14 +2385,14 @@ function useSkill(which,previewOnly=false){
  if(id==="debuff"){
    if(which===0){hit(45,{type:"mental",debuffScale:15});resGain(a,1);addBossDebuff(slot%2?"atkDown":"speedDown",10,2)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0)hit(95+n*25,{type:"mental",debuffScale:30});
      if(slot===1){hit(58+n*15,{type:"mental"});addBossDebuff("atkDown",18+n*3,2);addBossDebuff("defDown",18+n*3,2)}
      if(slot===2){hit(55+n*15,{type:"mental"});addBossDebuff("speedDown",22+n*3,2)}
      if(slot===3){hit(45+n*10,{type:"mental"});partyHeal(95+n*20);addBossDebuff("atkDown",12,2)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0)hit(175+n*30,{type:"mental",debuffScale:45});
      else{hit(105+n*18,{type:"mental"});addBossDebuff("atkDown",22,3);addBossDebuff("defDown",22,3);addBossDebuff("speedDown",22,3);if(slot===3)partyHeal(160)}
    }
@@ -2425,14 +2419,14 @@ function useSkill(which,previewOnly=false){
  if(id==="enhance"){
    if(which===0){hit(a.enhanced?100:52,{bonus:a.resource*8});resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){a.enhanced=2+n;hit(a.enhanced?145:75,{pen:a.enhanced?.18:0})}
      if(slot===1){hit(70+n*18);const t=ally();t.enhanced=Math.max(t.enhanced,2+n);resGain(t,1)}
      if(slot===2){hit(68+n*18);const t=ally();t.enhanced=Math.max(t.enhanced,2);t.energy=Math.min(100,t.energy+15+n*5)}
      if(slot===3){const t=ally();shield(t,17+n*5,1);t.enhanced=Math.max(t.enhanced,2);hit(40)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){a.enhanced=4;hit(135+n*25)}
      if(slot===1){const t=ally();t.enhanced=Math.max(t.enhanced,3+n);hit(110+n*18)}
      if(slot===2){const t=ally();t.enhanced=Math.max(t.enhanced,3);t.energy=Math.min(100,t.energy+25);hit(105+n*18)}
@@ -2440,22 +2434,21 @@ function useSkill(which,previewOnly=false){
    }
  }
 
- // 13. Skill deck - every character has its own local skill stack.
+ // 13. Skill deck - SP and energy are the only personal gauges.
  if(id==="skill"){
-   if(which===0){hit(52+a.resource*24,{type:"mental"});if(slot===0)a.resource=0;else resGain(a,1)}
+   if(which===0)hit(70,{type:"mental"});
    if(which===1){
-     resGain(a,2);
-     if(slot===0)hit(45,{type:"mental"});
-     if(slot===1){hit(50+a.resource*8,{type:"mental"});resGain(ally(),1);a.sp=Math.min(a.maxSp,a.sp+1)}
-     if(slot===2){hit(48+a.resource*8,{type:"mental"});resGain(ally(),2)}
-     if(slot===3){hit(35+a.resource*5,{type:"mental"});partyHeal(75+a.resource*12);resGain(ally(),1)}
+     if(slot===0)hit(160,{type:"mental"});
+     if(slot===1){hit(80,{type:"mental"});const t=ally();t.sp=Math.min(t.maxSp,t.sp+1);addBuff(t,"atkUp",15,2)}
+     if(slot===2){hit(75,{type:"mental"});addBossDebuff("vulnerable",12,2)}
+     if(slot===3){hit(50,{type:"mental"});partyHeal(140)}
    }
    if(which===2){
      a.maxSp=Math.min(8,a.maxSp+1);
-     if(slot===0){resGain(a,3);hit(130+a.resource*18,{type:"mental"})}
-     if(slot===1){resGain(ally(),2);hit(105+a.resource*15,{type:"mental"})}
-     if(slot===2){const n=allRes(a);resGain(ally(),n);hit(95+n*18,{type:"mental"})}
-     if(slot===3){partyHeal(190+a.resource*18);resGain(ally(),2)}
+     if(slot===0)hit(280,{type:"mental"});
+     if(slot===1){hit(180,{type:"mental"});addBuff(ally(),"atkUp",20,3)}
+     if(slot===2){hit(150,{type:"mental"});alivePlayers().forEach(p=>p.energy=Math.min(100,p.energy+25))}
+     if(slot===3){partyHeal(260);alivePlayers().forEach(p=>p.sp=Math.min(p.maxSp,p.sp+1))}
    }
  }
 
@@ -2463,17 +2456,17 @@ function useSkill(which,previewOnly=false){
  if(id==="execute"){
    if(which===0){hit(62,{pen:.18});resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0)hit(115+n*25,{pen:.35+n*.04});
      if(slot===1){hit(55+n*15,{pen:.15});addBossDebuff("defDown",22+n*3,3);ctx.defDownApplied=true;ctx.newDebuff=true;resGain(ally(),1)}
      if(slot===2){hit(60+n*15,{pen:.18});addBossDebuff("vulnerable",12+n*3,2);ctx.vulnerableApplied=true;ctx.newDebuff=true;resGain(ally(),1)}
      if(slot===3){shield(ally(),19+n*4,1);hit(45,{pen:.12});addBossDebuff("atkDown",12,2)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){
        hit(215+n*30,{pen:.55});
-       const threshold=Math.min(48,15+n*3+support1().resource*1.5+support2().resource*1.5);
+       const threshold=25;
        if(state.mode==="clear"){
          const remainPct=pct(b.hp,b.maxHp);
          if(remainPct<=threshold){const remain=b.hp;takeDamage(b,remain,a,{playerEffect:true});log(`[처형] 남은 HP ${remain.toLocaleString()} 제거 · 토벌 완료.`)}
@@ -2499,14 +2492,14 @@ function useSkill(which,previewOnly=false){
  if(id==="crit"){
    if(which===0){hit(62,{critBonus:12+a.resource*3});resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0)hit(108+n*22,{critBonus:30+n*5});
      if(slot===1){hit(62+n*15,{critBonus:15});addBuff(ally(),"critUp",18+n*4,2);resGain(ally(),1)}
      if(slot===2){hit(65+n*15,{critBonus:12});addBossDebuff("vulnerable",12+n*3,2);ctx.vulnerableApplied=true;ctx.newDebuff=true;resGain(ally(),1)}
      if(slot===3){const t=ally();shield(t,15+n*4,1);hit(42,{critBonus:10});addBuff(t,"critDmgUp",18,2)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0)hit(250+n*30,{forceCrit:true});
      if(slot===1){addBuff(ally(),"critUp",100,1);addBuff(ally(),"critDmgUp",45+n*5,1);hit(100+n*12,{forceCrit:true})}
      if(slot===2){addBossDebuff("vulnerable",22+n*3,3);hit(110+n*18,{forceCrit:true})}
@@ -2519,14 +2512,14 @@ function useSkill(which,previewOnly=false){
    const cleanse=t=>{for(const k of ["atkDown","defDown","speedDown"]){if(t.buffs[k]){delete t.buffs[k];resGain(a,1);ctx.cleanseCount++;ctx.cleanedTarget=t;VFX.event("cleanse",t,1,{buffKey:k,sourceId:a.id});log(`${unitLabel(t)} ${k} 정화.`);return true}}return false};
    if(which===0){hit(50,{type:"mental",bonus:a.resource*8});cleanse(a)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){hit(95+n*22,{type:"mental"});cleanse(ally())}
      if(slot===1){hit(55+n*15,{type:"mental"});alivePlayers().forEach(p=>cleanse(p));addBuff(ally(),"atkUp",12,2)}
      if(slot===2){hit(55+n*15,{type:"mental"});const t=ally();cleanse(t);addBuff(t,"defUp",18,2)}
      if(slot===3){hit(40,{type:"mental"});const t=ally();const h=heal(t,165+n*35);cleanse(t);log(`선택 대상 회복 ${h}.`)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0)hit(165+n*26,{type:"mental"});
      if(slot===1){alivePlayers().forEach(p=>cleanse(p));hit(105+n*18,{type:"mental"})}
      if(slot===2){alivePlayers().forEach(p=>{cleanse(p);addBuff(p,"atkUp",14,2)});hit(95+n*18,{type:"mental"})}
@@ -2538,14 +2531,14 @@ function useSkill(which,previewOnly=false){
  if(id==="burn"){
    if(which===0){hit(45);addBurn(2);resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){hit(85+n*20+b.burn*8);addBurn(3+n)}
      if(slot===1){hit(58+n*18);addScorch();addBurn(2+n)}
      if(slot===2){hit(55+n*18);addBurn(4+n);burnTick()}
      if(slot===3){partyHeal(90+n*20)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){addBurn(5+n);burnTick();hit(120+n*22)}
      if(slot===1){addScorch();addBurn(4+n);hit(110+n*18)}
      if(slot===2){addBurn(5+n);burnTick();hit(100+n*18)}
@@ -2557,14 +2550,14 @@ function useSkill(which,previewOnly=false){
  if(id==="bleed"){
    if(which===0){hit(52);addBleed(1);resGain(a,1)}
    if(which===1){
-     const n=spendRes(a,2);
+     const n=skillStrength(a,2);
      if(slot===0){hit(95+n*22+b.bleed*10);ctx.bleedSettlement=true;bleedSettle(.55+n*.1)}
      if(slot===1){hit(55+n*16);ctx.bleedAdded+=addBleed(2+n)}
      if(slot===2){hit(58+n*16);ctx.bleedAdded+=addBleed(1+n);ctx.bleedSettlement=true;bleedSettle(.35+n*.08)}
      if(slot===3){shield(ally(),17+n*4,1)}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){hit(145+n*25);ctx.bleedSettlement=true;bleedSettle(1.25+n*.12)}
      if(slot===1){hit(105+n*18);addBleed(4+n)}
      if(slot===2){hit(110+n*18);ctx.bleedSettlement=true;bleedSettle(.95+n*.12)}
@@ -2576,14 +2569,14 @@ function useSkill(which,previewOnly=false){
  if(id==="electric"){
    if(which===0){hit(50);resGain(a,2);log(`${unitLabel(a)} [전류] +2.`)}
    if(which===1){
-     const n=spendRes(a,4);
+     const n=skillStrength(a,4);
      if(slot===0){hit(82+n*34);if(n>=3)charge(2)}
      if(slot===1){hit(58+n*18);resGain(ally(),Math.max(1,n));ctx.resourceTransferred+=Math.max(1,n);log(`${unitLabel(a)} 전류 일부를 선택 대상에게 전달.`)}
      if(slot===2){hit(62+n*18);charge(Math.max(1,n));if(n>=3)state.paralyzeNeed=Math.max(3,state.paralyzeNeed-1)}
      if(slot===3){const t=ally();shield(t,19+n*4,1);hit(40+n*10);resGain(t,Math.ceil(n/2))}
    }
    if(which===2){
-     const n=allRes(a);
+     const n=ultimateStrength(a);
      if(slot===0){hit(145+n*32);charge(Math.max(2,Math.floor(n/2)))}
      if(slot===1){hit(110+n*20);resGain(ally(),Math.min(5,n+2));ctx.resourceTransferred+=Math.min(5,n+2);resGain(support2(),2)}
      if(slot===2){hit(115+n*20);charge(state.paralyzeNeed)}
@@ -2596,15 +2589,15 @@ function useSkill(which,previewOnly=false){
    if(which===0){hit(40,{defScale:.82});resGain(a,a.resourceMax==null?20:1);addBuff(a,"defUp",8,2)}
    if(which===1){
      if(slot===0){addBuff(ally(),"defUp",42,3);resGain(a,70);hit(45,{defScale:.55})}
-     if(slot===1){const n=spendRes(a,2);hit(65+n*18,{defScale:.45});alivePlayers().forEach(p=>addBuff(p,"defUp",25+n*4,3));ctx.defBuffedAllies=alivePlayers().length;resGain(ally(),40+n*15)}
-     if(slot===2){const n=spendRes(a,2),gain=80+n*30;hit(60+n*18,{defScale:.4});resGain(ally(),gain);ctx.storedGain=gain}
+     if(slot===1){const n=skillStrength(a,2);hit(65+n*18,{defScale:.45});alivePlayers().forEach(p=>addBuff(p,"defUp",25+n*4,3));ctx.defBuffedAllies=alivePlayers().length;resGain(ally(),40+n*15)}
+     if(slot===2){const n=skillStrength(a,2),gain=80+n*30;hit(60+n*18,{defScale:.4});resGain(ally(),gain);ctx.storedGain=gain}
      if(slot===3){const t=ally();addBuff(t,"defUp",45,3);shield(t,23,1);resGain(a,60)}
    }
    if(which===2){
-     if(slot===0){const n=allRes(a);hit(130+n*.85,{defScale:2.35})}
-     if(slot===1){const n=allRes(a);alivePlayers().forEach(p=>addBuff(p,"defUp",42+n*3,3));ctx.defBuffedAllies=alivePlayers().length;hit(105+n*18,{defScale:.5})}
-     if(slot===2){const n=allRes(a),gain=130+n*35;resGain(ally(),gain);ctx.storedGain=gain;hit(100+n*18,{defScale:.45})}
-     if(slot===3){const n=allRes(a),t=ally();shield(t,32+n*.05,2);alivePlayers().forEach(p=>addBuff(p,"defUp",22,2));hit(80,{defScale:.8})}
+     if(slot===0){const n=ultimateStrength(a);hit(130+n*.85,{defScale:2.35})}
+     if(slot===1){const n=ultimateStrength(a);alivePlayers().forEach(p=>addBuff(p,"defUp",42+n*3,3));ctx.defBuffedAllies=alivePlayers().length;hit(105+n*18,{defScale:.5})}
+     if(slot===2){const n=ultimateStrength(a),gain=130+n*35;resGain(ally(),gain);ctx.storedGain=gain;hit(100+n*18,{defScale:.45})}
+     if(slot===3){const n=ultimateStrength(a),t=ally();shield(t,32+n*.05,2);alivePlayers().forEach(p=>addBuff(p,"defUp",22,2));hit(80,{defScale:.8})}
    }
  }
 
@@ -2763,7 +2756,7 @@ function coreText(){
  };
  if(!SHARED_ONLY_DECKS.has(id)&&id!=='bullet'&&id!=='electric'){
   const stored=id==='counter'||id==='defense'?' 저장 피해는 피격된 캐릭터에게 따로 쌓입니다.':'';
-  return deck().mechanic+' 개인 보조 자원은 [전술]로 통일했습니다. 스킬로 모으고 강화 스킬에 소비하며, 캐릭터 간 자동 공유되지 않습니다.'+stored;
+  return deck().mechanic+' 별도 보조 자원 없이 SP와 에너지로 스킬을 사용합니다.'+stored;
  }
  return m[id]
 }
@@ -3128,6 +3121,12 @@ const SHIELD_RULE_TEXT={
 };
 const SHIELD_POLICY_TEXT="보호막 누적 상한: 시전자 최대 체력의 200% · 지속시간 무한.";
 function skillEffectText(a,i){
+ if(!a.resourceLabel&&!SHARED_ONLY_DECKS.has(state&&state.deckId)){
+  const support=isSupportAction(state.deckId,a.index,i);
+  const purpose=support?'선택한 아군을 지원한다.':'보스를 공격하고 덱의 고정 효과를 적용한다.';
+  return purpose+' 개인 스택을 모으거나 소비하지 않는다. '+(state.deckId==='execute'&&a.index===0&&i===2?'남은 보스 HP가 25% 이하이면 처형한다.':state.deckId==='hp'&&i===2?'현재 잃은 체력에 비례해 강화된다.':'');
+ }
+
  const key=`${state&&state.deckId}:${a.index}:${i}`;
  const text=SUPPORT_EFFECT_TEXT[key]||SKILL_EFFECT_TEXT[state&&state.deckId]?.[a.index]?.[i]||"현재 스킬 효과 정보를 불러올 수 없다.";
  const shieldRule=SHIELD_RULE_TEXT[key];
@@ -3141,7 +3140,8 @@ function sharedGaugeHTML(){
 function skillOverviewHTML(a){
  return sharedGaugeHTML()+'<div class="skill-overview" aria-label="스킬 효과 요약">'+[0,1,2].map(i=>{
   const blocked=i===1&&a.sp<2?'SP 2 필요':i===2&&a.energy<ultEnergyRequirement(a)?'에너지 '+a.energy+'/'+ultEnergyRequirement(a)+' 필요':'';
-  const summary=skillEffectText(a,i).split(/[.!?。]/)[0];
+  const preview=previewSkillCoefficient(a,i);
+  const summary=!a.resourceLabel&&!SHARED_ONLY_DECKS.has(state.deckId)?[skillDamageSummary(a,i,preview),skillEffectValueSummary(a,i,preview)].filter(Boolean).join(' · '):skillEffectText(a,i).split(/[.!?。]/)[0];
   return '<div><b>'+['1 · 스킬 1','2 · 스킬 2','Q · 궁극기'][i]+'</b><p>'+summary+'</p><small>'+ (blocked||skillMeta(a,i))+'</small></div>';
  }).join('')+'</div>';
 }

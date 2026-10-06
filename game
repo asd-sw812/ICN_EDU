@@ -900,9 +900,8 @@ body.battle-mode .skill-overview b{font-size:14px;color:#c3e8ff}
 body.battle-mode .skill-overview p{margin:7px 0;font-size:13px;line-height:1.5}
 body.battle-mode .skill-overview small{font-size:12px;color:#f0d68c;line-height:1.5}
 body.battle-mode .skill-panel:has(.skill-detail.visible) .skill-overview{visibility:hidden}
-body.battle-mode .first-action-guide{position:absolute;right:0;bottom:calc(100% + 230px);width:520px;padding:12px;border:1px solid #b79a5e;background:#15170ff2;color:#f2e6c7;font-size:13px;line-height:1.7}
-@media(max-width:1100px){body.battle-mode .skill-overview,body.battle-mode .first-action-guide{width:420px}body.battle-mode .skill-detail{width:420px}}
-@media(max-width:760px),(max-height:700px){body.selection-mode .tactical-note{font-size:10px;line-height:1.35;margin-top:5px}body.battle-mode .skill-overview{width:330px;gap:3px}body.battle-mode .skill-overview>div{padding:6px}body.battle-mode .skill-overview b,body.battle-mode .skill-overview p,body.battle-mode .skill-overview small{font-size:10px}body.battle-mode .skill-detail{width:330px}body.battle-mode .skill-detail p{font-size:12px}body.battle-mode .first-action-guide{width:330px;font-size:11px;bottom:calc(100% + 215px)}body.battle-mode .unit-state span{font-size:9px;padding:2px 3px}}
+@media(max-width:1100px){body.battle-mode .skill-overview,body.battle-mode .skill-detail{width:420px}}
+@media(max-width:760px),(max-height:700px){body.selection-mode .tactical-note{font-size:10px;line-height:1.35;margin-top:5px}body.battle-mode .skill-overview{width:330px;gap:3px}body.battle-mode .skill-overview>div{padding:6px}body.battle-mode .skill-overview b,body.battle-mode .skill-overview p,body.battle-mode .skill-overview small{font-size:10px}body.battle-mode .skill-detail{width:330px}body.battle-mode .skill-detail p{font-size:12px}body.battle-mode .unit-state span{font-size:9px;padding:2px 3px}}
 </style>
 
 <style id="large-party-hud">
@@ -927,18 +926,15 @@ body.battle-mode .unit-state{top:-25px}
 body.battle-mode .unit-state span{font-size:12px}
 body.battle-mode .fighter-label{bottom:260px;max-width:480px}
 body.battle-mode .shared-gauge{position:absolute;right:0;bottom:calc(100% + 235px);width:520px;background:#0b1d24ee;border:1px solid #76b2be;padding:10px 12px;color:#e0f8ff;font-size:14px;line-height:1.5}
-body.battle-mode .first-action-guide{bottom:calc(100% + 290px)}
 @media(min-width:1201px) and (min-height:701px){body.battle-mode .skill-panel{width:520px}}
 @media(max-width:1500px){body.battle-mode .party-grid{left:18px;width:calc(100vw - 660px);gap:7px}body.battle-mode .unit{padding:10px 8px}body.battle-mode .unit-hp{grid-template-columns:30px 1fr}body.battle-mode .unit-hp b{grid-column:1/-1;text-align:right}body.battle-mode .unit-head{padding-left:42px}body.battle-mode .unit h3{font-size:14px}}
-@media(max-width:1200px),(max-height:700px){body.battle-mode .party-grid{left:4px;bottom:12px;width:804px;height:150px;gap:8px}body.battle-mode .unit{height:150px;padding:8px}.battle-mode .unit-portrait{width:28px;height:38px;left:8px;top:8px}body.battle-mode .unit-head{padding-left:34px;min-height:34px}body.battle-mode .unit h3{font-size:13px;margin:0 0 3px}body.battle-mode .unit-head .role{font-size:10px}body.battle-mode .unit-hp{grid-template-columns:30px minmax(20px,1fr) auto;font-size:11px}body.battle-mode .unit-hp b{grid-column:auto;font-size:11px}body.battle-mode .unit-resources{gap:5px;margin-top:6px}body.battle-mode .sp-readout,body.battle-mode .energy-readout{font-size:11px;grid-template-columns:35px 1fr 34px}body.battle-mode .sp-readout>b,body.battle-mode .energy-readout>b,body.battle-mode .stack-readout b,body.battle-mode .stack-readout strong{font-size:12px}body.battle-mode .stack-readout{padding:3px 4px;font-size:10px}body.battle-mode .unit-effect-tray{bottom:5px;max-height:19px;left:8px;right:8px}body.battle-mode .unit-effect-tray .effect-chip,body.battle-mode .unit-effect-tray .effect-empty{font-size:9px}body.battle-mode .unit-state{top:-20px}body.battle-mode .unit-state span{font-size:10px}body.battle-mode .fighter-label{display:none}body.battle-mode .skill-panel{bottom:195px;right:16px;width:330px;height:68px}body.battle-mode .skill-overview{width:330px}body.battle-mode .shared-gauge{width:330px;bottom:calc(100% + 180px);font-size:11px}body.battle-mode .first-action-guide{width:330px;bottom:calc(100% + 225px);font-size:10px;padding:6px}body.battle-mode .boss-card .intent{top:140px;max-width:260px;font-size:10px}body.battle-mode #deckInfoBtn{top:128px}}
+@media(max-width:1200px),(max-height:700px){body.battle-mode .party-grid{left:4px;bottom:12px;width:804px;height:150px;gap:8px}body.battle-mode .unit{height:150px;padding:8px}.battle-mode .unit-portrait{width:28px;height:38px;left:8px;top:8px}body.battle-mode .unit-head{padding-left:34px;min-height:34px}body.battle-mode .unit h3{font-size:13px;margin:0 0 3px}body.battle-mode .unit-head .role{font-size:10px}body.battle-mode .unit-hp{grid-template-columns:30px minmax(20px,1fr) auto;font-size:11px}body.battle-mode .unit-hp b{grid-column:auto;font-size:11px}body.battle-mode .unit-resources{gap:5px;margin-top:6px}body.battle-mode .sp-readout,body.battle-mode .energy-readout{font-size:11px;grid-template-columns:35px 1fr 34px}body.battle-mode .sp-readout>b,body.battle-mode .energy-readout>b,body.battle-mode .stack-readout b,body.battle-mode .stack-readout strong{font-size:12px}body.battle-mode .stack-readout{padding:3px 4px;font-size:10px}body.battle-mode .unit-effect-tray{bottom:5px;max-height:19px;left:8px;right:8px}body.battle-mode .unit-effect-tray .effect-chip,body.battle-mode .unit-effect-tray .effect-empty{font-size:9px}body.battle-mode .unit-state{top:-20px}body.battle-mode .unit-state span{font-size:10px}body.battle-mode .fighter-label{display:none}body.battle-mode .skill-panel{bottom:195px;right:16px;width:330px;height:68px}body.battle-mode .skill-overview{width:330px}body.battle-mode .shared-gauge{width:330px;bottom:calc(100% + 180px);font-size:11px}body.battle-mode .boss-card .intent{top:140px;max-width:260px;font-size:10px}body.battle-mode #deckInfoBtn{top:128px}}
 </style>
 <style id="compact-hud-readability">
 @media(max-width:1200px),(max-height:700px){
  body.battle-mode .skill-overview{display:none}
- body.battle-mode .first-action-guide{position:fixed;left:80px;top:52px;bottom:auto;width:350px;font-size:11px;padding:8px}
  body.battle-mode .shared-gauge{position:fixed;left:80px;top:155px;bottom:auto;width:350px;font-size:12px}
  body.battle-mode .skill-detail{position:fixed;left:80px;top:52px;bottom:auto;width:350px;max-height:250px;overflow:auto}
- body.battle-mode .skill-panel:has(.skill-detail.visible) .first-action-guide{visibility:hidden}
  body.battle-mode .unit-portrait{width:28px;height:38px;left:8px;top:8px}
  body.battle-mode .unit-head{padding-left:36px}
  body.battle-mode .sp-readout,body.battle-mode .energy-readout{grid-template-columns:44px 1fr 34px}
@@ -947,7 +943,23 @@ body.battle-mode .first-action-guide{bottom:calc(100% + 290px)}
  body.battle-mode .boss-card .intent{position:static;max-width:none;margin:6px 0 0;padding:5px 7px;font-size:10px;text-align:left}
 }
 </style>
-</head>
+<style id="tap-character-details">
+.character-skills{padding:14px 18px;display:grid;gap:12px}
+.character-skills section{padding:14px;border:1px solid #ffffff25;background:#ffffff05}
+.character-skills strong{font-size:17px;color:#f2d38c}
+.character-skills section>span{display:block;margin-top:6px;font-size:12px;color:#aebbbf}
+.character-skills p{font-size:14px;line-height:1.65;margin:8px 0 0}
+.character-skills .skill-coefficient,.character-skills .skill-effect-values{display:block;font-size:12px;font-weight:500;line-height:1.5;margin:5px 0;color:#c6dce8;padding:0;border:0;background:none}
+.character-modal footer{position:sticky;bottom:0;background:#0b1011}
+body.battle-mode .stat-modal header,body.selection-mode .stat-modal header{position:sticky;inset:auto;top:0;height:auto;min-height:64px;padding:14px 18px;pointer-events:auto;display:flex;align-items:flex-start;background:#10191c;margin:0;border-bottom:1px solid #ffffff25}
+body.battle-mode .stat-modal header>div:first-child,body.selection-mode .stat-modal header>div:first-child{display:block}
+body.battle-mode .stat-modal header button,body.selection-mode .stat-modal header button{position:static;pointer-events:auto}
+body.battle-mode .stat-modal .character-skills .skill-coefficient,body.battle-mode .stat-modal .character-skills .skill-effect-values{font-size:12px;font-weight:500;padding:0;border:0;background:none}
+#activeFighter[role=button]{cursor:pointer}
+#activeFighter:focus-visible{outline:2px solid #f2d38c;outline-offset:4px}
+body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail .skill-effect-values{display:none}
+@media(max-height:700px){.character-skills{padding:10px 14px;gap:8px}.character-skills section{padding:10px}.character-skills p{font-size:13px}}
+</style></head>
 <body class="selection-mode">
 <!-- VFX Edition 01: standalone copy; original combat balance retained. -->
 <div id="vfxEnvironment" aria-hidden="true"></div>
@@ -1276,7 +1288,7 @@ function openStatSetup(charId){
   ["치명타율",stats.crit,"%",build.crit],
   ["치명타 피해",stats.critDmg,"%",build.critDmg]
  ].map(([label,value,suffix,points])=>`<div class="stat-tile"><span>${label}</span><b>${Number(value).toLocaleString()}${suffix}</b><small class="${points?"raised":""}">${points?`기본 대비 +${points*STAT_OPTIONS[Object.keys(STAT_OPTIONS).find(k=>STAT_OPTIONS[k].label===label)].step}${suffix}`:"기본 수치"}</small></div>`).join("");
- document.getElementById("overlayRoot").innerHTML=`<div class="overlay stat-overlay"><section class="stat-modal" style="--accent:${d.color}" role="dialog" aria-modal="true" aria-label="SLOT ${String(index+1).padStart(2,"0")} 캐릭터 정보"><header><div><small>${d.name} · SLOT ${String(index+1).padStart(2,"0")} · ${statSpecialty(c)}</small><h2>SLOT ${String(index+1).padStart(2,"0")}</h2><p>${c.roleDetail} · ${c.element} · ${attackTypeLabel(c.attackType)}</p></div><button data-stat-close type="button" aria-label="닫기">×</button></header><div class="character-profile"><div class="character-brief"><div class="character-tags"><span>${statSpecialty(c)}</span><span>${c.resourceLabel||"전용 자원 없음"}</span></div><h3>전투 역할</h3><p>${c.note||d.mechanic}</p><div class="passive-copy"><b>패시브</b><p>${c.passiveDesc||"별도의 패시브 효과가 없습니다."}</p></div></div><div class="stat-overview">${overview}</div></div><div class="stat-budget"><span>남은 세팅 포인트</span><b>${left}</b><small>총 ${STAT_POINT_BUDGET}P · 능력치별 최대 ${STAT_POINT_CAP}P · 속도는 3P/6P에서 행동 보너스 해금</small></div><div class="stat-rows">${rows}</div><footer><button data-stat-reset type="button">세팅 초기화</button><button data-stat-done type="button">적용하고 닫기</button></footer></section></div>`;
+ document.getElementById("overlayRoot").innerHTML=`<div class="overlay stat-overlay"><section class="stat-modal" style="--accent:${d.color}" role="dialog" aria-modal="true" aria-label="SLOT ${String(index+1).padStart(2,"0")} 캐릭터 정보"><header><div><small>${d.name} · SLOT ${String(index+1).padStart(2,"0")} · ${statSpecialty(c)}</small><h2>SLOT ${String(index+1).padStart(2,"0")}</h2><p>${c.roleDetail} · ${c.element} · ${attackTypeLabel(c.attackType)}</p></div><button data-stat-close type="button" aria-label="닫기">×</button></header><div class="character-profile"><div class="character-brief"><div class="character-tags"><span>${statSpecialty(c)}</span><span>${c.resourceLabel||"전용 자원 없음"}</span></div><h3>전투 역할</h3><p>${c.note||d.mechanic}</p><div class="passive-copy"><b>패시브</b><p>${c.passiveDesc||"별도의 패시브 효과가 없습니다."}</p></div></div><div class="stat-overview">${overview}</div></div>${characterSkillsHTML(c)}<div class="stat-budget"><span>남은 세팅 포인트</span><b>${left}</b><small>총 ${STAT_POINT_BUDGET}P · 능력치별 최대 ${STAT_POINT_CAP}P · 속도는 3P/6P에서 행동 보너스 해금</small></div><div class="stat-rows">${rows}</div><footer><button data-stat-reset type="button">세팅 초기화</button><button data-stat-done type="button">적용하고 닫기</button></footer></section></div>`;
  const root=document.getElementById("overlayRoot");
  root.querySelectorAll("[data-stat-plus]").forEach(x=>x.onclick=()=>changeStatPoint(c.id,x.dataset.statPlus,1));
  root.querySelectorAll("[data-stat-minus]").forEach(x=>x.onclick=()=>changeStatPoint(c.id,x.dataset.statMinus,-1));
@@ -1291,6 +1303,37 @@ function changeStatPoint(charId,key,delta){
  build[key]=next;statBuilds[charId]=build;persistStatBuilds();openStatSetup(charId)
 }
 function closeStatSetup(){document.getElementById("overlayRoot").innerHTML="";renderSelect()}
+
+function characterSkillsHTML(c){
+ const previous=state;
+ try{
+  let a=state?.players?.find(p=>p.id===c.id);
+  if(!a){
+   const found=findCharacter(c.id),players=found.d.party.map(makePlayer);
+   state={mode:'raid',deckId:found.d.id,players,boss:makeBoss(),acted:[],currentId:c.id,selectedTargetId:c.id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,roundsCompleted:0,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
+   a=players.find(p=>p.id===c.id);
+  }
+  return '<div class="character-skills">'+[0,1,2].map(i=>'<section>'+skillDetailHTML(a,i)+'</section>').join('')+'</div>';
+ }finally{state=previous}
+}
+function openBattleCharacter(charId){
+ const a=state?.players.find(p=>p.id===charId);if(!a)return;
+ const root=document.getElementById('overlayRoot'),origin=document.activeElement;
+ root.innerHTML=`<div class="overlay character-overlay"><section class="stat-modal character-modal" role="dialog" aria-modal="true" aria-label="캐릭터 상세" style="--accent:${deck().color}"><header><div><small>${deck().name}</small><h2>SLOT ${String(a.index+1).padStart(2,'0')}</h2><p>${a.roleDetail} · ${attackTypeLabel(a.attackType)} · HP ${a.hp}/${a.maxHp} · SP ${a.sp}/${a.maxSp} · 에너지 ${a.energy}%</p></div><button type="button" data-character-close aria-label="닫기">×</button></header><div class="character-brief"><div class="passive-copy"><b>패시브</b><p>${a.passiveDesc||'별도의 패시브 효과가 없습니다.'}</p></div>${characterSkillsHTML(a)}</div><footer>${!a.dead?'<button type="button" data-support-target>지원 대상으로 선택</button>':''}<button type="button" data-character-close>닫기</button></footer></section></div>`;
+ const close=()=>{root.innerHTML='';document.removeEventListener('keydown',keys);if(origin?.isConnected)origin.focus()};
+ const keys=e=>{
+  if(e.key==='Escape'){e.preventDefault();close()}
+  if(e.key==='Tab'){
+   const buttons=[...root.querySelectorAll('button')],first=buttons[0],last=buttons[buttons.length-1];
+   if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}
+   else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}
+  }
+ };
+ root.querySelectorAll('[data-character-close]').forEach(b=>b.onclick=close);
+ root.querySelector('[data-support-target]')?.addEventListener('click',()=>{close();selectAllyTarget(a.id)});
+ root.querySelector('.character-overlay').onclick=e=>{if(e.target===e.currentTarget)close()};
+ document.addEventListener('keydown',keys);root.querySelector('[data-character-close]').focus();
+}
 
 let selectedDeckId=DECKS[0].id;
 
@@ -3209,17 +3252,21 @@ function render(){
  fighterRoot.innerHTML=activeFighterHTML(focus);
  if(keepArt)fighterRoot.querySelector('.fighter-art').replaceWith(oldArt);
  fighterRoot.dataset.characterId=focus?.id||'';
+ fighterRoot.setAttribute('role','button');fighterRoot.tabIndex=0;
+ fighterRoot.setAttribute('aria-label','현재 캐릭터 상세 열기');
+ fighterRoot.onclick=()=>focus&&openBattleCharacter(focus.id);
+ fighterRoot.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();focus&&openBattleCharacter(focus.id)}};
  window.BattleLive2D?.mount(fighterRoot.querySelector('.fighter-art'),focus?.id);
  const partyGrid=document.getElementById("partyGrid");
- partyGrid.innerHTML=state.players.map(p=>`<div class="unit ${p.id===state.currentId?"current":""} ${p.id===state.selectedTargetId&&!p.dead?"targeted":""} ${p.dead?"dead":""}" data-ally-target="${p.id}" role="button" tabindex="${p.dead?"-1":"0"}" aria-label="지원 대상 SLOT ${String(p.index+1).padStart(2,"0")} 선택" title="지원 대상 지정 · 패시브 · ${p.passiveDesc}">
+ partyGrid.innerHTML=state.players.map(p=>`<div class="unit ${p.id===state.currentId?"current":""} ${p.id===state.selectedTargetId&&!p.dead?"targeted":""} ${p.dead?"dead":""}" data-ally-target="${p.id}" role="button" tabindex="0" aria-label="SLOT ${String(p.index+1).padStart(2,"0")} 캐릭터 상세 열기">
  ${portraitHTML(p)}
  <div class="unit-state">${p.id===state.currentId?`<span class="acting-tag">현재 행동</span>`:""}${p.id===state.selectedTargetId&&!p.dead?`<span class="support-tag">지원 대상</span>`:""}</div><div class="unit-head"><h3>SLOT ${String(p.index+1).padStart(2,"0")}</h3><span class="role">${p.roleDetail}</span></div>
  <div class="unit-hp"><span>체력</span><div class="bar"><i style="width:${pct(p.hp,p.maxHp)}%"></i></div><b>${p.hp}/${p.maxHp}</b></div>
  ${unitResourceHTML(p)}
  <div class="unit-effect-tray">${effectChipsHTML(playerStatuses(p))}</div></div>`).join("");
  partyGrid.querySelectorAll("[data-ally-target]").forEach(x=>{
-  x.onclick=()=>selectAllyTarget(x.dataset.allyTarget);
-  x.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();selectAllyTarget(x.dataset.allyTarget)}}
+  x.onclick=()=>openBattleCharacter(x.dataset.allyTarget);
+  x.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openBattleCharacter(x.dataset.allyTarget)}}
  });
  document.getElementById("logLines").innerHTML=state.logs.map(x=>`<div>${x}</div>`).join("");
  const panel=document.getElementById("skillPanel");
@@ -3228,7 +3275,7 @@ function render(){
    const selectedSkill=state.pendingActorId===cur.id?state.pendingSkill:null;
    const passiveOpen=state.passiveDetailActorId===cur.id;
    const initialDetail=passiveOpen?passiveDetailHTML(cur):selectedSkill!==null?skillDetailHTML(cur,selectedSkill,true):"";
-   panel.innerHTML=skillOverviewHTML(cur)+(state.playerActions===0?`<div class="first-action-guide"><b>첫 행동 안내</b><br>① 스킬을 눌러 효과 확인 → ② 같은 버튼을 다시 눌러 실행<br>지원 스킬은 왼쪽 아래 아군을 눌러 대상을 선택하세요.</div>`:"")+`<div class="skill-detail ${passiveOpen||selectedSkill!==null?"visible":""} ${selectedSkill!==null&&!passiveOpen?"confirm":""}" role="status">${initialDetail}</div><button class="passive-button ${passiveOpen?"open":""}" type="button" data-passive aria-label="패시브 설명" aria-pressed="${passiveOpen}"></button>`+skillLabels.map((label,i)=>{const dis=(i===1&&cur.sp<2)||(i===2&&cur.energy<ultEnergyRequirement(cur)),selected=selectedSkill===i;return `<button class="skill ${i===2?"ult":""} ${selected?"selected":""}" data-skill="${i}" data-key="${i===0?"1":i===1?"2":"Q"}" aria-label="${i===0?"스킬 1":i===1?"스킬 2":"궁극기"}" aria-pressed="${selected}" ${dis?"disabled":""}><span>${selected?"다시 눌러 공격":i===0?"SKILL 1":i===1?"SKILL 2":"ULTIMATE"}</span><b>${label}</b></button>`}).join("");
+   panel.innerHTML=sharedGaugeHTML()+`<div class="skill-detail ${passiveOpen||selectedSkill!==null?"visible":""} ${selectedSkill!==null&&!passiveOpen?"confirm":""}" role="status">${initialDetail}</div><button class="passive-button ${passiveOpen?"open":""}" type="button" data-passive aria-label="패시브 설명" aria-pressed="${passiveOpen}"></button>`+skillLabels.map((label,i)=>{const dis=(i===1&&cur.sp<2)||(i===2&&cur.energy<ultEnergyRequirement(cur)),selected=selectedSkill===i;return `<button class="skill ${i===2?"ult":""} ${selected?"selected":""}" data-skill="${i}" data-key="${i===0?"1":i===1?"2":"Q"}" aria-label="${i===0?"스킬 1":i===1?"스킬 2":"궁극기"}" aria-pressed="${selected}" ${dis?"disabled":""}><span>${selected?"다시 눌러 공격":i===0?"SKILL 1":i===1?"SKILL 2":"ULTIMATE"}</span><b>${label}</b></button>`}).join("");
    const detail=panel.querySelector(".skill-detail");
    const showDetail=(i,confirm=false)=>{detail.innerHTML=skillDetailHTML(cur,i,confirm);detail.classList.toggle("confirm",confirm);detail.classList.add("visible")};
    const showPassiveDetail=()=>{detail.innerHTML=passiveDetailHTML(cur);detail.classList.remove("confirm");detail.classList.add("visible")};

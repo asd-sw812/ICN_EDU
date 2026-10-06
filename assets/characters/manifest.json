@@ -79,9 +79,10 @@
   {
     "id": "counter_3",
     "concept": "야간 경비원",
-    "gender": "male",
+    "gender": "female",
     "file": "counter_3-ld-v4.webp",
-    "seed": 3928010877
+    "seed": 3928010877,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-06"
   },
   {
     "id": "follow_0",
@@ -107,9 +108,10 @@
   {
     "id": "follow_3",
     "concept": "거리 타악 연주자",
-    "gender": "male",
+    "gender": "female",
     "file": "follow_3-ld-v4.webp",
-    "seed": 4111097074
+    "seed": 4111097074,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-06"
   },
   {
     "id": "freeze_0",
@@ -387,9 +389,10 @@
   {
     "id": "execute_3",
     "concept": "도축장 퇴직 경비원",
-    "gender": "male",
+    "gender": "female",
     "file": "execute_3-ld-v4.webp",
-    "seed": 2427876484
+    "seed": 2427876484,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-06"
   },
   {
     "id": "crit_0",

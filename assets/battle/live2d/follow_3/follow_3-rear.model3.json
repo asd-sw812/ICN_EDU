@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "follow_3-rear.moc3",
+		"Textures": [
+			"follow_3-rear.2048/texture_00.png"
+		],
+		"DisplayInfo": "follow_3-rear.cdi3.json"
+	}
+}

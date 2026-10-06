@@ -1,7 +1,7 @@
 /* Cubism surface with continuous regional weights. No rectangular part cut-outs. */
 (()=>{
  function renderer(isBoss=false){
- const VERSION='boss1',cache=new Map();let current=null,sequence=0,pendingPose=null;
+ const VERSION=isBoss?'boss1':'20261006-rear1',cache=new Map();let current=null,sequence=0,pendingPose=null;
  async function checked(url){const r=await fetch(url);if(!r.ok)throw Error('Character asset '+r.status);return r}
  async function load(id){
   if(cache.has(id)){const a=cache.get(id);cache.delete(id);cache.set(id,a);return a}
@@ -9,16 +9,17 @@
    const C=window.Live2DCubismCore;if(!C)throw Error('Cubism Core unavailable');
    for(let i=0;i<80;i++){try{C.Version.csmGetVersion();break}catch(e){if(i===79)throw e;await new Promise(r=>setTimeout(r,100))}}
    const config=await checked(new URL('assets/battle/rigs/'+id+'.json?v='+VERSION,document.baseURI)).then(r=>r.json());
+   if(!isBoss&&config.Model3)return {native:true,config};
    const data=await checked(new URL(config.Moc,document.baseURI)).then(r=>r.arrayBuffer());
    const moc=C.Moc.fromArrayBuffer(data);if(!moc)throw Error('Invalid Cubism surface');
    try{const image=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=new URL(config.Texture+'?v='+VERSION,document.baseURI)});return {moc,image,config}}
    catch(e){moc._release();throw e}
   })();cache.set(id,pending);
-  try{const value=await pending;for(const key of [...cache.keys()]){if(cache.size<=8)break;if(key===id||key===current?.id)continue;const old=cache.get(key);cache.delete(key);old.then(a=>a.moc._release()).catch(()=>{})}return value}
+   try{const value=await pending;for(const key of [...cache.keys()]){if(cache.size<=8)break;if(key===id||key===current?.id)continue;const old=cache.get(key);cache.delete(key);old.then(a=>a.moc?._release()).catch(()=>{})}return value}
   catch(e){cache.delete(id);throw e}
  }
- function dispose(){sequence++;if(!current)return;cancelAnimationFrame(current.frame);current.canvas.remove();current.container.classList.remove('live2d-ready');current.model.release();current.gl.getExtension('WEBGL_lose_context')?.loseContext();current=null}
- function perform(id,options){pendingPose={id,...options,start:performance.now()/1000};if(current?.id===id)current.action=pendingPose}
+ function dispose(){sequence++;if(!isBoss)window.NativeRearCubism?.dispose();if(!current)return;cancelAnimationFrame(current.frame);current.canvas.remove();current.container.classList.remove('live2d-ready');current.model.release();current.gl.getExtension('WEBGL_lose_context')?.loseContext();current=null}
+ function perform(id,options){pendingPose={id,...options,start:performance.now()/1000};if(!isBoss)window.NativeRearCubism?.perform(id,options);if(current?.id===id)current.action=pendingPose}
  function recoil(id){perform(id,{type:'shot',windup:0,total:550,strength:1})}
  function motionGain(){return document.body.classList.contains('character-motion-off')?0:matchMedia('(prefers-reduced-motion:reduce)').matches?.5:1}
  function anchor(id,name='hand'){
@@ -32,9 +33,11 @@
  function shader(gl,type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
  async function mount(container,id){
   if(current?.container===container&&current.id===id)return;
+  if(!isBoss&&window.NativeRearCubism?.active(id,container))return;
   dispose();if(!container||!id)return;const ticket=++sequence;
   try{
    const asset=await load(id);if(ticket!==sequence||!container.isConnected)return;
+   if(asset.native){await window.NativeRearCubism.mount(container,id,asset.config);return}
    const model=Live2DCubismCore.Model.fromMoc(asset.moc);model.parameters.values.set(model.parameters.defaultValues);model.update();
    const d=model.drawables,index=d.ids.indexOf('Rear_Body');if(index<0){model.release();throw Error('Connected Cubism surface missing')}
    const rig=window.ConnectedRig,mesh=rig.subdivide(d.vertexPositions[index],d.indices[index],2);

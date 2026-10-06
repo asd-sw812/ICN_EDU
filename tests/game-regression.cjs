@@ -3,12 +3,20 @@ const html=fs.readFileSync(__dirname+'/../game','utf8');
 const scripts=[...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(s=>s.trim());
 scripts.forEach(s=>new vm.Script(s));
 const game=scripts.find(s=>s.includes('const DECKS='));
+assert(!html.includes('첫 행동 안내'));
+assert(!html.includes('panel.innerHTML=skillOverviewHTML(cur)'));
 const ctx=vm.createContext({console,VFX:{event(){},queue(){},busy:false},localStorage:{getItem(){return null}},window:{},document:{body:{classList:{contains(){return true}}}}});
 vm.runInContext(game.slice(0,game.indexOf('const VFX =')).replace('}catch(_){return null}', '}catch(error){throw error}'),ctx);
 const result=vm.runInContext(`(()=>{
  let previews=0,removed=0;
  for(const d of DECKS){
   selectedDeckId=d.id;
+  state=null;
+  for(const c of d.party){
+   const detail=characterSkillsHTML(c);
+   if((detail.match(/<section>/g)||[]).length!==3||!detail.includes('궁극기'))throw Error('Missing character skills '+c.id);
+   if(state!==null)throw Error('Formation detail leaked battle state '+c.id);
+  }
   const players=d.party.map(makePlayer);
   state={mode:'raid',deckId:d.id,players,boss:makeBoss(),acted:[],currentId:players[0].id,selectedTargetId:players[0].id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,roundsCompleted:0,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
   for(const p of players){

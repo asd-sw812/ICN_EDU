@@ -939,7 +939,7 @@ body.battle-mode .shared-gauge{position:absolute;right:0;bottom:calc(100% + 235p
  body.battle-mode .unit-head{padding-left:36px}
  body.battle-mode .sp-readout,body.battle-mode .energy-readout{grid-template-columns:44px 1fr 34px}
  body.battle-mode .unit-effect-tray .effect-empty{display:none}
- body.battle-mode .boss-card{position:fixed;left:80px;right:auto;top:140px;width:350px;padding:8px 10px;background:#081522ed}
+ body.battle-mode .boss-card{position:fixed;left:auto;right:250px;top:52px;width:350px;padding:8px 10px;background:#081522ed}
  body.battle-mode .boss-card .intent{position:static;max-width:none;margin:6px 0 0;padding:5px 7px;font-size:10px;text-align:left}
 }
 </style>
@@ -1029,7 +1029,8 @@ body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail
 
 <script src="https://cubism.live2d.com/sdk-web/core/06/live2dcubismcore.min.js"></script>
 <script src="assets/battle/connected-rig.js?v=20261005-bossrig1"></script>
-<script src="assets/battle/live2d.js?v=20261005-bossrig1"></script>
+<script src="assets/battle/native-cubism.js?v=20261006-rear1"></script>
+<script src="assets/battle/live2d.js?v=20261006-rear1"></script>
 <script src="assets/battle/particle-vfx.js?v=20261005-motion11"></script>
 <script src="assets/battle/combat-director.js?v=20261005-bossrig1"></script>
 <script>

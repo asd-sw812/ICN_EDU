@@ -137,7 +137,35 @@
  };
  const charShape=[{angle:-.32,spread:.55,size:1.12,speed:1.15,offset:-10},{angle:.35,spread:1.8,size:.87,speed:1.04,offset:12},{angle:-1.05,spread:1.05,size:.96,speed:.9,offset:-24},{angle:.8,spread:2.4,size:1.2,speed:.78,offset:28}];
  const presets=Object.fromEntries(Object.entries(designRows).map(([id,r])=>[id,{id,mechanism:r[0],rhythm:r[1],shape:r[2],movement:r[3],main:r[4],response:r[5],residue:r[6],motion:r[7],strong:r[8],identity:r[9],palette:palettes[id]}]));
- const characterModifiers=Object.fromEntries(Object.keys(presets).flatMap(id=>charShape.map((v,i)=>[id+'_'+i,{...v,label:variantRows[id][i]}])));
+ // Cosmetic composition only: a silhouette changes one observed contact, never its hit count.
+ // Assignments follow each operative's existing resource, passive and support role.
+ const compositions={
+  focus:{aspect:.82,density:.9,radius:.7,residue:.8,axis:0,spin:.75,spacing:.7},
+  fan:{aspect:.9,density:1.12,radius:1.35,residue:1,axis:.16,spin:1.1,spacing:1.25},
+  needle:{aspect:.58,density:.82,radius:.55,residue:.7,axis:-.12,spin:.45,spacing:.65},
+  heavy:{aspect:1.18,density:.92,radius:1.2,residue:1.2,axis:.12,spin:.65,spacing:1.1},
+  coil:{aspect:.85,density:1.05,radius:1.15,residue:1.15,axis:-.2,spin:1.45,spacing:1},
+  veil:{aspect:1.12,density:1.08,radius:1.3,residue:1.25,axis:.08,spin:.7,spacing:1.2},
+  rake:{aspect:.72,density:1.05,radius:1,residue:.85,axis:-.28,spin:1.15,spacing:1.4},
+  rise:{aspect:.8,density:.95,radius:.85,residue:1.15,axis:-.1,spin:.8,spacing:.9}
+ };
+ const compositionRows={
+  bullet:['focus','fan','needle','heavy'],poison:['coil','fan','veil','rise'],
+  counter:['heavy','rake','focus','veil'],follow:['rake','coil','needle','heavy'],
+  freeze:['rise','fan','needle','heavy'],lifesteal:['coil','fan','rake','rise'],
+  bounce:['rake','focus','coil','rise'],hp:['needle','heavy','veil','coil'],
+  speed:['needle','rake','fan','veil'],debuff:['coil','rake','veil','heavy'],
+  ult:['focus','rake','coil','rise'],enhance:['heavy','rake','fan','veil'],
+  skill:['focus','coil','needle','rise'],execute:['needle','rake','fan','heavy'],
+  crit:['focus','needle','rake','heavy'],cleanse:['rake','fan','needle','rise'],
+  burn:['rise','veil','focus','coil'],bleed:['needle','rake','coil','heavy'],
+  electric:['focus','rake','coil','heavy'],defense:['heavy','fan','focus','veil'],
+  radiance:['needle','fan','coil','heavy'],wave:['focus','fan','rake','coil'],
+  tree:['rise','rake','needle','veil'],wind:['needle','fan','coil','heavy']
+ };
+ const characterModifiers=Object.fromEntries(Object.keys(presets).flatMap(id=>charShape.map((v,i)=>{
+  const composition=compositionRows[id][i];return [id+'_'+i,{...v,...compositions[composition],composition,label:variantRows[id][i]}];
+ })));
  const skillModifiers=[{label:'1스킬',size:.82,density:.75,residue:.5},{label:'2스킬',size:1,density:1,residue:.75},{label:'궁극기',size:1.32,density:1.2,residue:1}];
  let ambient=[],monochrome=false;const shakes=new Set();
  function shake(target,strength,duration=140){
@@ -148,15 +176,16 @@
  const effectMetrics={contacts:0,byDeck:{},byActor:{},kinds:{}};
  function config(deck,custom={}){
   const preset=presets[deck];if(!preset)return null;
-  const slot=Math.max(0,Math.min(3,custom.slot??(Number(custom.actorId?.split('_').pop())||0)));
+  const actorSlot=custom.actorId?.startsWith(deck+'_')?Number(custom.actorId.split('_').pop()):undefined;
+  const slot=Math.max(0,Math.min(3,Number.isInteger(actorSlot)?actorSlot:custom.slot??0));
   const character=characterModifiers[deck+'_'+slot],skill=skillModifiers[custom.tier||0];
   const speed=character.speed*(['speed','wind'].includes(deck)&&custom.effectiveSpeed?clamp(custom.effectiveSpeed/120,.7,1.8):1);
   return {...preset,...character,speed,skill,palette:monochrome?['#bdbdbd','#777777','#ffffff']:preset.palette,...custom};
  }
- function sprite(p,c,texture,size,options={}){const spec={x:p.x,y:p.y,texture,color:rgb(c.palette[options.tint??0]),size:size*c.size*(c.skill?.size||1),life:.32,alpha:.8,fade:.012,shrink:0,priority:1,...options};spec.vx=(spec.vx||0)*c.speed;spec.vy=(spec.vy||0)*c.speed;spec.life/=c.speed;particle(spec)}
- function scatter(p,c,textures,options={}){const spec={palette:c.palette,textures,count:Math.round(22*(c.skill?.density||1)),size:[6*c.size,18*c.size],speed:[65,230],direction:c.angle,spread:c.spread,gravity:20,life:[.18,.55],...options};spec.speed=spec.speed.map(n=>n*c.speed);spec.life=spec.life.map(n=>n/c.speed);emit(p,spec)}
+ function sprite(p,c,texture,size,options={}){const spec={x:p.x,y:p.y,texture,color:rgb(c.palette[options.tint??0]),size:size*c.size*(c.skill?.size||1),life:.32,alpha:.8,fade:.012,shrink:0,priority:1,...options};spec.aspect=(spec.aspect||1)*(c.aspect||1);spec.spin=(spec.spin||0)*(c.spin||1);spec.vx=(spec.vx||0)*c.speed;spec.vy=(spec.vy||0)*c.speed;spec.life/=c.speed;particle(spec)}
+ function scatter(p,c,textures,options={}){const spec={palette:c.palette,textures,count:Math.round(22*(c.skill?.density||1)),size:[6,18],speed:[65,230],direction:c.angle,spread:c.spread,gravity:20,life:[.18,.55],...options};spec.count=Math.round(spec.count*(c.density||1));spec.radius=(spec.radius??6)*(c.radius||1);spec.size=spec.size.map(n=>n*c.size);spec.speed=spec.speed.map(n=>n*c.speed);spec.life=spec.life.map(n=>n*(c.residue||1)/c.speed);emit(p,spec)}
  function line(a,b,c,texture='spark',options={}){const dx=b.x-a.x,dy=b.y-a.y;const p={x:(a.x+b.x)/2,y:(a.y+b.y)/2};sprite(p,c,texture,Math.hypot(dx,dy),{rotation:Math.atan2(dy,dx),aspect:.1,life:.2,...options})}
- function orbit(p,c,texture,count,radius,options={}){const {size=28,...rest}=options;for(let i=0;i<count;i++){const a=i/count*TAU+c.angle;const q={x:p.x+Math.cos(a)*radius,y:p.y+Math.sin(a)*radius*.7};sprite(q,c,texture,size,{rotation:a+Math.PI/2,vx:-Math.sin(a)*75,vy:Math.cos(a)*50,life:.45,...rest})}}
+ function orbit(p,c,texture,count,radius,options={}){const {size=28,...rest}=options;radius*=c.radius||1;for(let i=0;i<count;i++){const a=i/count*TAU+c.angle;const q={x:p.x+Math.cos(a)*radius,y:p.y+Math.sin(a)*radius*(c.composition==='heavy'?.42:c.composition==='rise'?1:.7)};sprite(q,c,texture,size,{rotation:a+Math.PI/2,vx:-Math.sin(a)*75,vy:Math.cos(a)*50,life:.45,...rest})}}
  function transfer(a,b,deck,custom={}){
   if(!init())return;const c=config(deck,custom);if(!c)return;
   const texture=deck==='lifesteal'||deck==='hp'?'wisp':deck==='bullet'?'chip':deck==='electric'?'arc':'energy';
@@ -175,8 +204,11 @@
    if(distance<90)return;
    const duration=.16,angle=Math.atan2(dy,dx);
    // The cast trail is a cluster of textured fragments, not another logical hit.
-   for(let i=0;i<7+tier*3;i++)schedule(i*.004,()=>sprite({x:from.x+rand(-12,12),y:from.y+rand(-20,20)},c,texture,rand(35,85),
-    {rotation:angle,aspect:rand(.4,.85),vx:dx/duration/c.speed,vy:dy/duration/c.speed,life:duration*c.speed,alpha:rand(.3,.7),trail:.075,depth:i%3}));
+   for(let i=0;i<7+tier*3;i++)schedule(i*.004,()=>{
+    const lateral=c.composition==='fan'?((i%3)-1)*32:c.composition==='coil'?Math.sin(i*1.7)*28:c.composition==='needle'?rand(-5,5):rand(-20,20);
+    const start={x:from.x-Math.sin(angle)*lateral+rand(-12,12),y:from.y+Math.cos(angle)*lateral};
+    sprite(start,c,texture,rand(35,85),{rotation:angle,aspect:rand(.4,.85),vx:(p.x-start.x)/duration/c.speed,vy:(p.y-start.y)/duration/c.speed,life:duration*c.speed,alpha:rand(.3,.7),trail:.075,depth:i%3});
+   });
   });
  }
  // Texture families govern volume, debris, direction and residue independently of colour.
@@ -197,7 +229,7 @@
  };
  function layers(q,c,custom){
   const [volume,debris,axis,spread,velocity,gravity]=envelopes[c.id],tier=c.tier||0;
-  const direction=c.id==='counter'&&custom.reactive?Math.atan2(q.y-custom.origin.y,q.x-custom.origin.x):axis+c.angle*.35;
+  const direction=c.id==='counter'&&custom.reactive?Math.atan2(q.y-custom.origin.y,q.x-custom.origin.x):axis+c.angle*.35+(c.axis||0);
   const dot=custom.dot&&!custom.settlement,density=dot?.55:1,power=dot?.8:1;
   // Rear volume: irregular opaque smoke against the background gives the bright edge contrast.
   scatter(q,c,['smoke'],{count:4+tier*2,size:[85*power,150*power],speed:[15,65],direction,spread,
@@ -226,7 +258,7 @@
   layers(q,c,{...custom,origin});
   const main=(texture,size,opts={})=>sprite(q,c,texture,size,{life:.38,alpha:.7,...opts});
   const plume=(texture,angle,size,count=3,opts={})=>{
-   for(let i=0;i<count;i++)schedule(i*.018,()=>sprite({x:q.x+Math.cos(angle)*i*16,y:q.y+Math.sin(angle)*i*16},c,texture,size-i*22,
+   for(let i=0;i<count;i++)schedule(i*.018/c.speed,()=>sprite({x:q.x+Math.cos(angle)*i*16*c.spacing-Math.sin(angle)*(c.composition==='rake'?(i-(count-1)/2)*30:0),y:q.y+Math.sin(angle)*i*16*c.spacing+Math.cos(angle)*(c.composition==='rake'?(i-(count-1)/2)*30:0)},c,texture,size-i*22,
     {rotation:angle+(texture==='flame'?Math.PI/2:0),aspect:.65,life:.35+i*.045,vx:Math.cos(angle)*65,vy:Math.sin(angle)*65,alpha:.5,...opts}));
   };
   switch(deck){

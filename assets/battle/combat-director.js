@@ -10,7 +10,7 @@
  function begin(actor,meta,api){
   const c=window.ParticleVFX?.config(meta.deck,{...meta.presentation,tier:meta.tier});if(!c)return;
   meta.family=meta.support?'support':c.motion;meta.directed=true;
-  window.BattleLive2D?.perform(actor.id,{type:meta.family,windup:meta.windup,total:meta.total,strength:c.size*(1+meta.tier*.16),direction:c.angle,reach:c.speed});
+  window.BattleLive2D?.perform(actor.id,{type:meta.family,windup:meta.windup,total:meta.total,strength:c.size*(1+meta.tier*.16),direction:c.angle+(c.axis||0),reach:c.speed});
   const enemy=api.target();window.ParticleVFX.begin(meta.support?meta.origin:enemy,meta.deck,meta.tier,meta.windup,{...meta.presentation,origin:meta.origin});
   const fighter=document.querySelector('#activeFighter .fighter-art');
   if(fighter&&!api.reduced&&['melee','dash','brace','draw'].includes(meta.family)){

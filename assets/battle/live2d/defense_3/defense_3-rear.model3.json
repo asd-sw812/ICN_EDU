@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "defense_3-rear.moc3",
+		"Textures": [
+			"defense_3-rear.2048/texture_00.png"
+		],
+		"DisplayInfo": "defense_3-rear.cdi3.json"
+	}
+}

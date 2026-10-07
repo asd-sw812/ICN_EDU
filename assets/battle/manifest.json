@@ -190,5 +190,201 @@
     "source": "NovelAI V5 Full Image2Image",
     "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and independent brush-arm keyforms",
     "model": "assets/battle/live2d/follow_3/follow_3-rear.model3.json"
+  },
+  {
+    "id": "hp_0",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 903313154,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female::, solo, 5::back view, facing away, back of head visible, no face visible::, short black bob haircut, charcoal theatrical long coat, crimson scarf, fitted black trousers, holding a cracked white theatre mask close to chest, black closed block heel shoes, 6::entire body in frame from top of head to soles of shoes, smaller figure centered with generous margin above head and below feet, both complete shoes::, 4::tall adult proportions, small head, long legs::, same original anime illustration style, clean lineart, cel shading, fully clothed, isolated character, transparent background, no scenery, no ground, no stage, no platform, -5::old woman, elderly, wrinkles, beard, male, child, chibi, realistic, text, banner, frame::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and scarf keyforms",
+    "model": "assets/battle/live2d/hp_0/hp_0-rear.model3.json"
+  },
+  {
+    "id": "speed_3",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 2339472307,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female, youthful face, smooth skin::, woman, feminine, beautiful, 6::from behind, back view, facing away, face not visible, short chestnut bob haircut::, solo, short chestnut hair, hazel eyes, brown delivery jacket, navy trousers, newsboy cap, clutching a stack of newspapers while leaping over a puddle, isolated on transparent background, no floating paper sheets, fully clothed, 4::tall adult, mature body proportions, small head, long legs, long arms, slender body, elegant proportions::, 3::anime game character illustration, detailed anime face, clean lineart, cel shading::, full body, standing at eye level, character centered, 1.5::one complete illustrated scene, coherent background::, -5::chibi, super deformed, sd, big head, short legs, child, toddler, miniature, figurine, diorama, doll::, -3::realistic, photorealistic, skin texture, pores, 3d, white background::, -4::science fiction, sci-fi, futuristic, cyberpunk, neon, hologram, powered armor, spaceship::, 4::short chestnut bob haircut, flat leather ankle boots::, -5::old woman, elderly, wrinkles, aged face, beard, mustache::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and jacket-tail keyforms",
+    "model": "assets/battle/live2d/speed_3/speed_3-rear.model3.json"
+  },
+  {
+    "id": "ult_1",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 677460591,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female, youthful face, smooth skin::, woman, feminine, beautiful, 6::from behind, back view, facing away, face not visible::, solo, short silver hair, violet eyes, midnight blue vest, cream shirt, dark trousers, astrolabe and star charts, adjusting an antique mechanical star calendar, isolated on transparent background, no floating charts, only the character and held astrolabe, fully clothed, 4::tall adult, mature body proportions, small head, long legs, long arms, slender body, elegant proportions::, 3::anime game character illustration, detailed anime face, clean lineart, cel shading::, full body, standing at eye level, character centered, 1.5::one complete illustrated scene, coherent background::, -5::chibi, super deformed, sd, big head, short legs, child, toddler, miniature, figurine, diorama, doll::, -3::realistic, photorealistic, skin texture, pores, 3d, white background::, -4::science fiction, sci-fi, futuristic, cyberpunk, neon, hologram, powered armor, spaceship::, 4::short silver bob haircut, low block heel shoes::, -5::old woman, elderly, wrinkles, aged face, beard, mustache::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and astrolabe-arm keyforms",
+    "model": "assets/battle/live2d/ult_1/ult_1-rear.model3.json"
+  },
+  {
+    "id": "enhance_3",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 665751110,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female, youthful face, smooth skin::, woman, feminine, beautiful, 6::from behind, back view, facing away, face not visible::, solo, short blonde hair, green eyes, elegant shoulders, brass-colored vest, rolled sleeves, dark trousers, tuning fork and wooden instrument tool, tuning a cello as golden resonance wraps around it, isolated on transparent background, only the character and held cello, no scenery, fully clothed, 4::tall adult, mature body proportions, small head, long legs, long arms, slender body, elegant proportions::, 3::anime game character illustration, detailed anime face, clean lineart, cel shading::, full body, standing at eye level, character centered, 1.5::one complete illustrated scene, coherent background::, -5::chibi, super deformed, sd, big head, short legs, child, toddler, miniature, figurine, diorama, doll::, -3::realistic, photorealistic, skin texture, pores, 3d, white background::, -4::science fiction, sci-fi, futuristic, cyberpunk, neon, hologram, powered armor, spaceship::, 4::short blonde bob haircut, adult woman::, -5::old woman, elderly, wrinkles, aged face, beard, mustache::, 4::black low block heel shoes, both feet completely visible, full body::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and bow-arm keyforms",
+    "model": "assets/battle/live2d/enhance_3/enhance_3-rear.model3.json"
+  },
+  {
+    "id": "defense_3",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 431449490,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female::, solo, 5::back view, facing away, back of head visible, no face visible::, short black bob haircut, brown water-resistant long coat, navy trousers, tall lace-up work boots, holding a heavy wooden floodgate lever in her right hand, full body, both complete boots visible, 4::tall adult proportions, small head, long legs::, same original anime illustration style, clean lineart, cel shading, fully clothed, isolated character, transparent background, no scenery, no ground, no water, no platform, -5::old woman, elderly, wrinkles, beard, male, child, chibi, realistic::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and coat-tail keyforms",
+    "model": "assets/battle/live2d/defense_3/defense_3-rear.model3.json"
+  },
+  {
+    "id": "wind_3",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 240488994,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n0.7::artist:shiun (siun5513)::,  \n0.7::artist:suzumori uina::,  \n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n \n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n-2::realistic, ::\n\npainterly, full body, -1::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female::, solo, 5::back view, facing away, no face visible::, short silver bob haircut, navy harbor coat, dark trousers, black block heel ankle boots, holding maritime signal flags in both hands, full body, both complete feet visible, tall adult proportions, long legs, fully clothed, same original anime illustration style, clean lineart, cel shading, isolated character, transparent background, no scenery, no ground, no pier, no platform, -5::male, beard, old woman, elderly, wrinkles, child, chibi, realistic::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and right-flag-arm keyforms",
+    "model": "assets/battle/live2d/wind_3/wind_3-rear.model3.json"
+  },
+  {
+    "id": "wave_3",
+    "view": "rear",
+    "anlas": 0,
+    "seed": 1995342573,
+    "prompt": {
+      "caption": {
+        "base_caption": "0.7::artist:shiun (siun 5513)::, 0.75::artist:zero (miraichizu)::, 1::artist:healthyman::, 0.5::artist:samidare (hoshi)::, 0.6:::artist:kimhiro::, artist:doremi, 1.5::artist:aiamu iamu::, \n\n1.0::artist:a.t. zero::, 0.8::channel (caststation)::, \n\n\n\n\n0.7::artist:shiun (siun5513)::,  \n\n0.7::artist:suzumori uina::,  \n\n0.35::aiamu iamu, void 0 ::, 0.21::artist:natwjeq::, 0.7::artist:kimhiro::, 0.63::artist:mi 398 ::, 0.7::artist:yoggi (stretchmen)::\n\n\n\n\n\n\n\n, 0.56::artist:zero (miraichizu)::, 0.7::artist:healthyman::, 0.7::artist:channel::, 1.3::lost_property_control_organization_(samidare)::\n\n\n\n\n \n\n\n\n\nyear 2026, year 2025, year 2024, incredibly absurdres, very aesthetic, highres, masterpiece, best quality, amazing quality, best illustration, digital art, -1::artist collaboration, multiple character::,\n\n\n\n\n-2::realistic, ::\n\n\n\n\npainterly, full body, 2::long shot, wide shot::, 2::diorama, dynamic pose, bold outlines, thick lines,  messy out lines::, transparent background, very aesthetic, masterpiece, no text",
+        "char_captions": [
+          {
+            "char_caption": "5::young adult woman, female::, solo, 5::back view, facing away, back of head visible, no face visible::, short dark bob haircut, long sand colored coat, navy trousers, carrying glass bottles containing letters, black low block heel ankle boots, 6::entire body in frame from top of head to soles of shoes, smaller figure centered with generous margin above head and below feet, both complete shoes::, 4::tall adult proportions, small head, long legs::, same original anime illustration style, clean lineart, cel shading, fully clothed, isolated character, transparent background, no scenery, no ground, no water, no platform, -5::old woman, elderly, wrinkles, beard, male, child, chibi, realistic, text, banner, frame::",
+            "centers": [
+              {
+                "x": 0.5,
+                "y": 0.5
+              }
+            ]
+          }
+        ]
+      },
+      "use_coords": false,
+      "use_order": true,
+      "legacy_uc": false
+    },
+    "source": "NovelAI V5 Full Image2Image",
+    "animation": "Cubism Editor 5.3: five manual PSD parts, whole-body breathing and right-letter-arm keyforms",
+    "model": "assets/battle/live2d/wave_3/wave_3-rear.model3.json"
   }
 ]

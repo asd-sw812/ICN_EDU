@@ -200,9 +200,10 @@
   {
     "id": "hp_0",
     "concept": "극장 대역 배우",
-    "gender": "male",
+    "gender": "female",
     "file": "hp_0-ld-v4.webp",
-    "seed": 903313154
+    "seed": 903313154,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "hp_1",
@@ -249,9 +250,10 @@
   {
     "id": "speed_3",
     "concept": "새벽 신문 배달원",
-    "gender": "male",
+    "gender": "female",
     "file": "speed_3-ld-v4.webp",
-    "seed": 2339472307
+    "seed": 2339472307,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "debuff_0",
@@ -291,9 +293,10 @@
   {
     "id": "ult_1",
     "concept": "천문력 편집자",
-    "gender": "male",
+    "gender": "female",
     "file": "ult_1-ld-v4.webp",
-    "seed": 677460591
+    "seed": 677460591,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "ult_2",
@@ -333,9 +336,10 @@
   {
     "id": "enhance_3",
     "concept": "악기 조율사",
-    "gender": "male",
+    "gender": "female",
     "file": "enhance_3-ld-v4.webp",
-    "seed": 665751110
+    "seed": 665751110,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "skill_0",
@@ -558,9 +562,10 @@
   {
     "id": "defense_3",
     "concept": "댐 관리인",
-    "gender": "male",
+    "gender": "female",
     "file": "defense_3-ld-v4.webp",
-    "seed": 431449490
+    "seed": 431449490,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "radiance_0",
@@ -614,9 +619,10 @@
   {
     "id": "wave_3",
     "concept": "유리병 편지 수집가",
-    "gender": "male",
+    "gender": "female",
     "file": "wave_3-ld-v4.webp",
-    "seed": 1995342573
+    "seed": 1995342573,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   },
   {
     "id": "tree_0",
@@ -670,8 +676,9 @@
   {
     "id": "wind_3",
     "concept": "항구 도선사",
-    "gender": "male",
+    "gender": "female",
     "file": "wind_3-ld-v4.webp",
-    "seed": 240488994
+    "seed": 240488994,
+    "revision": "NovelAI Image2Image with imported original metadata, 2026-10-07"
   }
 ]

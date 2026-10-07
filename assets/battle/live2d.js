@@ -1,7 +1,7 @@
 /* Cubism surface with continuous regional weights. No rectangular part cut-outs. */
 (()=>{
  function renderer(isBoss=false){
- const VERSION=isBoss?'boss1':'20261006-rear1',cache=new Map();let current=null,sequence=0,pendingPose=null;
+ const VERSION=isBoss?'boss1':'20261007-polish',cache=new Map();let current=null,sequence=0,pendingPose=null;
  async function checked(url){const r=await fetch(url);if(!r.ok)throw Error('Character asset '+r.status);return r}
  async function load(id){
   if(cache.has(id)){const a=cache.get(id);cache.delete(id);cache.set(id,a);return a}
@@ -23,12 +23,12 @@
  function recoil(id){perform(id,{type:'shot',windup:0,total:550,strength:1})}
  function motionGain(){return document.body.classList.contains('character-motion-off')?0:matchMedia('(prefers-reduced-motion:reduce)').matches?.5:1}
  function anchor(id,name='hand'){
-  if(current?.id!==id)return null;const run=current,p=run.profile;
+  if(current?.id!==id)return isBoss?null:window.NativeRearCubism?.anchor(id,name)||null;const run=current,p=run.profile;
   const uv=name==='muzzle'?(p.muzzle||[.78,.22]):p.arms[1][1];
   const a=new Float32Array([uv[0]-.5,(.5-uv[1])*run.aspect]),out=new Float32Array(2);
   window.ConnectedRig.deform(a,out,run.aspect,p,performance.now()/1000,run.phase,run.action,motionGain());
-  const r=run.container.getBoundingClientRect(),fit=Math.min(r.width,r.height/run.aspect)*.97;
-  return {x:r.left+r.width/2+out[0]*fit,y:r.top+r.height/2-out[1]*fit};
+  const r=run.container.getBoundingClientRect(),f=isBoss?[0,0,1,1]:run.visibleFrame,fit=Math.min(r.width*.9/f[2],r.height*.92/(f[3]*run.aspect));
+  return {x:r.left+r.width/2+(out[0]-(isBoss?0:f[0]+f[2]/2-.5))*fit,y:isBoss?r.top+r.height/2-out[1]*fit:r.top+r.height*.97+((.5-f[1]-f[3])*run.aspect-out[1])*fit};
  }
  function shader(gl,type,source){const s=gl.createShader(type);gl.shaderSource(s,source);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));return s}
  async function mount(container,id){
@@ -47,7 +47,7 @@
    for(let i=0;i<base.length;i+=2){uvs[i]=base[i]+.5;uvs[i+1]=.5-base[i+1]/aspect}
    const canvas=document.createElement('canvas');canvas.className='cubism-character'+(isBoss?' boss-surface':'');canvas.setAttribute('aria-label',isBoss?'움직이는 보스':'전투 캐릭터');
    const gl=canvas.getContext('webgl',{alpha:true,premultipliedAlpha:true,antialias:true});if(!gl){model.release();throw Error('WebGL unavailable')}
-   const program=gl.createProgram();gl.attachShader(program,shader(gl,gl.VERTEX_SHADER,'attribute vec2 p;attribute vec2 uv;uniform vec2 scale;varying vec2 tex;void main(){gl_Position=vec4(p*scale,0.,1.);tex=uv;}'));
+   const program=gl.createProgram();gl.attachShader(program,shader(gl,gl.VERTEX_SHADER,'attribute vec2 p;attribute vec2 uv;uniform vec2 scale;uniform vec2 offset;varying vec2 tex;void main(){gl_Position=vec4(p*scale+offset,0.,1.);tex=uv;}'));
    gl.attachShader(program,shader(gl,gl.FRAGMENT_SHADER,'precision mediump float;uniform sampler2D image;varying vec2 tex;void main(){if(tex.x<0.||tex.x>1.||tex.y<0.||tex.y>1.)discard;gl_FragColor=texture2D(image,tex);}'));
    gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS)){model.release();throw Error(gl.getProgramInfoLog(program))}gl.useProgram(program);
    const p=gl.getAttribLocation(program,'p'),uv=gl.getAttribLocation(program,'uv'),scale=gl.getUniformLocation(program,'scale');
@@ -55,7 +55,7 @@
    const texture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,texture);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,true);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,asset.image);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
    const phase=Array.from(id).reduce((n,c)=>n+c.charCodeAt(0),0)*.13,profile=asset.config.Weights;
    const action=pendingPose?.id===id&&performance.now()/1000<pendingPose.start+pendingPose.total/1000?pendingPose:null;
-   const run={id,container,canvas,model,gl,frame:0,action,aspect,profile,phase};current=run;container.append(canvas);container.dataset.live2d=id;
+   const run={id,container,canvas,model,gl,frame:0,action,aspect,profile,phase,visibleFrame:asset.config.Frame||[0,0,1,1]};current=run;container.append(canvas);container.dataset.live2d=id;
    gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);gl.disable(gl.DEPTH_TEST);gl.disable(gl.CULL_FACE);
    const draw=now=>{
     if(current!==run)return;if(!container.isConnected){dispose();return}
@@ -64,7 +64,7 @@
      if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}gl.viewport(0,0,w,h);gl.clearColor(0,0,0,0);gl.clear(gl.COLOR_BUFFER_BIT);
      const gain=motionGain();
      if(!gain)out.set(base);else if(isBoss)rig.deformBoss(base,out,aspect,profile,now/1000,phase,run.action,gain);else rig.deform(base,out,aspect,profile,now/1000,phase,run.action,gain);
-     const fit=Math.min(w,h/aspect)*.97;gl.uniform2f(scale,2*fit/w,2*fit/h);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
+     const f=isBoss?[0,0,1,1]:(asset.config.Frame||[0,0,1,1]),fit=Math.min(w*.9/f[2],h*.92/(f[3]*aspect)),sx=2*fit/w,sy=2*fit/h;gl.uniform2f(scale,sx,sy);gl.uniform2f(gl.getUniformLocation(program,'offset'),isBoss?0:-(f[0]+f[2]/2-.5)*sx,isBoss?0:-.94-(.5-f[1]-f[3])*aspect*sy);gl.uniform1i(gl.getUniformLocation(program,'image'),0);
      gl.bindBuffer(gl.ARRAY_BUFFER,pos);gl.bufferData(gl.ARRAY_BUFFER,out,gl.DYNAMIC_DRAW);gl.enableVertexAttribArray(p);gl.vertexAttribPointer(p,2,gl.FLOAT,false,0,0);
      gl.bindBuffer(gl.ARRAY_BUFFER,tex);gl.enableVertexAttribArray(uv);gl.vertexAttribPointer(uv,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,ind);gl.bindTexture(gl.TEXTURE_2D,texture);gl.drawElements(gl.TRIANGLES,mesh.indices.length,gl.UNSIGNED_SHORT,0);
      container.classList.add('live2d-ready');run.frame=requestAnimationFrame(draw);

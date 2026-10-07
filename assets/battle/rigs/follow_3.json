@@ -1,1 +1,11 @@
-{"Version":1,"Method":"cubism-editor-keyforms","Model3":"assets/battle/live2d/follow_3/follow_3-rear.model3.json"}
+{
+  "Version": 1,
+  "Method": "cubism-editor-keyforms",
+  "Model3": "assets/battle/live2d/follow_3/follow_3-rear.model3.json",
+  "Frame": [
+    0.180288,
+    0.014803,
+    0.742788,
+    0.973684
+  ]
+}

@@ -41,4 +41,16 @@ const result=vm.runInContext(`(()=>{
 assert.equal(result.removed,84);assert.equal(result.previews,288);
 assert.deepStrictEqual(Array.from(result.resourceNames),['탄환','저장 피해','기록 피해','전류','축적 피해']);
 console.log(JSON.stringify(result));
-
+for(const file of fs.readdirSync(__dirname+'/../assets/battle/rigs').filter(f=>f.endsWith('.json')&&!f.startsWith('boss'))){
+ const frame=JSON.parse(fs.readFileSync(__dirname+'/../assets/battle/rigs/'+file)).Frame;
+ assert(frame?.length===4 && frame.every(Number.isFinite),file+' missing visible frame');
+ assert(frame[0]>=0&&frame[1]>=0&&frame[2]>0&&frame[3]>0&&frame[0]+frame[2]<=1.000001&&frame[1]+frame[3]<=1.000001,file+' invalid visible frame');
+}
+vm.runInContext(`(()=>{
+ showDamagePop=()=>{};
+ selectedDeckId='counter';state=null;const d=deck(),players=d.party.map(makePlayer);state={mode:'raid',deckId:'counter',players,boss:makeBoss(),logs:[],shared:{},score:0};
+ const source=players[0],boss=state.boss;boss.shield=0;boss.staggered=false;const before=boss.hp;
+ takePlayerEffectDamage(boss,100,source,{flat:true});
+ if(before-boss.hp!==Math.round(100*deckDamageScale()))throw Error('Flat damage multiplied by attack or minimum damage');
+})()`,ctx);
+console.log('Visible frames and flat effect damage passed');

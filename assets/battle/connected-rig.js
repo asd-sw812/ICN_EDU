@@ -58,6 +58,9 @@
    const shot=action?.type==='shot',melee=action?.type==='melee';
    const dash=action?.type==='dash',brace=action?.type==='brace',draw=action?.type==='draw';
    const reach=action?.reach||1,direction=action?.direction||0;
+   if(action?.type==='support'){dy-=power*gesture.prepare*.015*upper;dx+=power*gesture.settle*.005*torso}
+   if(action?.type==='hurt'){dx-=power*gesture.hit*.026*upper;dy+=power*gesture.hit*.008*torso}
+   if(action?.tier===2){dx+=power*gesture.hit*.018*upper;dy-=power*gesture.prepare*.009*torso}
    dx+=power*upper*(dash?gesture.hit*.012*reach:brace?-gesture.prepare*.004:draw?-gesture.hit*.004:0);
    dy+=power*torso*(brace?gesture.prepare*.004:draw?-gesture.prepare*.002:0);
    dx+=power*gesture.hit*direction*.002*torso;

@@ -10,10 +10,10 @@
  function begin(actor,meta,api){
   const c=window.ParticleVFX?.config(meta.deck,{...meta.presentation,tier:meta.tier});if(!c)return;
   meta.family=meta.support?'support':c.motion;meta.directed=true;
-  window.BattleLive2D?.perform(actor.id,{type:meta.family,windup:meta.windup,total:meta.total,strength:c.size*(1+meta.tier*.16),direction:c.angle+(c.axis||0),reach:c.speed});
+  window.BattleLive2D?.perform(actor.id,{type:meta.family,tier:meta.tier,windup:meta.windup,total:meta.total,strength:c.size*(1+meta.tier*.16),direction:c.angle+(c.axis||0),reach:c.speed});
   const enemy=api.target();window.ParticleVFX.begin(meta.support?meta.origin:enemy,meta.deck,meta.tier,meta.windup,{...meta.presentation,origin:meta.origin});
   const fighter=document.querySelector('#activeFighter .fighter-art');
-  if(fighter&&!api.reduced&&['melee','dash','brace','draw'].includes(meta.family)){
+  if(fighter&&!api.reduced&&!document.body.classList.contains('character-motion-off')&&['melee','dash','brace','draw'].includes(meta.family)){
    const distance=meta.family==='dash'?Math.min(150,(enemy.x-meta.origin.x)*.32):meta.family==='melee'?Math.min(110,(enemy.x-meta.origin.x)*.25):meta.family==='draw'?-12:8;
    const contact=meta.windup/meta.total,tilt=meta.family==='brace'?-1:c.angle*2;
    api.animate(fighter,[{translate:'0px 0px',rotate:'0deg'},{translate:`${-12*c.size}px 2px`,rotate:`${-tilt}deg`,offset:contact*.55},{translate:`${distance*c.speed}px ${meta.family==='dash'?-5:0}px`,rotate:`${tilt}deg`,offset:contact},{translate:'0px 0px',rotate:'0deg',offset:1}],{duration:meta.total,easing:meta.family==='dash'?'cubic-bezier(.1,.8,.2,1)':'ease-in-out',fill:'none'});
@@ -42,6 +42,7 @@
       if(!e.dot){const bossId=document.querySelector('.boss-figure')?.dataset.bossId;if(bossId)window.BossLive2D?.perform('boss_'+bossId,{type:'hurt',windup:0,total:750,strength:e.crit?1.3:1});}
      },index++*gap+(reactive&&!api.reduced?90:0));
     }else{
+     api.later(()=>window.BattleLive2D?.perform(e.id,{type:'hurt',windup:0,total:500,strength:e.crit?1.2:.8}),index*gap);
      api.later(()=>window.ParticleVFX?.incoming(p,deck,{...presentation,slot:e.index,shield:e.shield,spent:0}),index++*gap);
     }
    }else if(['heal','shield','buff','evade','cleanse'].includes(e.kind)){

@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "wave_3-rear.moc3",
+		"Textures": [
+			"wave_3-rear.2048/texture_00.png"
+		],
+		"DisplayInfo": "wave_3-rear.cdi3.json"
+	}
+}

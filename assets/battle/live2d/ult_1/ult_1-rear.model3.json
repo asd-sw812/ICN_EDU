@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "ult_1-rear.moc3",
+		"Textures": [
+			"ult_1-rear.2048/texture_00.png"
+		],
+		"DisplayInfo": "ult_1-rear.cdi3.json"
+	}
+}

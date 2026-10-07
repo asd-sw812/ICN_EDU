@@ -918,7 +918,7 @@ body.battle-mode .shared-gauge{position:absolute;right:0;bottom:calc(100% + 235p
  body.battle-mode .unit-head{padding-left:36px}
  body.battle-mode .sp-readout,body.battle-mode .energy-readout{grid-template-columns:44px 1fr 34px}
  body.battle-mode .unit-effect-tray .effect-empty{display:none}
- body.battle-mode .boss-card{position:fixed;left:auto;right:250px;top:52px;width:350px;padding:8px 10px;background:#081522ed}
+ body.battle-mode .boss-card{position:fixed;left:auto;right:250px;top:52px;width:250px;padding:8px 10px;background:#081522ed}
  body.battle-mode .boss-card .intent{position:static;max-width:none;margin:6px 0 0;padding:5px 7px;font-size:10px;text-align:left}
 }
 </style>
@@ -935,6 +935,7 @@ body.battle-mode .stat-modal header>div:first-child,body.selection-mode .stat-mo
 body.battle-mode .stat-modal header button,body.selection-mode .stat-modal header button{position:static;pointer-events:auto}
 body.battle-mode .stat-modal .character-skills .skill-coefficient,body.battle-mode .stat-modal .character-skills .skill-effect-values{font-size:12px;font-weight:500;padding:0;border:0;background:none}
 #activeFighter[role=button]{cursor:pointer}
+#activeFighter[role=button] .fighter-art{pointer-events:auto;cursor:pointer}
 #activeFighter:focus-visible{outline:2px solid #f2d38c;outline-offset:4px}
 body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail .skill-effect-values{display:none}
 @media(max-height:700px){.character-skills{padding:10px 14px;gap:8px}.character-skills section{padding:10px}.character-skills p{font-size:13px}}

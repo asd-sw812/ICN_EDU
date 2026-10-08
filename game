@@ -2121,6 +2121,7 @@ function requestMobileLandscape(){
  try{const result=enter.call(root);if(result&&result.then)result.then(lock).catch(()=>{});else lock()}catch(_){lock()}
 }
 function startBattle(){
+ document.getElementById("overlayRoot").innerHTML="";
  VFX.reset();
  requestMobileLandscape();
  const players=deck().party.map(makePlayer);

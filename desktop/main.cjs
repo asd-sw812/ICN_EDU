@@ -1,17 +1,19 @@
-const {app,BrowserWindow,protocol,net,session,Menu}=require('electron');
-const fs=require('node:fs/promises'),path=require('node:path'),{pathToFileURL}=require('node:url');
+const {app,BrowserWindow,protocol,session,Menu}=require('electron');
+const fs=require('node:fs/promises'),path=require('node:path');
 const smoke=process.argv.includes('--offline-smoke-test');
 if(smoke&&process.env.ARCHIVE_SMOKE_OUTPUT){const profile=path.resolve(process.env.ARCHIVE_SMOKE_OUTPUT,'profile');require('node:fs').mkdirSync(profile,{recursive:true});app.setPath('userData',profile)}
 protocol.registerSchemesAsPrivileged([{scheme:'archive',privileges:{standard:true,secure:true,supportFetchAPI:true,corsEnabled:true}}]);
 app.setAppUserModelId('school.icn.edu.endlessarchive');
 let window;
 app.whenReady().then(async()=>{
- const site=app.isPackaged?path.join(process.resourcesPath,'site'):path.join(__dirname,'site');
+ const site=path.join(app.getAppPath(),'site');
  protocol.handle('archive',async request=>{
   try{const url=new URL(request.url);if(url.hostname!=='game')return new Response('Not found',{status:404});
    const target=path.resolve(site,'.'+decodeURIComponent(url.pathname));
    if(target!==site&&!target.startsWith(site+path.sep))return new Response('Not found',{status:404});
-   return await net.fetch(pathToFileURL(target===site?path.join(site,'index.html'):target).href);
+   const file=target===site?path.join(site,'index.html'):target;
+   const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.webp':'image/webp','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml','.wasm':'application/wasm','.woff2':'font/woff2','.mp3':'audio/mpeg','.ogg':'audio/ogg'}[path.extname(file).toLowerCase()]||'application/octet-stream';
+   return new Response(await fs.readFile(file),{headers:{'Content-Type':mime,'Cache-Control':'no-store'}});
   }catch{return new Response('Not found',{status:404})}
  });
  // The game cannot fall back to internet resources. This also proves offline tests.

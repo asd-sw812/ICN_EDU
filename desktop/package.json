@@ -17,14 +17,28 @@
     "appId": "school.icn.edu.endlessarchive",
     "productName": "The Endless Archive",
     "asar": true,
-    "files": ["main.cjs", "package.json"],
-    "extraResources": [{"from": "site", "to": "site", "filter": ["**/*"]}],
-    "directories": {"output": "dist"},
+    "files": [
+      "main.cjs",
+      "package.json",
+      "site/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
     "win": {
-      "target": [{"target": "portable", "arch": ["x64"]}],
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "signAndEditExecutable": false,
       "artifactName": "ICN_EDU-Offline-Windows-x64.exe"
     },
-    "portable": {"requestExecutionLevel": "user"}
+    "portable": {
+      "requestExecutionLevel": "user"
+    }
   }
 }

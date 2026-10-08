@@ -166,6 +166,65 @@
  const characterModifiers=Object.fromEntries(Object.keys(presets).flatMap(id=>charShape.map((v,i)=>{
   const composition=compositionRows[id][i];return [id+'_'+i,{...v,...compositions[composition],composition,label:variantRows[id][i]}];
  })));
+ // Explicit ultimate silhouettes, audited against game.useSkill(which===2).
+ // Layout describes cosmetic volume, never an additional hit or game status.
+ const ultimateRows={
+  bullet:[['lance','탄창 압축 관통'],['fan','분할 재장전'],['needle','관통 조준'],['bastion','파티 탄창 방벽']],
+  poison:[['collapse','독 결산 수축'],['coil','맹독 전환 와류'],['veil','독 지속 연장막'],['rise','회복 안개 상승']],
+  counter:[['lance','저장 압력 방출'],['rake','응수 배열'],['collapse','저장 피해 이전'],['bastion','반격 방벽']],
+  follow:[['rake','연속 교차 타격'],['coil','연결 추격'],['needle','집중 후속타'],['bastion','추격 보호막']],
+  freeze:[['rise','한기 결정 기둥'],['fan','감속 결정 부채'],['needle','빙결 유지 봉합'],['bastion','결정 보호벽']],
+  lifesteal:[['collapse','생명 흡수 핵'],['fan','공격 강화 환류'],['rake','취약 절개'],['rise','파티 회복 환류']],
+  bounce:[['rake','굴절 타점 배열'],['needle','치명 반사축'],['coil','다중 반사 궤도'],['rise','회복 반사 잔향']],
+  hp:[['needle','결손 체력 압축창'],['rise','최대 체력 확장'],['veil','공격 강화 섬유'],['bastion','생존 회복막']],
+  speed:[['lance','가속 잔상 관통'],['rake','회피 분산 잔상'],['fan','행동 당김 흐름'],['veil','파티 회피 회복막']],
+  debuff:[['collapse','디버프 교차 압착'],['rake','쇠약 접힘 배열'],['coil','감속 봉인 궤도'],['rise','회복 쇠약 잔향']],
+  ult:[['collapse','에너지 폭발 핵'],['rake','궁극기 재현 공명'],['coil','파티 에너지 순환'],['rise','회복 충전 상승']],
+  enhance:[['lance','자기 강화 이중 파열'],['fan','대상 강화 프레임'],['needle','강화 충전 축'],['bastion','강화 파티 방벽']],
+  skill:[['collapse','SP 확장 압축핵'],['fan','공격 지원 전개'],['coil','파티 에너지 정렬'],['rise','회복 SP 상승']],
+  execute:[['needle','처형 수직 관통'],['rake','방어 감소 절개'],['fan','취약 확대 절개'],['bastion','처형 지원 방벽']],
+  crit:[['collapse','확정 치명 집중핵'],['needle','치명 지원 조준'],['rake','취약 치명 분기'],['bastion','치명 지원 보호벽']],
+  cleanse:[['lance','정화 에너지 방출'],['fan','파티 정화 외향'],['rake','정화 강화 빗살'],['rise','회복 정화 상승']],
+  burn:[['rise','연소 결산 화염기둥'],['veil','화상 잔류층'],['collapse','연소 즉시 맥동'],['fan','회복 불씨 전개']],
+  bleed:[['collapse','출혈 결산 응축'],['rake','출혈 축적 상처'],['needle','출혈 결산 하향'],['bastion','출혈 파티 보호벽']],
+  electric:[['lance','전류 집중 방출'],['fan','전류 분배 분기'],['coil','마비 전하 고리'],['bastion','전류 보호 방벽']],
+  defense:[['collapse','축적 피해 압착'],['bastion','파티 방어 판 전개'],['needle','축적 피해 이전축'],['veil','보호막 방어 겹판']],
+  radiance:[['needle','광휘 수직 압축'],['fan','광채 분산 결정'],['rise','파티 공격 광휘'],['bastion','광휘 보호막']],
+  wave:[['lance','충전 파도 전면'],['fan','분산 파도'],['needle','방어 관통 물결'],['rise','파티 회복 물결']],
+  tree:[['rise','성장 수직 수관'],['rake','성장 치명 가지'],['fan','파티 성장 지원'],['veil','파티 회복 수관']],
+  wind:[['lance','풍력 가속 관통'],['fan','풍력 충전 확산'],['coil','풍력 최대 와류'],['bastion','풍력 파티 방벽']]
+ };
+ const ultimateModifiers=Object.fromEntries(Object.entries(ultimateRows).flatMap(([deck,rows],d)=>rows.map(([layout,label],slot)=>[`${deck}_${slot}`,{
+  layout,label,axis:envelopeAxis(deck)+[-.18,.30,-.38,.12][slot],span:105+d%5*9+slot*12,
+  lobes:3+(d+slot)%4,skew:[.18,.55,-.42,.08][slot],delay:[.018,.034,.025,.042][slot],
+  motion:({lance:'dash',needle:'draw',collapse:'brace',rake:'melee',coil:'cast',fan:'cast',rise:'cast',veil:'support',bastion:'brace'})[layout]
+ }])));
+ function envelopeAxis(deck){return {bullet:0,poison:-1.57,counter:0,follow:-.7,freeze:-1.57,lifesteal:2.7,bounce:0,hp:1.57,speed:0,debuff:-1.57,ult:0,enhance:-.7,skill:-1.57,execute:1.57,crit:0,cleanse:-1.57,burn:-1.57,bleed:1.57,electric:0,defense:1.57,radiance:-1.57,wave:0,tree:-1.57,wind:-.5}[deck]}
+ function ultimateShape(p,c,stage='contact',custom={}){
+  const u=c.ultimate;if(!u)return;
+  const texture=envelopes[c.id][0],debris=envelopes[c.id][1],prepare=stage==='prepare';
+  const span=u.span*(prepare?.58:1),count=u.lobes,life=prepare?Math.max(.12,(custom.windup||650)/1000):.48;
+  const angle=u.axis,at=(x,y)=>({x:p.x+Math.cos(angle)*x-Math.sin(angle)*y,y:p.y+Math.sin(angle)*x+Math.cos(angle)*y});
+  const draw=(q,size,opts={})=>sprite(q,c,texture,size,{life,alpha:prepare?.35:.65,priority:2,...opts});
+  for(let i=0;i<count;i++){
+   const t=count===1?0:i/(count-1),side=t*2-1;
+   schedule(prepare?i*.018:i*u.delay,()=>{
+    switch(u.layout){
+     case 'lance':draw(at(-span+t*span*1.8,side*8),180-t*65,{rotation:angle,aspect:.22,vx:Math.cos(angle)*210,vy:Math.sin(angle)*210,life:prepare?life:.22});break;
+     case 'needle':draw(at(side*15,-span+t*span*2),215,{rotation:angle+Math.PI/2,aspect:.13,attract:prepare?130:0,tx:p.x,ty:p.y});break;
+     case 'fan':{const a=angle+side*.85,q=at(-25,side*span*.65);draw(q,145,{rotation:a,aspect:.40,vx:Math.cos(a)*135,vy:Math.sin(a)*135});break;}
+     case 'rake':draw(at(side*span*.7,side*span*u.skew),190,{rotation:angle+(i%2?.6:-.6),aspect:.28,life:prepare?life:.26});break;
+     case 'collapse':{const a=t*TAU,q={x:p.x+Math.cos(a)*span,y:p.y+Math.sin(a)*span*.7};draw(q,110,{rotation:a,aspect:.6,attract:520,tx:p.x,ty:p.y,grow:-.4});break;}
+     case 'coil':{const a=t*TAU+u.skew;draw({x:p.x+Math.cos(a)*span,y:p.y+Math.sin(a)*span*.65},150,{rotation:a+Math.PI/2,aspect:.35,vx:-Math.sin(a)*95,vy:Math.cos(a)*65,spin:2.5});break;}
+     case 'rise':draw({x:p.x+side*span*.5,y:p.y+span*.4-Math.abs(side)*35},180-Math.abs(side)*60,{rotation:side*.38,aspect:.45,vy:-105,life:prepare?life:.7});break;
+     case 'veil':draw({x:p.x+side*span*.7,y:p.y+Math.sin(t*Math.PI)*35},165,{rotation:side*u.skew,aspect:.7,vy:-30,life:prepare?life:.7,alpha:.38});break;
+     case 'bastion':sprite(at(side*span*.7,Math.abs(side)*28),c,debris,125,{rotation:angle+side*.32,aspect:.72,life,alpha:prepare?.3:.65,priority:2,vx:0,vy:0});break;
+    }
+   });
+  }
+  if(!prepare&&u.layout==='collapse')schedule(.12,()=>sprite(p,c,texture,235,{life:.2,grow:-.7,alpha:.65,priority:2}));
+ }
+
  const skillModifiers=[{label:'1스킬',size:.82,density:.75,residue:.5},{label:'2스킬',size:1,density:1,residue:.75},{label:'궁극기',size:1.32,density:1.2,residue:1}];
  let ambient=[],monochrome=false;const shakes=new Set();
  function shake(target,strength,duration=140){
@@ -180,7 +239,7 @@
   const slot=Math.max(0,Math.min(3,Number.isInteger(actorSlot)?actorSlot:custom.slot??0));
   const character=characterModifiers[deck+'_'+slot],skill=skillModifiers[custom.tier||0];
   const speed=character.speed*(['speed','wind'].includes(deck)&&custom.effectiveSpeed?clamp(custom.effectiveSpeed/120,.7,1.8):1);
-  return {...preset,...character,speed,skill,palette:monochrome?['#bdbdbd','#777777','#ffffff']:preset.palette,...custom};
+  return {...preset,...character,speed,skill,ultimate:custom.tier===2?ultimateModifiers[deck+'_'+slot]:null,palette:monochrome?['#bdbdbd','#777777','#ffffff']:preset.palette,...custom};
  }
  function sprite(p,c,texture,size,options={}){const spec={x:p.x,y:p.y,texture,color:rgb(c.palette[options.tint??0]),size:size*c.size*(c.skill?.size||1),life:.32,alpha:.8,fade:.012,shrink:0,priority:1,...options};spec.aspect=(spec.aspect||1)*(c.aspect||1);spec.spin=(spec.spin||0)*(c.spin||1);spec.vx=(spec.vx||0)*c.speed;spec.vy=(spec.vy||0)*c.speed;spec.life/=c.speed;particle(spec)}
  function scatter(p,c,textures,options={}){const spec={palette:c.palette,textures,count:Math.round(22*(c.skill?.density||1)),size:[6,18],speed:[65,230],direction:c.angle,spread:c.spread,gravity:20,life:[.18,.55],...options};spec.count=Math.round(spec.count*(c.density||1));spec.radius=(spec.radius??6)*(c.radius||1);spec.size=spec.size.map(n=>n*c.size);spec.speed=spec.speed.map(n=>n*c.speed);spec.life=spec.life.map(n=>n*(c.residue||1)/c.speed);emit(p,spec)}
@@ -194,6 +253,7 @@
  }
  function begin(p,deck,tier,windup,custom={}){
   if(!init())return;resize();const c=config(deck,{...custom,tier});if(!c)return;
+  if(tier===2)ultimateShape(custom.support?p:(custom.origin||p),c,'prepare',{windup});
   // Anticipation uses the existing windup. It never delays resolution or schedules damage.
   const life=Math.max(.1,windup/1000),from=custom.origin||p,texture=envelopes[deck][0];
   scatter(from,c,[texture,'motes'],{count:12+tier*5,radius:65,speed:[8,30],attract:180,gravity:0,
@@ -255,6 +315,7 @@
   const n=custom.ordinal||0,origin=custom.origin||p,state=custom.state||{},boss=state.boss||{},shared=state.shared||{};
   c.size*=1+Math.min(1,(custom.spent||0)/8)*.25;
   const q={x:p.x+Math.sin(n*2.4+c.angle)*18,y:p.y+c.offset+Math.cos(n*1.7)*12};
+  if(tier===2&&!custom.dot&&!custom.reactive&&n===0)ultimateShape(q,c,'contact',custom);
   layers(q,c,{...custom,origin});
   const main=(texture,size,opts={})=>sprite(q,c,texture,size,{life:.38,alpha:.7,...opts});
   const plume=(texture,angle,size,count=3,opts={})=>{
@@ -318,6 +379,7 @@
   if(!init())return;resize();const c=config(deck,custom);if(!c)return;
   effectMetrics.kinds[kind]=(effectMetrics.kinds[kind]||0)+1;
   const texture={freeze:'crystal',counter:'chip',defense:'chip',burn:'ember',bleed:'wisp',electric:'arc',tree:'energy',wind:'slash',bullet:'chip',debuff:'energy',skill:'chip',radiance:'flare'}[deck]||'wisp';
+  if(c.tier===2&&['shield','heal','buff','cleanse'].includes(kind)&&!custom.negative)ultimateShape(p,c,'support',custom);
   if(kind==='shield'){
    orbit(p,c,texture,5,58,{size:64,life:.65,vx:0,vy:0,spin:0,alpha:.55});sprite(p,c,'wave',170,{aspect:deck==='defense'||deck==='counter'?.65:1,life:.5,alpha:.38,grow:.3});
    schedule(.07,()=>scatter(p,c,[texture,'dust'],{count:18,radius:50,size:[8,22],speed:[20,60],gravity:-10,life:[.4,.8],delay:.1,spread:TAU}));
@@ -381,5 +443,6 @@
  function stats(){const sorted=metrics.dt.slice().sort((a,b)=>a-b);return{renderer:gl?'WebGL':ctx?'Canvas2D':'not-started',quality,scale,limit,active:active.length,pooled:free.length,pending:events.length,peak:metrics.peak,spawned:metrics.spawned,dropped:metrics.dropped,drawCalls:metrics.drawCalls,frames:metrics.frames,meanCPUms:+(metrics.cpu.reduce((a,b)=>a+b,0)/(metrics.cpu.length||1)).toFixed(2),p95FrameMs:+(sorted[Math.floor(sorted.length*.95)]||0).toFixed(2),protectedRects:protectedRects.length,markers:ambient.length,contacts:effectMetrics.contacts,byDeck:{...effectMetrics.byDeck},byActor:{...effectMetrics.byActor},kinds:{...effectMetrics.kinds}}}
  function resetMetrics(){effectMetrics.contacts=0;effectMetrics.byDeck={};effectMetrics.byActor={};effectMetrics.kinds={};metrics.spawned=metrics.dropped=metrics.peak=metrics.frames=metrics.bursts=0;metrics.cpu.length=metrics.dt.length=0}
  window.addEventListener('resize',resize,{passive:true});document.addEventListener('visibilitychange',()=>{if(document.hidden)clear()});
- window.ParticleVFX={begin,hit,contact,incoming,bossCue,effect,transfer,markers,presets,characterModifiers,skillModifiers,setMonochrome:value=>{monochrome=!!value},support,muzzle,passive,clear,resize,setQuality,stats,pause,resume,resetMetrics,config,emit:(p,o)=>{if(init())emit(p,o)},types};
+ window.ParticleVFX={begin,hit,contact,incoming,bossCue,effect,transfer,markers,presets,characterModifiers,ultimateModifiers,skillModifiers,setMonochrome:value=>{monochrome=!!value},support,muzzle,passive,clear,resize,setQuality,stats,pause,resume,resetMetrics,config,emit:(p,o)=>{if(init())emit(p,o)},types};
 })();
+

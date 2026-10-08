@@ -9,9 +9,9 @@
  }
  function begin(actor,meta,api){
   const c=window.ParticleVFX?.config(meta.deck,{...meta.presentation,tier:meta.tier});if(!c)return;
-  meta.family=meta.support?'support':c.motion;meta.directed=true;
+  meta.family=meta.support?'support':c.ultimate?.motion||c.motion;meta.directed=true;
   window.BattleLive2D?.perform(actor.id,{type:meta.family,tier:meta.tier,windup:meta.windup,total:meta.total,strength:c.size*(1+meta.tier*.16),direction:c.angle+(c.axis||0),reach:c.speed});
-  const enemy=api.target();window.ParticleVFX.begin(meta.support?meta.origin:enemy,meta.deck,meta.tier,meta.windup,{...meta.presentation,origin:meta.origin});
+  const enemy=api.target();window.ParticleVFX.begin(meta.support?meta.origin:enemy,meta.deck,meta.tier,meta.windup,{...meta.presentation,origin:meta.origin,support:meta.support});
   const fighter=document.querySelector('#activeFighter .fighter-art');
   if(fighter&&!api.reduced&&!document.body.classList.contains('character-motion-off')&&['melee','dash','brace','draw'].includes(meta.family)){
    const distance=meta.family==='dash'?Math.min(150,(enemy.x-meta.origin.x)*.32):meta.family==='melee'?Math.min(110,(enemy.x-meta.origin.x)*.25):meta.family==='draw'?-12:8;
@@ -93,3 +93,4 @@
  }
  window.CombatDirector={begin,presentEvents,changes,sync,snapshot,context};
 })();
+

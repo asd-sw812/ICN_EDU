@@ -27,21 +27,23 @@ app.whenReady().then(async()=>{
  window.webContents.on('before-input-event',(event,input)=>{if(input.type==='keyDown'&&input.key==='F11'){event.preventDefault();window.setFullScreen(!window.isFullScreen())}});
  await window.loadURL('archive://game/index.html');
  if(!smoke)return;
+ console.log('PACKAGED_RESOURCES',JSON.stringify({isPackaged:app.isPackaged,site,resourcesPath:process.resourcesPath,exe:process.execPath}));
  const errors=[];window.webContents.on('console-message',(_event,details)=>{if(details.level==='error')errors.push(details.message)});
  await new Promise(resolve=>setTimeout(resolve,1800));
  const report=await window.webContents.executeJavaScript(`(async()=>{
   if(typeof Live2DCubismCore!=='object')throw Error('Cubism Core was not loaded locally');
   if(document.querySelectorAll('#loadoutCards [data-character-card]').length!==4)throw Error('Formation failed');
   const manifest=await fetch('offline-manifest.json').then(r=>r.json());
-  let checked=0;for(const file of manifest.files){const r=await fetch(file.path);if(!r.ok)throw Error('Missing local asset: '+file.path);const bytes=await r.arrayBuffer();if(bytes.byteLength!==file.bytes)throw Error('Asset size mismatch: '+file.path);checked++}
+  let checked=0,imagesDecoded=0;for(const file of manifest.files){const r=await fetch(file.path);if(!r.ok)throw Error('Missing local asset: '+file.path);const bytes=await r.arrayBuffer();if(bytes.byteLength!==file.bytes)throw Error('Asset size mismatch: '+file.path);checked++;if(/\\.(webp|png|jpg|jpeg)$/i.test(file.path)){const image=new Image();image.src=file.path;await image.decode();if(!image.naturalWidth)throw Error('Image did not decode: '+file.path);imagesDecoded++}}
+  for(const image of document.querySelectorAll('#loadoutCards img')){await image.decode();if(!image.naturalWidth||image.classList.contains('hidden'))throw Error('Formation image missing: '+image.src)}
   document.getElementById('avHelpBtn').click();if(!document.getElementById('avHelpDialog').open)throw Error('AV dialog failed');document.getElementById('closeAvHelp').click();
   localStorage.setItem('offline-smoke-persistence','OK');
   document.getElementById('startBtn').click();
   await new Promise(resolve=>setTimeout(resolve,1600));
   if(!document.body.classList.contains('battle-mode')||!document.getElementById('raidHud').textContent.includes('350'))throw Error('AV battle failed');
-  const native=window.NativeCubism;return {assetsChecked:checked,cubismLoaded:true,battleLoaded:true,avHelp:true,origin:location.origin};
+  const native=window.NativeCubism;return {assetsChecked:checked,imagesDecoded,formationImages:true,cubismLoaded:true,battleLoaded:true,avHelp:true,origin:location.origin};
  })()`);
- await window.webContents.executeJavaScript(`document.getElementById('selectBtn').click()`);
+
  await new Promise(resolve=>setTimeout(resolve,300));
  const output=path.resolve(process.env.ARCHIVE_SMOKE_OUTPUT||path.join(app.getPath('temp'),'archive-smoke'));
  await fs.mkdir(output,{recursive:true});

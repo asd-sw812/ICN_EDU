@@ -33,7 +33,7 @@ jobs:
         shell: pwsh
         run: |
           $env:ARCHIVE_SMOKE_OUTPUT = Join-Path $env:GITHUB_WORKSPACE 'desktop/smoke'
-          $exe = Join-Path $env:GITHUB_WORKSPACE 'desktop/dist/win-unpacked/The Endless Archive.exe'
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'desktop/dist/ICN_EDU-Offline-Windows-x64.exe'
           $proc = Start-Process -FilePath $exe -ArgumentList '--offline-smoke-test' -PassThru -Wait -RedirectStandardOutput 'smoke-stdout.txt' -RedirectStandardError 'smoke-stderr.txt'
           Get-Content smoke-stdout.txt
           Get-Content smoke-stderr.txt

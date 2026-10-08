@@ -18,7 +18,7 @@ const result=vm.runInContext(`(()=>{
    if(state!==null)throw Error('Formation detail leaked battle state '+c.id);
   }
   const players=d.party.map(makePlayer);
-  state={mode:'raid',deckId:d.id,players,boss:makeBoss(),acted:[],currentId:players[0].id,selectedTargetId:players[0].id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,roundsCompleted:0,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
+  state={mode:'raid',deckId:d.id,players,boss:makeBoss(),currentId:players[0].id,selectedTargetId:players[0].id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,actionsCompleted:0,avTime:0,nextDotAV:DOT_AV_INTERVAL,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
   for(const p of players){
    state.currentId=p.id;
    if(!p.resourceLabel){
@@ -54,3 +54,4 @@ vm.runInContext(`(()=>{
  if(before-boss.hp!==Math.round(100*deckDamageScale()))throw Error('Flat damage multiplied by attack or minimum damage');
 })()`,ctx);
 console.log('Visible frames and flat effect damage passed');
+

@@ -1021,7 +1021,7 @@ body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail
 <section id="skillPanel" class="panel skill-panel"></section>
 </div>
 </div>
- <div class="note">※ 아군 4명과 보스의 행동이 모두 끝나면 1사이클이 완료됩니다. 누적 피해 모드는 20사이클 동안 진행합니다.</div>
+ <div class="note">※ AV는 전투 안의 시간입니다. 기본 행동 간격은 10,000 ÷ 속도이며, 속도가 높을수록 자주 행동합니다. 누적 피해는 총 350AV, 속전 토벌은 최소 AV를 겨룹니다. 성장·효과 지속시간도 AV로 계산하며 반격·추가타는 시간을 추가로 쓰지 않습니다.</div>
 </section>
 </div>
 <div id="overlayRoot"></div>
@@ -1070,11 +1070,11 @@ function mentalRosterCard(id,roleDetail,speed,resourceLabel,passiveDesc,element)
  return {id,role,roleDetail,speed,resourceLabel,resourceInitial:0,resourceMax:null,passiveDesc,attackType:"mental",element,note:passiveDesc,maxHp:5000,atk:1000,pdef:500,mdef:500,crit:20,critDmg:150}
 }
 const NEW_MENTAL_DECKS=[
- {id:"radiance",name:"광휘덱",damage:"정신피해",color:"#f0cf72",mechanic:"공격으로 공용 [광휘]와 적의 [광채]를 쌓는다. 광휘 비례 고정 피해가 추가되며, 광채가 높을수록 사이클 종료 시 광휘 감소량이 줄어든다.",party:[
+ {id:"radiance",name:"광휘덱",damage:"정신피해",color:"#f0cf72",mechanic:"공격으로 공용 [광휘]와 적의 [광채]를 쌓는다. 광휘 비례 고정 피해가 추가되며, 광채가 높을수록 AV 경과 시 광휘 감소량이 줄어든다.",party:[
   mentalRosterCard("radiance_0","메인딜",116,"광휘 증폭","광휘로 발생하는 추가 고정 피해가 25% 증가한다.","운명"),
   mentalRosterCard("radiance_1","보조·섭딜",122,"광채","스킬 2와 궁극기로 광채를 1스택 더 부여한다.","의지"),
-  mentalRosterCard("radiance_2","보조·서폿",124,"보존","사이클 종료 시 광휘 감소율을 추가로 10%p 낮춘다.","이성"),
-  mentalRosterCard("radiance_3","탱커",101,"수호","사이클 종료 시 남은 광휘에 비례해 파티 보호막을 부여한다.","본능")
+  mentalRosterCard("radiance_2","보조·서폿",124,"보존","AV 경과 시 광휘 감소율을 추가로 25AV당 감소율을 2%p 낮춘다.","이성"),
+  mentalRosterCard("radiance_3","탱커",101,"수호","AV 경과 시 남은 광휘에 비례해 파티 보호막을 부여한다.","본능")
  ]},
  {id:"wave",name:"물결덱",damage:"정신피해",color:"#5bb9cf",mechanic:"궁극기는 에너지 10%부터 사용할 수 있다. 10~35%, 36~70%, 71~99%, 100% 네 구간마다 피해 계수와 캐릭터별 추가 효과가 강해진다.",party:[
   mentalRosterCard("wave_0","메인딜",115,"파고","높은 에너지 구간에서 궁극기 치명타 확률과 치명타 피해가 증가한다.","운명"),
@@ -1082,7 +1082,7 @@ const NEW_MENTAL_DECKS=[
   mentalRosterCard("wave_2","보조·서폿",123,"침식","궁극기 사용 시 에너지 구간에 비례해 적의 정신방어를 낮춘다.","의지"),
   mentalRosterCard("wave_3","힐러",112,"회류","궁극기 사용 후 에너지 구간에 비례해 파티를 회복한다.","이성")
  ]},
- {id:"tree",name:"나무덱",damage:"정신피해",color:"#76ad68",mechanic:"전투 시작 시 [새싹]을 얻고 3사이클 뒤 [나무] 1스택으로 성장한다. 이후 2사이클마다 성장하며 최대 3스택, 슬롯별 고유 강화가 누적된다.",party:[
+ {id:"tree",name:"나무덱",damage:"정신피해",color:"#76ad68",mechanic:"전투 시작 시 [새싹]을 얻고 60AV 뒤 [나무] 1스택으로 성장한다. 이후 60AV마다 성장하며 최대 3스택, 슬롯별 고유 강화가 누적된다.",party:[
   mentalRosterCard("tree_0","메인딜",114,"성장","나무 1스택마다 공격력이 12% 증가한다.","본능"),
   mentalRosterCard("tree_1","보조·섭딜",120,"가지","나무 1스택마다 치명타 확률 6%, 치명타 피해 10%가 증가한다.","운명"),
   mentalRosterCard("tree_2","보조·서폿",122,"수액","나무 1스택마다 행동 후 에너지를 5 회복한다.","이성"),
@@ -1326,7 +1326,7 @@ function characterSkillsHTML(c){
   let a=state?.players?.find(p=>p.id===c.id);
   if(!a){
    const found=findCharacter(c.id),players=found.d.party.map(makePlayer);
-   state={mode:'raid',deckId:found.d.id,players,boss:makeBoss(),acted:[],currentId:c.id,selectedTargetId:c.id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,roundsCompleted:0,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
+   state={mode:'raid',deckId:found.d.id,players,boss:makeBoss(),currentId:c.id,selectedTargetId:c.id,logs:[],over:false,paralyzeNeed:5,score:0,playerActions:0,actionsCompleted:0,avTime:0,nextDotAV:DOT_AV_INTERVAL,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
    a=players.find(p=>p.id===c.id);
   }
   return '<div class="character-skills">'+[0,1,2].map(i=>'<section>'+skillDetailHTML(a,i)+'</section>').join('')+'</div>';
@@ -1415,39 +1415,48 @@ const ELEMENT_REL={
  "본능":{strong:"이성",weak:null}
 };
 
-const RAID_TURN_LIMIT=20;
+const RAID_AV_LIMIT=350;
+const ACTION_GAUGE=10000;
+const AV_EPSILON=1e-7;
+const DOT_AV_INTERVAL=25;
+function formatAV(value){return Number(value||0).toFixed(1)}
+function actionAV(actor){return Math.max(0,actor.actionGauge??ACTION_GAUGE)/Math.max(1,effSpeed(actor))}
 const RAID_BOSS_HP=999999999;
-const CLEAR_BOSS_HP=500000;
+const CLEAR_BOSS_HP=120000;
 const RAID_BAR_HP=10000;
 const PLAYER_DAMAGE_MIN=500;
 const PLAYER_DAMAGE_CAP=99999;
 const PLAYER_SKILL_ATK_SCALE=[1,5.5,24];
 const PLAYER_EFFECT_ATK_SCALE=3.2;
-// First balance pass after removing auxiliary counters; support and survivability remain distinct.
-const DECK_DAMAGE_SCALE={bounce:.25,burn:.75,execute:.8,poison:3,speed:3,bullet:2.2,counter:2,enhance:2,cleanse:2,hp:1.6,defense:1.5,electric:1.3,freeze:1.25};
+// 350 AV: short setup and delayed damage receive separate multipliers.
+const DECK_DAMAGE_SCALE={bounce:.25,burn:.55,execute:.55,poison:3.8,speed:2,bullet:5.8,counter:3.8,enhance:3.6,cleanse:2.4,hp:2.1,defense:3.5,electric:1.8,freeze:1.25,skill:1.4,bleed:.75,ult:.75,wave:.8};
 function deckDamageScale(){return DECK_DAMAGE_SCALE[state?.deckId]||1}
 const PLAYER_SUPPORT_SCALE=4;
 const BOSS_OUTGOING_DAMAGE_SCALE=.38;
 const SHIELD_CAP_CASTER_HP_MULTIPLIER=2;
 const EFFECT_MAX_STACKS=5;
-const EFFECT_MAX_DURATION=6;
+const EFFECT_MAX_DURATION=310;
+const TREE_FIRST_GROWTH_AV=60;
+const TREE_GROWTH_AV=60;
+// Finite effects use the same global action clock; durations are expressed directly in AV.
+function effectTurns(value){return value>=99?Infinity:Math.min(EFFECT_MAX_DURATION,Math.max(1,value*50+60))}
 const DOT_STAGGER_RATE=.25;
 const BURN_STACK_CAP=10;
 const BLEED_STACK_CAP=12;
-const BURN_STATE_DURATION=3;
+const BURN_STATE_DURATION=150;
 const EFFECT_VALUE_CAPS={atkUp:75,atkDown:60,defUp:100,defDown:60,speedUp:60,speedDown:50,critUp:100,critDmgUp:100,vulnerable:50};
 const RAID_BAR_COLORS=["#d84a4a","#e8883f","#e6c84e","#62bd78","#4da9d8","#8e69d8","#dc65a5"];
 const RAID_RANKS=[
- {name:"SSS",min:1000000,color:"#ffcf55"},
- {name:"SS",min:700000,color:"#ff8ad8"},
- {name:"S",min:450000,color:"#df76ff"},
- {name:"A",min:275000,color:"#65b8ff"},
- {name:"B",min:150000,color:"#70d69a"},
- {name:"C",min:75000,color:"#d1d67a"},
+ {name:"SSS",min:200000,color:"#ffcf55"},
+ {name:"SS",min:150000,color:"#ff8ad8"},
+ {name:"S",min:115000,color:"#df76ff"},
+ {name:"A",min:80000,color:"#65b8ff"},
+ {name:"B",min:50000,color:"#70d69a"},
+ {name:"C",min:25000,color:"#d1d67a"},
  {name:"D",min:0,color:"#aab4c2"}
 ];
-const RAID_RECORD_KEY="endless_archive_raid_records_balance_20261007";
-const CLEAR_RECORD_KEY="endless_archive_clear_records_balance_20261007";
+const RAID_RECORD_KEY="endless_archive_raid_records_av350_20261008";
+const CLEAR_RECORD_KEY="endless_archive_clear_records_av350_20261008";
 
 function scoreRank(score){return RAID_RANKS.find(x=>score>=x.min)||RAID_RANKS[RAID_RANKS.length-1]}
 function nextRank(score){return [...RAID_RANKS].reverse().find(x=>x.min>score)||null}
@@ -1483,7 +1492,7 @@ function raidResult(){
  const rank=scoreRank(state.score);
  const saved=commitRaidRecord();
  state.over=true;
- showResult(rank.name,`<b>${state.score.toLocaleString()}점</b><br>${deck().name} · 전투 사이클 ${state.roundsCompleted}/${RAID_TURN_LIMIT}${saved.isNew?`<br><strong class="new-record">NEW DECK BEST</strong>`:`<br>이 덱 최고 기록 ${bestScoreText(state.boss.bossId)}`}`);
+ showResult(rank.name,`<b>${state.score.toLocaleString()}점</b><br>${deck().name} · ${formatAV(state.avTime)}/${RAID_AV_LIMIT}AV · ${state.actionsCompleted}행동${saved.isNew?`<br><strong class="new-record">NEW DECK BEST</strong>`:`<br>이 덱 최고 기록 ${bestScoreText(state.boss.bossId)}`}`);
 }
 function readClearRecords(){
  try{const saved=localStorage.getItem(CLEAR_RECORD_KEY),records=saved?JSON.parse(saved):{};return records&&typeof records==="object"?records:{}}catch(_){return {}}
@@ -1491,17 +1500,17 @@ function readClearRecords(){
 function getClearRecord(bossId){return readClearRecords()[bossId]||null}
 function clearRecordText(bossId){
  const record=getClearRecord(bossId);
- return record?`${Number(record.turns||0)}턴 · ${Number(record.actions||0)}행동`:"기록 없음"
+ return record?`${formatAV(record.av)}AV · 아군 ${Number(record.actions||0)}행동`:"기록 없음"
 }
-function clearTurnsUsed(){return state?state.roundsCompleted+1:0}
+function clearAVUsed(){return state?state.avTime||0:0}
 function commitClearRecord(){
  if(!state||state.recorded)return {isNew:false,record:getClearRecord(state&&state.boss&&state.boss.bossId)};
  state.recorded=true;
  const records=readClearRecords(),bossId=state.boss.bossId,previous=records[bossId];
- const turns=clearTurnsUsed(),actions=state.playerActions||0;
- const isNew=!previous||turns<Number(previous.turns||Infinity)||(turns===Number(previous.turns||Infinity)&&actions<Number(previous.actions||Infinity));
+ const av=clearAVUsed(),actions=state.playerActions||0;
+ const isNew=!previous||av<Number(previous.av??Infinity)-AV_EPSILON||(Math.abs(av-Number(previous.av))<=AV_EPSILON&&actions<Number(previous.actions||Infinity));
  if(isNew){
-  records[bossId]={turns,actions,deckId:state.deckId,deckName:deck().name,updatedAt:Date.now()};
+  records[bossId]={av,actions,deckId:state.deckId,deckName:deck().name,updatedAt:Date.now()};
   try{localStorage.setItem(CLEAR_RECORD_KEY,JSON.stringify(records))}catch(_){}
  }
  return {isNew,record:isNew?records[bossId]:previous}
@@ -1569,7 +1578,7 @@ let state=null;
 let DAMAGE_PREVIEW=null;
 
 function deck(){return DECKS.find(d=>d.id===selectedDeckId)}
-function clone(v){return JSON.parse(JSON.stringify(v))}
+function clone(v){return JSON.parse(JSON.stringify(v,(_,x)=>x===Infinity?"__av_infinity__":x),(_,x)=>x==="__av_infinity__"?Infinity:x)}
 function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
 function unitLabel(u){
  if(!u)return "대상";
@@ -1594,14 +1603,15 @@ function resSpend(a,n){
 function resAll(a){const x=a.resource;a.resource=0;return x}
 function addBuff(u,key,val,dur=2){
  if(DAMAGE_PREVIEW){
-  DAMAGE_PREVIEW.effects.push({targetId:u.id,targetIndex:u.index,targetSide:u.side,key,val,dur});
+  DAMAGE_PREVIEW.effects.push({targetId:u.id,targetIndex:u.index,targetSide:u.side,key,val,dur:effectTurns(dur)});
  }
+ dur=effectTurns(dur);
  const effect=u.buffs[key]||{v:0,d:0,stacks:0};
  const oldStacks=effect.stacks||0,newStacks=Math.min(EFFECT_MAX_STACKS,oldStacks+1);
  if(oldStacks<EFFECT_MAX_STACKS)effect.v=Math.min(EFFECT_VALUE_CAPS[key]??Infinity,effect.v+val);
- effect.d=dur>=99||effect.d>=99?99:Math.min(EFFECT_MAX_DURATION,effect.d+dur);
+ effect.d=!Number.isFinite(dur)||!Number.isFinite(effect.d)?Infinity:Math.min(EFFECT_MAX_DURATION,effect.d+dur);
  effect.stacks=newStacks;
- if(state&&current()&&current().id===u.id)effect.skipTick=true;
+ 
  u.buffs[key]=effect;
  VFX.event("buff",u,0,{negative:key.endsWith("Down")||key==="vulnerable",buffKey:key});
  if(state&&state.deckId==="speed"&&u.side==="player"&&key==="speedUp"){const navigator=state.players[2];if(navigator&&!navigator.dead&&navigator!==u)resGain(navigator,1)}
@@ -1821,22 +1831,22 @@ function damage(a,t,base,opt={}){
  }
  return dealt
 }
-function tickBuffs(u){Object.keys(u.buffs).forEach(k=>{if(u.buffs[k].skipTick){delete u.buffs[k].skipTick;return}if(u.buffs[k].d>=99)return;u.buffs[k].d--;if(u.buffs[k].d<=0)delete u.buffs[k]})}
+function tickBuffs(u,deltaAV){Object.keys(u.buffs).forEach(k=>{const effect=u.buffs[k];if(!Number.isFinite(effect.d))return;effect.d-=deltaAV;if(effect.d<=AV_EPSILON)delete u.buffs[k]})}
 function addPoison(turns=3,miasma=false){
  const arr=miasma?state.boss.miasma:state.boss.poison;
  if(arr.length>=3)return false;
- arr.push(turns);if(state.actionContext&&!miasma&&turns===3)state.actionContext.poison3Added=true;log(`[${miasma?"맹독":"중독"}${turns}] 부여.`);return true
+ turns=Math.max(1,turns*60);arr.push(turns);if(state.actionContext&&!miasma&&turns===180)state.actionContext.poison3Added=true;log(`[${miasma?"맹독":"중독"}] ${turns}AV 부여.`);return true
 }
 function poisonTick(){
- const b=state.boss;let d=b.poison.length*42+b.miasma.length*95;
+ const b=state.boss;let d=b.poison.length*18+b.miasma.length*40;
  if(d){
    const dealt=takePlayerEffectDamageDetailed(b,d,null,{dot:true});log(`중독 계열 고정피해 ${damageResultText(dealt)}.`);
    if(state.deckId==="poison"&&!state.actionContext){const h=tank();if(h&&!h.dead){const r=heal(lowestPlayer(),24);if(r)log(`${unitLabel(h)} 패시브 회복 ${r}.`)}}
  }
- b.poison=b.poison.map(x=>x-1).filter(x=>x>0);b.miasma=b.miasma.map(x=>x-1).filter(x=>x>0)
+ 
 }
 function poisonSettle(mult=1){
- const b=state.boss,d=(b.poison.length*42+b.miasma.length*95)*mult;
+ const b=state.boss,d=(b.poison.length*18+b.miasma.length*40)*mult;
  if(d){const dealt=takePlayerEffectDamageDetailed(b,d,null,{dot:true});log(`[독 폭발] ${damageResultText(dealt)}.`)}
  b.poison=[];b.miasma=[]
 }
@@ -1846,11 +1856,11 @@ function addChill(n){
 }
 function addBurn(n){
  const b=state.boss;b.burn=Math.min(BURN_STACK_CAP,b.burn+Math.max(0,n));
- if(b.burn>=BURN_STACK_CAP&&!b.inferno){b.burn=0;b.inferno=BURN_STATE_DURATION;if(state&&state.actionContext)state.actionContext.infernoCreated=true;log(`[연소] ${BURN_STACK_CAP} → [맹염] ${BURN_STATE_DURATION}턴.`)}
+ if(b.burn>=BURN_STACK_CAP&&!b.inferno){b.burn=0;b.inferno=BURN_STATE_DURATION;if(state&&state.actionContext)state.actionContext.infernoCreated=true;log(`[연소] ${BURN_STACK_CAP} → [맹염] ${BURN_STATE_DURATION}AV.`)}
 }
 function addScorch(turns=BURN_STATE_DURATION){state.boss.scorch=Math.max(state.boss.scorch||0,turns)}
 function burnTick(advanceDuration=false){
- const b=state.boss;let d=b.burn*22+(b.inferno?160:0);if(b.scorch)d=Math.round(d*1.45);
+ const b=state.boss;let d=b.burn*10+(b.inferno?75:0);if(b.scorch)d=Math.round(d*1.45);
  if(d){
    const dealt=takePlayerEffectDamageDetailed(b,d,null,{dot:true});
    if(state&&state.actionContext)state.actionContext.burnTicked=true;
@@ -1861,13 +1871,13 @@ function burnTick(advanceDuration=false){
    }
    log(`[연소] 턴 시작 ${damageResultText(dealt)}.`)
  }
- if(advanceDuration){if(b.inferno>0)b.inferno--;if(b.scorch>0)b.scorch--}
+ 
 }
 function addBleed(n){const b=state.boss,old=b.bleed;b.bleed=Math.min(BLEED_STACK_CAP,b.bleed+Math.max(0,Math.round(n)));return b.bleed-old}
 function bleedTick(){
  const b=state.boss;
  if(b.bleed){
-   const d=b.bleed*34;
+   const d=b.bleed*16;
    const dealt=takePlayerEffectDamageDetailed(b,d,null,{dot:true});
    if(state&&state.actionContext)state.actionContext.bleedTicked=true;
    if(state.deckId==="bleed"&&!state.actionContext){const p=support2();if(p&&!p.dead)resGain(p,1)}
@@ -1888,15 +1898,15 @@ function freeUlt(a){
 
 function makePlayer(c,i){
  const stats=configuredStats(c),build=statBuildFor(c),maxHp=Math.round(stats.maxHp);
- return {...clone(c),...stats,side:"player",maxHp,hp:maxHp,shield:0,shieldCap:0,sp:3,maxSp:5,energy:50,dead:false,buffs:{},evade:0,taunt:0,
+ return {...clone(c),...stats,side:"player",maxHp,hp:maxHp,shield:0,shieldCap:0,sp:3,maxSp:5,energy:60,actionGauge:ACTION_GAUGE,dead:false,buffs:{},evade:0,taunt:0,
  resource:c.resourceInitial||0,counterReady:0,bleedThorn:0,preventDeath:0,enhanced:0,index:i,passiveFlag:false,passiveCount:0,statBuild:build,speedBuildTurns:0}
 }
 function makeBoss(){
  const p=bossProfile();
  const maxHp=selectedMode==="clear"?CLEAR_BOSS_HP:RAID_BOSS_HP;
  return {id:"boss",bossId:p.id,displayIndex:BOSSES.findIndex(x=>x.id===p.id)+1,weaknessLabel:p.weaknessLabel,side:"enemy",element:p.element,attackType:p.attackType,maxHp,hp:maxHp,shield:0,atk:p.atk,pdef:p.pdef,mdef:p.mdef,speed:p.speed,crit:8,critDmg:150,
- stagger:0,staggerMax:p.staggerMax,staggerMultiplier:p.staggerMultiplier,staggered:false,rage:0,
- dead:false,buffs:{},phase:1,energy:0,chill:0,frozen:false,freezeGuard:0,poison:[],miasma:[],burn:0,inferno:0,scorch:0,bleed:0,charge:0,paralyzed:false,evade:0}
+ stagger:0,staggerMax:Math.round(p.staggerMax*.4),staggerMultiplier:p.staggerMultiplier,staggered:false,rage:0,
+ dead:false,buffs:{},phase:1,energy:40,actionGauge:ACTION_GAUGE,chill:0,frozen:false,freezeGuard:0,poison:[],miasma:[],burn:0,inferno:0,scorch:0,bleed:0,charge:0,paralyzed:false,evade:0}
 }
 
 function passiveOnTurnStart(a){
@@ -2024,7 +2034,7 @@ function passiveAfterSkill(a,which,ctx={}){
  }
  if(id==="tree"&&s===2&&state.shared.tree>0)a.energy=Math.min(100,a.energy+state.shared.tree*5);
  if(id==="wind"&&ctx.didDamage){
-   state.shared.wind=clamp(state.shared.wind+(s===1?2:1),0,30);
+   state.shared.wind=clamp(state.shared.wind+(s===1?4:3),0,30);
    if(state.shared.wind>=30&&!b.dead){
      const extra=damage(a,b,s===2?85:60,{type:"mental",forceCrit:true,damageTier:0});
      if(extra)log(`[풍력] 30 · 추가 치명타 ${extra} 피해.`)
@@ -2063,7 +2073,7 @@ function bossIntent(){
  return {type:"normal",base:110,aoe:false,damageType:"mental",debuff:"speedDown",debuffValue:18}
 }
 function updatePhase(){
- const b=state.boss,old=b.phase;b.phase=state.roundsCompleted>=10?3:state.roundsCompleted>=5?2:1;
+ const b=state.boss,old=b.phase;b.phase=state.avTime>=240-AV_EPSILON?3:state.avTime>=120-AV_EPSILON?2:1;
  if(old!==b.phase){
   const p=bossProfile();
   const phase=b.phase===2?p.phase2:p.phase3;
@@ -2078,9 +2088,9 @@ function updatePhase(){
 }
 function checkEnd(){
  if(state.mode==="clear"&&state.boss.dead){
-  const saved=commitClearRecord(),turns=clearTurnsUsed();
+  const saved=commitClearRecord(),av=clearAVUsed();
   state.over=true;
-  showResult("CLEAR",`보스 토벌 완료<br><b>${turns}턴 · ${state.playerActions}행동</b><br>${deck().name} · 총 피해 ${state.score.toLocaleString()}${saved.isNew?`<br><strong class="new-record">NEW BEST</strong>`:`<br>최고 기록 ${clearRecordText(state.boss.bossId)}`}`);
+  showResult("CLEAR",`보스 토벌 완료<br><b>${formatAV(av)}AV · 아군 ${state.playerActions}행동</b><br>${deck().name} · 총 피해 ${state.score.toLocaleString()}${saved.isNew?`<br><strong class="new-record">NEW BEST</strong>`:`<br>최고 기록 ${clearRecordText(state.boss.bossId)}`}`);
   return true
  }
  if(alivePlayers().length===0){
@@ -2125,7 +2135,7 @@ function startBattle(){
  VFX.reset();
  requestMobileLandscape();
  const players=deck().party.map(makePlayer);
- state={mode:selectedMode,deckId:selectedDeckId,players,boss:makeBoss(),acted:[],currentId:null,selectedTargetId:players[0]&&players[0].id,passiveDetailActorId:null,logs:[selectedMode==="clear"?`속전 토벌 시작 · 보스 HP ${CLEAR_BOSS_HP.toLocaleString()}.`:`레이드 시작 · 전체 ${RAID_TURN_LIMIT}사이클.`],over:false,intent:null,paralyzeNeed:5,actionContext:null,pendingSkill:null,pendingActorId:null,score:0,playerActions:0,roundsCompleted:0,recorded:false,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
+ state={mode:selectedMode,deckId:selectedDeckId,players,boss:makeBoss(),currentId:null,selectedTargetId:players[0]&&players[0].id,passiveDetailActorId:null,logs:[selectedMode==="clear"?`속전 토벌 시작 · 보스 HP ${CLEAR_BOSS_HP.toLocaleString()}.`:`레이드 시작 · 전체 ${RAID_AV_LIMIT}AV.`],over:false,intent:null,paralyzeNeed:5,actionContext:null,pendingSkill:null,pendingActorId:null,score:0,playerActions:0,actionsCompleted:0,avTime:0,nextDotAV:DOT_AV_INTERVAL,recorded:false,shared:{radiance:0,glow:0,wind:0,saplingAge:0,tree:0,treeAge:0}};
  state.intent=bossIntent();
  document.querySelector(".battle-start-mark span").textContent=selectedMode==="clear"?"CLEAR":"RAID";
  document.body.classList.remove("selection-mode");document.body.classList.add("battle-mode");
@@ -2133,41 +2143,83 @@ function startBattle(){
  document.getElementById("selectBtn").classList.remove("hidden");document.getElementById("restartBtn").classList.remove("hidden");document.getElementById("settleBtn").classList.remove("hidden");document.getElementById("settleBtn").disabled=false;
  render();VFX.queue(nextTurn,250)
 }
-function processDeckCycleEnd(){
+function processDeckAV(deltaAV){
  if(state.deckId==="radiance"){
-   const preserver=support2(),old=state.shared.radiance,decay=clamp(.50-state.shared.glow*.04-((preserver&&!preserver.dead)?0.10:0),.10,.50);
-   state.shared.radiance=Math.floor(old*(1-decay));
-   const guard=tank();if(guard&&!guard.dead&&state.shared.radiance>0)alivePlayers().forEach(p=>addShield(p,state.shared.radiance*.18,guard));
-   log(`[광휘] ${old} → ${state.shared.radiance} · 광채 ${state.shared.glow}로 감소율 ${Math.round(decay*100)}%.`)
+  const preserver=support2(),old=state.shared.radiance,decay=clamp(.12-state.shared.glow*.01-((preserver&&!preserver.dead)?.02:0),.02,.12);
+  state.shared.radiance=old*Math.pow(1-decay,deltaAV/DOT_AV_INTERVAL);
+  if(state.avTime+AV_EPSILON>=state.nextDotAV){const guard=tank();if(guard&&!guard.dead&&state.shared.radiance>0)alivePlayers().forEach(p=>addShield(p,state.shared.radiance*.05,guard));}
  }
  if(state.deckId==="tree"){
-   if(state.shared.tree===0){state.shared.saplingAge++;if(state.shared.saplingAge>=3){state.shared.tree=1;state.shared.treeAge=0;log(`[새싹]이 [나무] 1스택으로 성장.`)}}
-   else if(state.shared.tree<3){state.shared.treeAge++;if(state.shared.treeAge>=2){state.shared.tree++;state.shared.treeAge=0;log(`[나무] ${state.shared.tree}/3스택으로 성장.`)}}
+  const old=state.shared.tree;
+  state.shared.saplingAge=Math.min(TREE_FIRST_GROWTH_AV,state.avTime);
+  state.shared.tree=state.avTime+AV_EPSILON<TREE_FIRST_GROWTH_AV?0:Math.min(3,1+Math.floor((state.avTime+AV_EPSILON-TREE_FIRST_GROWTH_AV)/TREE_GROWTH_AV));
+  state.shared.treeAge=state.shared.tree?Math.max(0,state.avTime-TREE_FIRST_GROWTH_AV-(state.shared.tree-1)*TREE_GROWTH_AV):0;
+  if(state.shared.tree>old)log(`[나무] ${state.shared.tree}/3스택 성장 · ${formatAV(state.avTime)}AV.`);
  }
+}
+function nextTimedAV(){
+ const times=[state.nextDotAV-state.avTime];
+ if(state.avTime<120-AV_EPSILON)times.push(120-state.avTime);
+ else if(state.avTime<240-AV_EPSILON)times.push(240-state.avTime);
+ if(state.deckId==="tree"&&state.shared.tree<3)times.push(TREE_FIRST_GROWTH_AV+state.shared.tree*TREE_GROWTH_AV-state.avTime);
+ for(const actor of allActors()){
+  for(const effect of Object.values(actor.buffs))if(Number.isFinite(effect.d))times.push(effect.d);
+  if(actor.enhanced>0)times.push(actor.enhanced);
+ }
+ const b=state.boss;times.push(...b.poison,...b.miasma);if(b.inferno>0)times.push(b.inferno);if(b.scorch>0)times.push(b.scorch);
+ return Math.min(...times.filter(x=>x>AV_EPSILON));
+}
+function advanceCombatAV(deltaAV){
+ // Preserve progress when speed changes: advance distance first, then expire effects.
+ for(const actor of allActors())if(!actor.dead)actor.actionGauge=Math.max(0,(actor.actionGauge??ACTION_GAUGE)-Math.max(1,effSpeed(actor))*deltaAV);
+ state.avTime+=deltaAV;
+ for(const actor of allActors()){tickBuffs(actor,deltaAV);if(actor.enhanced>0)actor.enhanced=Math.max(0,actor.enhanced-deltaAV);}
+ const b=state.boss;b.poison=b.poison.map(x=>x-deltaAV).filter(x=>x>AV_EPSILON);b.miasma=b.miasma.map(x=>x-deltaAV).filter(x=>x>AV_EPSILON);
+ b.inferno=Math.max(0,b.inferno-deltaAV);b.scorch=Math.max(0,b.scorch-deltaAV);
+ processDeckAV(deltaAV);
+ const phase=b.phase;updatePhase();if(phase!==b.phase)state.intent=bossIntent();
+ if(state.avTime+AV_EPSILON>=state.nextDotAV){
+  if(!b.dead){burnTick();if(!b.dead)poisonTick();if(!b.dead)bleedTick();}
+  state.nextDotAV+=DOT_AV_INTERVAL;
+ }
+}
+function completeCombatTurn(actor){
+ if(!state||state.over)return;
+ state.actionsCompleted=(state.actionsCompleted||0)+1;
+ actor.actionGauge=Math.max(0,ACTION_GAUGE-(actor.nextActionAdvance||0));actor.nextActionAdvance=0;
+ log(`${unitLabel(actor)} 행동 완료 · ${formatAV(state.avTime)}AV · ${state.actionsCompleted}행동.`);
+ if(checkEnd()){render();return;}
+ if(state.mode==="raid"&&state.avTime>=RAID_AV_LIMIT-AV_EPSILON){render();raidResult();return;}
+ if(actor.side==="enemy")state.intent=bossIntent();
+ render();VFX.queue(nextTurn,220);
 }
 function nextTurn(){
  if(!state||state.over)return;
- const live=allActors().filter(x=>!x.dead);
- if(live.every(x=>state.acted.includes(x.id))){
-   processDeckCycleEnd();
-   state.roundsCompleted++;
-   updatePhase();
-   log(state.mode==="clear"?`전투 사이클 ${state.roundsCompleted} 완료 · 보스 HP ${state.boss.hp.toLocaleString()}.`:`전투 사이클 ${state.roundsCompleted}/${RAID_TURN_LIMIT} 완료 · 누적 점수 ${state.score}.`);
-   if(state.mode==="raid"&&state.roundsCompleted>=RAID_TURN_LIMIT){render();raidResult();return}
-   state.acted=[];
+ while(!state.over){
+  const live=allActors().filter(x=>!x.dead);
+  if(!live.length)return;
+  const next=live.slice().sort((a,b)=>actionAV(a)-actionAV(b))[0];
+  const wait=actionAV(next),remaining=state.mode==="raid"?Math.max(0,RAID_AV_LIMIT-state.avTime):Infinity;
+  if(remaining<=AV_EPSILON){render();raidResult();return;}
+  if(wait>AV_EPSILON){
+   advanceCombatAV(Math.min(wait,nextTimedAV(),remaining));
+   if(checkEnd()){render();return;}
+   continue;
+  }
+  state.pendingSkill=null;state.pendingActorId=null;state.passiveDetailActorId=null;state.currentId=next.id;
+  if(next.side==="player"){next.sp=Math.min(next.maxSp,next.sp+1);passiveOnTurnStart(next)}
+  render();if(next.side==="enemy")VFX.queue(bossTurn,500);return;
  }
- const next=live.filter(x=>!state.acted.includes(x.id)).sort((a,b)=>effSpeed(b)-effSpeed(a))[0];
- if(!next)return;
- state.pendingSkill=null;state.pendingActorId=null;state.passiveDetailActorId=null;
- state.currentId=next.id;state.acted.push(next.id);
- if(next.side==="player"){next.sp=Math.min(next.maxSp,next.sp+1);passiveOnTurnStart(next)}
- render();
- if(next.side==="enemy")VFX.queue(bossTurn,500)
 }
-function endPlayer(a){
- state.pendingSkill=null;state.pendingActorId=null;
- tickBuffs(a);if(a.enhanced>0)a.enhanced--;
- if(checkEnd())return;render();VFX.queue(nextTurn,220)
+function endPlayer(a){state.pendingSkill=null;state.pendingActorId=null;completeCombatTurn(a);}
+function setEnhanced(target,value){target.enhanced=Math.max(target.enhanced||0,effectTurns(value));}
+function advanceAction(target,percent){
+ if(!target||target.dead)return;
+ const distance=ACTION_GAUGE*clamp(percent,0,100)/100;
+ if(DAMAGE_PREVIEW)DAMAGE_PREVIEW.changes.push({targetId:target.id,targetIndex:target.index,targetSide:target.side,key:"actionAdvance",delta:percent});
+ if(target.id===state.currentId)target.nextActionAdvance=Math.min(ACTION_GAUGE,(target.nextActionAdvance||0)+distance);
+ else target.actionGauge=Math.max(0,(target.actionGauge??ACTION_GAUGE)-distance);
+ log(`${unitLabel(target)} 행동 ${percent}% 당김.`);
 }
 function bossTurn(){
  if(!state||state.over||!current()||current().side!=="enemy")return;
@@ -2175,17 +2227,17 @@ function bossTurn(){
 }
 function resolveBossTurn(){
  const b=state.boss;if(b.dead)return;
- burnTick(true);if(checkEnd())return;
+ 
  if(b.staggered){
    log(`[그로기] ${unitLabel(b)} 행동 불가. 폭딜 시간이 종료된다.`);
-   poisonTick();tickBuffs(b);
+   
    b.staggered=false;b.stagger=0;
-   state.intent=bossIntent();render();if(checkEnd())return;VFX.queue(nextTurn,430);return
+   completeCombatTurn(b);return
  }
- if(b.frozen){b.frozen=false;log(`보스가 [빙결]로 행동 불가.`);poisonTick();tickBuffs(b);state.intent=bossIntent();render();if(checkEnd())return;VFX.queue(nextTurn,380);return}
+ if(b.frozen){b.frozen=false;log(`보스가 [빙결]로 행동 불가.`);completeCombatTurn(b);return}
  const act=state.intent;
- if(b.paralyzed&&act.type==="normal"){b.paralyzed=false;log(`[마비]로 일반 스킬 봉쇄.`);poisonTick();tickBuffs(b);state.intent=bossIntent();render();if(checkEnd())return;VFX.queue(nextTurn,380);return}
- if(act.type==="ultimate")b.energy=0;else b.energy=Math.min(100,b.energy+28);
+ if(b.paralyzed&&act.type==="normal"){b.paralyzed=false;log(`[마비]로 일반 스킬 봉쇄.`);completeCombatTurn(b);return}
+ if(act.type==="ultimate")b.energy=0;else b.energy=Math.min(100,b.energy+35);
  if(act.shield){b.shield+=act.shield;log(`${unitLabel(b)} 보호막 ${act.shield}.`)}
  if(act.base&&act.aoe){
    alivePlayers().forEach(p=>{
@@ -2202,14 +2254,14 @@ function resolveBossTurn(){
      if(d&&act.energyDrain){t.energy=Math.max(0,t.energy-act.energyDrain);log(`${unitLabel(t)} 에너지 -${act.energyDrain}.`)}
    }
  }
- bleedTick();poisonTick();tickBuffs(b);state.intent=bossIntent();render();if(checkEnd())return;VFX.queue(nextTurn,350)
+ completeCombatTurn(b)
 }
 function ultEnergyRequirement(a){return state&&state.deckId==="wave"?10:100}
 function waveEnergyTier(energy){return energy>=100?4:energy>=71?3:energy>=36?2:1}
 function spendAction(a,which){
  if(DAMAGE_PREVIEW)return true;
- if(which===0){a.sp=Math.min(a.maxSp,a.sp+1);a.energy=Math.min(100,a.energy+20);return true}
- if(which===1){if(a.sp<2)return false;a.sp-=2;a.energy=Math.min(100,a.energy+28);return true}
+ if(which===0){a.sp=Math.min(a.maxSp,a.sp+1);a.energy=Math.min(100,a.energy+30);return true}
+ if(which===1){if(a.sp<2)return false;a.sp-=2;a.energy=Math.min(100,a.energy+40);return true}
  if(which===2){if(a.energy<ultEnergyRequirement(a))return false;a.energy=0;return true}
 }
 function main(){return state.players[0]}
@@ -2302,14 +2354,14 @@ function useSkill(which,previewOnly=false){
    if(which===0){hit(45);addPoison(3);resGain(a,1)}
    if(which===1){
      if(slot===0){const n=skillStrength(a,2);poisonSettle(1.15+n*.25)}
-     if(slot===1){const n=skillStrength(a,2);hit(65+n*18);let i=b.poison.findIndex(x=>x===3);if(i>=0){b.poison.splice(i,1);addPoison(3,true)}else addPoison(3)}
-     if(slot===2){const n=skillStrength(a,1);b.poison=b.poison.map(x=>x+1+n);b.miasma=b.miasma.map(x=>x+1+n);hit(40)}
+     if(slot===1){const n=skillStrength(a,2);hit(65+n*18);let i=b.poison.indexOf(Math.max(...b.poison));if(i>=0){b.poison.splice(i,1);addPoison(3,true)}else addPoison(3)}
+     if(slot===2){const n=skillStrength(a,1);b.poison=b.poison.map(x=>Math.min(360,x+(1+n)*60));b.miasma=b.miasma.map(x=>Math.min(360,x+(1+n)*60));hit(40)}
      if(slot===3){const n=skillStrength(a,1);const h=heal(ally(),150+n*45);log(`선택 대상 회복 ${h}.`)}
    }
    if(which===2){
      if(slot===0){const n=ultimateStrength(a);poisonSettle(1.8+n*.22)}
-     if(slot===1){while(b.poison.includes(3)&&b.miasma.length<3){b.poison.splice(b.poison.indexOf(3),1);addPoison(3,true)}hit(115)}
-     if(slot===2){b.poison=b.poison.map(x=>x+2);b.miasma=b.miasma.map(x=>x+2);resGain(ally(),2)}
+     if(slot===1){while(b.poison.length&&b.miasma.length<3){b.poison.shift();addPoison(3,true)}hit(115)}
+     if(slot===2){b.poison=b.poison.map(x=>Math.min(360,x+120));b.miasma=b.miasma.map(x=>Math.min(360,x+120));resGain(ally(),2)}
      if(slot===3){partyHeal(210);resGain(ally(),1)}
    }
  }
@@ -2444,14 +2496,14 @@ function useSkill(which,previewOnly=false){
      const n=skillStrength(a,2);
      if(slot===0){addBuff(a,"speedUp",25+n*4,2);hit(55+n*15,{speedScale:.95})}
      if(slot===1){hit(58+n*13,{speedScale:.65});addBuff(ally(),"speedUp",20+n*3,2);a.evade++}
-     if(slot===2){hit(52+n*12,{speedScale:.6});alivePlayers().forEach(p=>addBuff(p,"speedUp",12+n*2,2))}
+     if(slot===2){hit(52+n*12,{speedScale:.6});alivePlayers().forEach(p=>addBuff(p,"speedUp",12+n*2,2));advanceAction(ally(),20)}
      if(slot===3){const t=ally();shield(t,14+n*4,1);t.evade+=1;hit(38+n*10,{speedScale:.4})}
    }
    if(which===2){
      const n=ultimateStrength(a);
      if(slot===0){hit(105+n*24,{speedScale:1.35});a.evade++}
      if(slot===1){hit(125+n*20,{speedScale:.9});alivePlayers().forEach(p=>p.evade++)}
-     if(slot===2){hit(115+n*20,{speedScale:.8});alivePlayers().forEach(p=>addBuff(p,"speedUp",22,2))}
+     if(slot===2){hit(115+n*20,{speedScale:.8});alivePlayers().forEach(p=>addBuff(p,"speedUp",22,2));advanceAction(ally(),35)}
      if(slot===3){partyHeal(155+n*20);alivePlayers().forEach(p=>p.evade++)}
    }
  }
@@ -2473,7 +2525,7 @@ function useSkill(which,previewOnly=false){
    }
  }
 
- // 11. Ultimate cycle: energy is already character-local.
+ // 11. Ultimate charging: energy is already character-local.
  if(id==="ult"){
    if(which===0)hit(50,{type:"mental"});
    if(which===1){
@@ -2495,17 +2547,17 @@ function useSkill(which,previewOnly=false){
    if(which===0){hit(a.enhanced?100:52,{bonus:a.resource*8});resGain(a,1)}
    if(which===1){
      const n=skillStrength(a,2);
-     if(slot===0){a.enhanced=2+n;hit(a.enhanced?145:75,{pen:a.enhanced?.18:0})}
-     if(slot===1){hit(70+n*18);const t=ally();t.enhanced=Math.max(t.enhanced,2+n);resGain(t,1)}
-     if(slot===2){hit(68+n*18);const t=ally();t.enhanced=Math.max(t.enhanced,2);t.energy=Math.min(100,t.energy+15+n*5)}
-     if(slot===3){const t=ally();shield(t,17+n*5,1);t.enhanced=Math.max(t.enhanced,2);hit(40)}
+     if(slot===0){setEnhanced(a,2+n);hit(a.enhanced?145:75,{pen:a.enhanced?.18:0})}
+     if(slot===1){hit(70+n*18);const t=ally();setEnhanced(t,2+n);resGain(t,1)}
+     if(slot===2){hit(68+n*18);const t=ally();setEnhanced(t,2);t.energy=Math.min(100,t.energy+15+n*5)}
+     if(slot===3){const t=ally();shield(t,17+n*5,1);setEnhanced(t,2);hit(40)}
    }
    if(which===2){
      const n=ultimateStrength(a);
-     if(slot===0){a.enhanced=4;hit(135+n*25)}
-     if(slot===1){const t=ally();t.enhanced=Math.max(t.enhanced,3+n);hit(110+n*18)}
-     if(slot===2){const t=ally();t.enhanced=Math.max(t.enhanced,3);t.energy=Math.min(100,t.energy+25);hit(105+n*18)}
-     if(slot===3){alivePlayers().forEach(p=>shield(p,16+n*2));addTaunt(a,2);const t=ally();t.enhanced=Math.max(t.enhanced,3)}
+     if(slot===0){setEnhanced(a,4);hit(135+n*25)}
+     if(slot===1){const t=ally();setEnhanced(t,3+n);hit(110+n*18)}
+     if(slot===2){const t=ally();setEnhanced(t,3);t.energy=Math.min(100,t.energy+25);hit(105+n*18)}
+     if(slot===3){alivePlayers().forEach(p=>shield(p,16+n*2));addTaunt(a,2);const t=ally();setEnhanced(t,3)}
    }
  }
 
@@ -2676,14 +2728,14 @@ function useSkill(which,previewOnly=false){
    }
  }
 
- // 21. Radiance - shared light that decays at the end of a full combat cycle.
+ // 21. Radiance - shared light that decays at the end of a combat turn.
  if(id==="radiance"){
    if(which===0){hit(52);}
    if(which===1){
      if(slot===0)hit(112+state.shared.radiance*.45,{critBonus:state.shared.glow*2});
      if(slot===1){hit(82);state.shared.glow=clamp(state.shared.glow+1,0,8)}
      if(slot===2){state.shared.radiance=clamp(state.shared.radiance+16,0,100);addBuff(ally(),"atkUp",16,2)}
-     if(slot===3){shield(ally(),20+state.shared.radiance*.18,1)}
+     if(slot===3){shield(ally(),20+state.shared.radiance*.05,1)}
    }
    if(which===2){
      if(slot===0)hit(205+state.shared.radiance*1.1,{pen:.18,critBonus:state.shared.glow*3});
@@ -2711,7 +2763,7 @@ function useSkill(which,previewOnly=false){
    }
  }
 
- // 23. Tree - sapling grows after three cycles, then gains a stack every two cycles.
+ // 23. Tree - sapling grows at 60, 120 and 180 AV.
  if(id==="tree"){
    if(which===0){hit(50);}
    if(which===1){
@@ -2753,7 +2805,6 @@ function useSkill(which,previewOnly=false){
  }
  passiveAfterSkill(a,which,ctx);
  state.actionContext=null;
- if(checkEnd())return;
  endPlayer(a)
 }
 
@@ -2777,18 +2828,18 @@ function bossStatuses(){
  const b=state.boss,a=[];
  if(b.staggered)a.push({label:`그로기 x${b.staggerMultiplier.toFixed(1)}`,tone:"break"});
  if(b.shield)a.push({label:`보호막 ${b.shield}`,tone:"buff"});if(b.chill)a.push({label:`한기 ${b.chill}/5`,tone:"debuff"});if(b.frozen)a.push({label:"빙결",tone:"debuff"});
- b.poison.forEach(x=>a.push({label:`중독 · ${x}T`,tone:"debuff"}));b.miasma.forEach(x=>a.push({label:`맹독 · ${x}T`,tone:"debuff"}));
- if(b.burn)a.push({label:`연소 ${b.burn}/${BURN_STACK_CAP}`,tone:"debuff"});if(b.inferno)a.push({label:`맹염 ${b.inferno}T`,tone:"debuff"});if(b.scorch)a.push({label:`화상 ${b.scorch}T`,tone:"debuff"});
+ b.poison.forEach(x=>a.push({label:`중독 · ${formatAV(x)}AV`,tone:"debuff"}));b.miasma.forEach(x=>a.push({label:`맹독 · ${formatAV(x)}AV`,tone:"debuff"}));
+ if(b.burn)a.push({label:`연소 ${b.burn}/${BURN_STACK_CAP}`,tone:"debuff"});if(b.inferno)a.push({label:`맹염 ${formatAV(b.inferno)}AV`,tone:"debuff"});if(b.scorch)a.push({label:`화상 ${formatAV(b.scorch)}AV`,tone:"debuff"});
  if(b.bleed)a.push({label:`출혈 ${b.bleed}/${BLEED_STACK_CAP}`,tone:"debuff"});if(b.charge)a.push({label:`전하 ${b.charge}/${state.paralyzeNeed}`,tone:"debuff"});if(b.paralyzed)a.push({label:"마비",tone:"debuff"});
  if(state.deckId==="radiance"&&state.shared.glow)a.push({label:`광채 ${state.shared.glow}/8`,tone:"debuff"});
  const names={atkDown:"공격↓",defDown:"방어↓",speedDown:"속도↓",vulnerable:"취약",defUp:"방어↑",atkUp:"공격↑"};
- for(const [k,v] of Object.entries(b.buffs))a.push({label:`${names[k]||k} ${Math.round(v.v)}% · ${v.d>=90?"∞":`${v.d}T`} · ${v.stacks||1}/${EFFECT_MAX_STACKS}중첩`,tone:["defUp","atkUp"].includes(k)?"buff":"debuff"});
+ for(const [k,v] of Object.entries(b.buffs))a.push({label:`${names[k]||k} ${Math.round(v.v)}% · ${!Number.isFinite(v.d)?"∞":`${formatAV(v.d)}AV`} · ${v.stacks||1}/${EFFECT_MAX_STACKS}중첩`,tone:["defUp","atkUp"].includes(k)?"buff":"debuff"});
  return a
 }
 function playerStatuses(p){
- const a=[];if(p.shield)a.push({label:`보호막 ${p.shield}/${p.shieldCap||p.shield} · 무기한`,tone:"buff"});if(p.evade)a.push({label:`회피 ${p.evade}`,tone:"buff"});if(p.enhanced)a.push({label:`강화 ${p.enhanced}`,tone:"buff"});if(p.taunt)a.push({label:`도발 ${p.taunt}회`,tone:"debuff"});
+ const a=[];if(p.shield)a.push({label:`보호막 ${p.shield}/${p.shieldCap||p.shield} · 무기한`,tone:"buff"});if(p.evade)a.push({label:`회피 ${p.evade}`,tone:"buff"});if(p.enhanced)a.push({label:`강화 ${formatAV(p.enhanced)}AV`,tone:"buff"});if(p.taunt)a.push({label:`도발 ${p.taunt}회`,tone:"debuff"});
  const names={atkUp:"공격↑",atkDown:"공격↓",defUp:"방어↑",defDown:"방어↓",speedUp:"속도↑",speedDown:"속도↓",critUp:"치확↑",critDmgUp:"치피↑"};
- for(const [k,v] of Object.entries(p.buffs))a.push({label:`${names[k]||k} ${Math.round(v.v)}% · ${v.d>=90?"∞":`${v.d}T`} · ${v.stacks||1}/${EFFECT_MAX_STACKS}중첩`,tone:k.endsWith("Down")?"debuff":"buff"});
+ for(const [k,v] of Object.entries(p.buffs))a.push({label:`${names[k]||k} ${Math.round(v.v)}% · ${!Number.isFinite(v.d)?"∞":`${formatAV(v.d)}AV`} · ${v.stacks||1}/${EFFECT_MAX_STACKS}중첩`,tone:k.endsWith("Down")?"debuff":"buff"});
  return a
 }
 function effectChipsHTML(effects,empty="효과 없음"){
@@ -2820,13 +2871,13 @@ function coreText(){
  execute:"처형 준비·판결·길잡이·의지는 별도. 메인 처형 기준은 보조가 쌓아놓은 준비 상태의 영향을 받는다.",
  crit:"집중·추리·표적·경계가 개인 스택. 서폿도 직접 치명타 공격을 하면서 메인딜을 보조한다.",
  cleanse:"정화·진실·결심·치료는 정화 행동을 한 캐릭터에게 쌓인다.",
- burn:`적 연소 ${b.burn}/${BURN_STACK_CAP} · 맹염 ${b.inferno?`${b.inferno}T`:"OFF"} · 화상 ${b.scorch?`${b.scorch}T`:"OFF"}. 불씨 계열 개인 스택과 적 연소는 별개.`,
+ burn:`적 연소 ${b.burn}/${BURN_STACK_CAP} · 맹염 ${b.inferno?`${formatAV(b.inferno)}AV`:"OFF"} · 화상 ${b.scorch?`${formatAV(b.scorch)}AV`:"OFF"}. 불씨 계열 개인 스택과 적 연소는 별개.`,
  bleed:`적 출혈 ${b.bleed}/${BLEED_STACK_CAP}. 혈흔/원한/선동/항해는 개인 스택이고 출혈 자체는 적에게 붙는다.`,
  electric:`전하 ${b.charge}/${state.paralyzeNeed} · 마비 ${b.paralyzed?"ON":"OFF"}. [전류]는 네 캐릭터가 각자 따로 보유한다.`,
  defense:"[축적 피해]는 피격된 캐릭터 개인에게 저장된다. 방어 버프를 주는 보조도 자기 통제/침압 스택을 따로 쓴다.",
- radiance:`공용 광휘 ${state.shared.radiance}/100 · 적 광채 ${state.shared.glow}/8. 광채가 높을수록 사이클 종료 시 광휘가 적게 감소한다.`,
+ radiance:`공용 광휘 ${Math.floor(state.shared.radiance)}/100 · 적 광채 ${state.shared.glow}/8. 광채가 높을수록 AV 경과 시 광휘가 적게 감소한다.`,
  wave:"궁극기 에너지 구간: 10~35% 1단계 · 36~70% 2단계 · 71~99% 3단계 · 100% 4단계. 높은 구간일수록 피해와 추가 효과가 강해진다.",
- tree:state.shared.tree?`나무 ${state.shared.tree}/3스택 · 다음 성장까지 ${2-state.shared.treeAge}사이클.`:`새싹 성장 ${state.shared.saplingAge}/3사이클 · 3사이클 뒤 나무로 변환.`,
+ tree:state.shared.tree?`나무 ${state.shared.tree}/3스택 · ${state.shared.tree>=3?"최대 성장":`다음 성장까지 ${formatAV(Math.max(0,TREE_GROWTH_AV-state.shared.treeAge))}AV`}.`:`새싹 성장 ${formatAV(state.shared.saplingAge)}/${TREE_FIRST_GROWTH_AV}AV · 60AV 뒤 나무로 변환.`,
  wind:`공용 풍력 ${state.shared.wind}/30 · 15 이상 치명타 확률 증가 · 30 도달 시 공격 후 추가 치명타.`
  };
  if(!SHARED_ONLY_DECKS.has(id)&&id!=='bullet'&&id!=='electric'){
@@ -2911,21 +2962,21 @@ function skillEffectValueSummary(a,i,result=null){
  }
  for(const group of groupedPreviewEntries(result.effects,x=>`${x.targetSide}:${x.key}:${x.val}:${x.dur}`)){
   const e=group[0],display=EFFECT_VALUE_LABELS[e.key];if(!display)continue;
-  parts.push(`${previewEntryTarget(group)} ${display[0]} ${display[1]}${formatCoefficient(e.val)}% · ${e.dur>=99?"무한":`${e.dur}턴`}${repeatSuffix(group)}`)
+  parts.push(`${previewEntryTarget(group)} ${display[0]} ${display[1]}${formatCoefficient(e.val)}% · ${!Number.isFinite(e.dur)?"무한":`${formatAV(e.dur)}AV`}${repeatSuffix(group)}`)
  }
  for(const group of groupedPreviewEntries(result.taunts,x=>x.count))parts.push(`${previewEntryTarget(group)} 도발 ${group[0].count}회${repeatSuffix(group)}`);
  for(const group of groupedPreviewEntries(result.changes,x=>`${x.key}:${x.delta}:${x.resourceLabel}`)){
   const e=group[0],sign=e.delta>0?"+":"−",value=Math.abs(Math.round(e.delta*10)/10).toLocaleString(),target=previewEntryTarget(group);
-  const label=e.key==="resource"?`[${e.resourceLabel}]`:e.key==="energy"?"에너지":e.key==="sp"?"SP":e.key==="maxSp"?"최대 SP":e.key==="enhanced"?"강화 지속":e.key==="counterReady"?"반격 준비 수치":e.key==="evade"?"회피":e.key==="maxHp"?"최대 HP":e.key==="hp"?"현재 HP":"사망 방지";
-  const unit=e.key==="energy"?"%":e.key==="enhanced"?"턴":e.key==="evade"||e.key==="preventDeath"?"회":"";
+  const label=e.key==="resource"?`[${e.resourceLabel}]`:e.key==="actionAdvance"?"행동 당김":e.key==="energy"?"에너지":e.key==="sp"?"SP":e.key==="maxSp"?"최대 SP":e.key==="enhanced"?"강화 지속":e.key==="counterReady"?"반격 준비 수치":e.key==="evade"?"회피":e.key==="maxHp"?"최대 HP":e.key==="hp"?"현재 HP":"사망 방지";
+  const unit=e.key==="energy"||e.key==="actionAdvance"?"%":e.key==="enhanced"?"AV":e.key==="evade"||e.key==="preventDeath"?"회":"";
   parts.push(`${target} ${label} ${sign}${value}${unit}${repeatSuffix(group)}`)
  }
  return parts.join(" · ")
 }
 function skillMeta(a,i){
  const support=isSupportAction(state&&state.deckId,a.index,i)?"지원 · 피해 없음 · ":"";
- if(i===0)return `${support}1스킬 · SP +1 · 에너지 +20`;
- if(i===1)return `${support}2스킬 · SP 2 소모 · 에너지 +28`;
+ if(i===0)return `${support}1스킬 · SP +1 · 에너지 +30`;
+ if(i===1)return `${support}2스킬 · SP 2 소모 · 에너지 +40`;
  return `${support}궁극기 · 에너지 ${ultEnergyRequirement(a)}${state&&state.deckId==="wave"?" 이상 · 보유량별 4단계 강화":""}${support?"":` · 그로기 x${state&&state.boss&&state.boss.staggered?state.boss.staggerMultiplier.toFixed(1):"1.0"}`}`
 }
 const SKILL_EFFECT_TEXT={
@@ -2936,10 +2987,10 @@ const SKILL_EFFECT_TEXT={
   ["현실피해를 주고 탄환 2발을 장전한다. 보호막이 있는 상태라면 탄환을 1발 더 얻는다.","탄환을 최대 2발 소모해 자신의 보호막과 공격 피해를 동시에 높인다.","탄환을 전부 소모해 모든 아군에게 보호막을 부여하고 SLOT 01에 탄환 2발을 보급한다."]
  ],
  poison:[
-  ["현실피해를 주고 3턴 중독을 부여하며 조제 1을 얻는다. 맹독이 있으면 결산 피해가 더 강해진다.","조제를 최대 2 소모해 적에게 쌓인 중독과 맹독 피해를 즉시 결산한다.","모든 조제를 소모한다. 중독과 맹독을 강화된 배율로 즉시 폭발시킨 뒤 독 스택을 비운다."],
-  ["현실피해와 3턴 중독을 부여하고 독초 1을 얻는다. 중독 부여 시 추가 중독이 생길 수 있다.","독초를 소모해 공격한다. 3턴 중독 하나를 맹독으로 바꾸며, 없다면 새 중독을 부여한다.","모든 3턴 중독을 가능한 만큼 맹독으로 변환한 뒤 현실피해를 가한다."],
-  ["현실피해와 3턴 중독을 부여하고 봉합 1을 얻는다. 독 지속시간을 늘리면 에너지를 추가로 회복한다.","봉합을 소모해 모든 중독·맹독의 지속시간을 연장하고 현실피해를 준다.","모든 독의 지속시간을 2턴 연장하고 SLOT 01에 조제 2를 제공한다."],
-  ["현실피해와 3턴 중독을 부여하고 처방 1을 얻는다. 독 피해가 발생하면 약한 아군을 회복한다.","처방을 소모해 체력이 가장 낮은 아군을 회복하고 2턴 중독을 부여한다.","파티 전체를 회복하고 3턴 중독을 부여하며 SLOT 01의 조제를 1 올린다."]
+  ["현실피해를 주고 6턴 중독을 부여하며 조제 1을 얻는다. 맹독이 있으면 결산 피해가 더 강해진다.","조제를 최대 2 소모해 적에게 쌓인 중독과 맹독 피해를 즉시 결산한다.","모든 조제를 소모한다. 중독과 맹독을 강화된 배율로 즉시 폭발시킨 뒤 독 스택을 비운다."],
+  ["현실피해와 6턴 중독을 부여하고 독초 1을 얻는다. 중독 부여 시 추가 중독이 생길 수 있다.","독초를 소모해 공격한다. 중독 하나를 맹독으로 바꾸며, 없다면 새 중독을 부여한다.","모든 중독을 가능한 만큼 맹독으로 변환한 뒤 현실피해를 가한다."],
+  ["현실피해와 6턴 중독을 부여하고 봉합 1을 얻는다. 독 지속시간을 늘리면 에너지를 추가로 회복한다.","봉합을 소모해 모든 중독·맹독의 지속시간을 연장하고 현실피해를 준다.","모든 독의 지속시간을 2턴 연장하고 SLOT 01에 조제 2를 제공한다."],
+  ["현실피해와 6턴 중독을 부여하고 처방 1을 얻는다. 독 피해가 발생하면 약한 아군을 회복한다.","처방을 소모해 체력이 가장 낮은 아군을 회복하고 2턴 중독을 부여한다.","파티 전체를 회복하고 6턴 중독을 부여하며 SLOT 01의 조제를 1 올린다."]
  ],
  counter:[
   ["방어력 비례 현실피해를 주고 보호막과 저장 피해를 얻는다.","저장 피해를 소모해 반격을 준비하고 큰 보호막을 얻는다. 다음 피격 시 반격한다.","모든 저장 피해와 자신의 방어력을 공격력으로 환산해 단일 강타를 가한다."],
@@ -3105,7 +3156,7 @@ const SUPPORT_EFFECT_TEXT={
  "hp:3:1":"최대 HP 7%를 희생한 뒤 소모한 HP 대부분을 회복한다. 직접 피해를 주지 않는다.",
  "speed:1:1":"보행을 소모해 선택한 아군의 속도를 높이고 자신은 회피 1회를 얻는다.",
  "speed:1:2":"모든 보행을 소모해 전 아군에게 회피 1회를 부여한다.",
- "speed:2:1":"항해를 소모해 전 아군의 속도를 2턴 높인다. 직접 피해를 주지 않는다.",
+ "speed:2:1":"전 아군의 속도를 높이고 선택한 아군의 행동 게이지를 20% 당긴다. 직접 피해를 주지 않는다.",
  "speed:2:2":"모든 항해를 소모해 파티 전체의 속도를 크게 강화한다.",
  "speed:3:1":"등반을 소모해 선택한 아군에게 보호막과 회피 1회를 부여한다. 직접 피해를 주지 않는다.",
  "debuff:3:1":"잔영을 소모해 적의 공격력 감소를 갱신하고 파티를 회복한다. 직접 피해를 주지 않는다.",
@@ -3196,6 +3247,7 @@ const SHIELD_RULE_TEXT={
 };
 const SHIELD_POLICY_TEXT="보호막 누적 상한: 시전자 최대 체력의 200% · 지속시간 무한.";
 function skillEffectText(a,i){
+ if(state?.deckId==="speed"&&a.index===2&&i>0)return `전 아군의 속도를 높이고 선택한 아군의 행동 게이지를 ${i===1?20:35}% 당긴다.`;
  if(!a.resourceLabel&&!SHARED_ONLY_DECKS.has(state&&state.deckId)){
   const support=isSupportAction(state.deckId,a.index,i);
   const purpose=support?'선택한 아군을 지원한다.':'보스를 공격하고 덱의 고정 효과를 적용한다.';
@@ -3203,13 +3255,14 @@ function skillEffectText(a,i){
  }
 
  const key=`${state&&state.deckId}:${a.index}:${i}`;
- const text=SUPPORT_EFFECT_TEXT[key]||SKILL_EFFECT_TEXT[state&&state.deckId]?.[a.index]?.[i]||"현재 스킬 효과 정보를 불러올 수 없다.";
+ let text=SUPPORT_EFFECT_TEXT[key]||SKILL_EFFECT_TEXT[state&&state.deckId]?.[a.index]?.[i]||"현재 스킬 효과 정보를 불러올 수 없다.";
+ text=text.replace(/6턴 중독/g,"180AV 중독").replace(/([1-6])턴/g,(_,n)=>`${effectTurns(Number(n))}AV`);
  const shieldRule=SHIELD_RULE_TEXT[key];
  return simplifiedResourceText(`${text.replaceAll("SLOT 01","선택한 아군")}${shieldRule?` ${shieldRule} ${SHIELD_POLICY_TEXT}`:""}`,state&&state.deckId)
 }
 function sharedGaugeHTML(){
  if(!SHARED_ONLY_DECKS.has(state.deckId))return '';
- const label={radiance:'광휘 '+state.shared.radiance+'/100 · 적 광채 '+state.shared.glow+'/8',wave:'궁극기 에너지 10%부터 사용 · 높은 에너지에서 강화',tree:state.shared.tree?'나무 '+state.shared.tree+'/3 · 다음 성장 '+(2-state.shared.treeAge)+'사이클':'새싹 '+state.shared.saplingAge+'/3사이클',wind:'풍력 '+state.shared.wind+'/30 · 15 치명타 강화 · 30 추가타'}[state.deckId];
+ const label={radiance:'광휘 '+Math.floor(state.shared.radiance)+'/100 · 적 광채 '+state.shared.glow+'/8',wave:'궁극기 에너지 10%부터 사용 · 높은 에너지에서 강화',tree:state.shared.tree?'나무 '+state.shared.tree+'/3 · '+(state.shared.tree>=3?'최대 성장':'다음 성장 '+formatAV(Math.max(0,TREE_GROWTH_AV-state.shared.treeAge))+'AV'):'새싹 '+formatAV(state.shared.saplingAge)+'/'+TREE_FIRST_GROWTH_AV+'AV',wind:'풍력 '+state.shared.wind+'/30 · 15 치명타 강화 · 30 추가타'}[state.deckId];
  return '<div class="shared-gauge">'+label+'</div>';
 }
 function skillOverviewHTML(a){
@@ -3257,13 +3310,12 @@ function render(){
  if(!state)return;
  const cur=current(),live=allActors().filter(x=>!x.dead),b=state.boss,intent=state.intent;
  const chosenTarget=selectedAlly();if(chosenTarget)state.selectedTargetId=chosenTarget.id;
- const unacted=live.filter(x=>!state.acted.includes(x.id)&&x.id!==state.currentId).sort((a,b)=>effSpeed(b)-effSpeed(a));
- const acted=live.filter(x=>state.acted.includes(x.id)&&x.id!==state.currentId).sort((a,b)=>effSpeed(b)-effSpeed(a));
- document.getElementById("turnOrder").innerHTML=[cur,...unacted,...acted].filter(Boolean).map((u,i)=>{const enemy=u.side==="enemy",label=enemy?"BOSS":`SLOT ${String((u.index??0)+1).padStart(2,"0")}`;return `<div class="order-chip ${i===0?"now":""} ${enemy?"enemy":""}" data-initial="${enemy?"B":String((u.index??0)+1).padStart(2,"0")}" title="${label} · SPD ${effSpeed(u)}"><b>${label}</b><small>${i===0?"NOW · ":""}SPD ${effSpeed(u)}</small></div>`}).join("");
+ const upcoming=live.filter(x=>x.id!==state.currentId).sort((a,b)=>actionAV(a)-actionAV(b));
+ document.getElementById("turnOrder").innerHTML=[cur,...upcoming].filter(Boolean).map((u,i)=>{const enemy=u.side==="enemy",label=enemy?"BOSS":`SLOT ${String((u.index??0)+1).padStart(2,"0")}`,av=i===0?0:actionAV(u);return `<div class="order-chip ${i===0?"now":""} ${enemy?"enemy":""}" data-initial="${enemy?"B":String((u.index??0)+1).padStart(2,"0")}" title="${label} · SPD ${effSpeed(u)} · ${formatAV(av)}AV"><b>${label}</b><small>${i===0?"NOW":"AV "+formatAV(av)}</small></div>`}).join("");
  document.getElementById("deckCore").innerHTML=`<b>${deck().name} CORE · VS ${state.mode==="clear"?"CLEAR":"RAID"} TARGET ${String(state.boss.displayIndex).padStart(2,"0")}</b><div class="core-main">${coreText()}</div><div class="core-sub">GRG ${state.boss.stagger}/${state.boss.staggerMax} · 가득 차면 다음 보스 행동까지 피해 x${state.boss.staggerMultiplier.toFixed(1)} + 보스 행동 1회 스킵.</div>`;
  const rank=scoreRank(state.score),next=nextRank(state.score),rankProgress=next?clamp((state.score-rank.min)/(next.min-rank.min)*100,0,100):100;
  const clearProgress=100-pct(b.hp,b.maxHp),clearHpPct=Math.ceil(pct(b.hp,b.maxHp));
- document.getElementById("raidHud").innerHTML=state.mode==="clear"?`<div class="raid-hud-top"><div><div class="raid-hud-label">SPEED CLEAR · CURRENT</div><div class="raid-score">${clearTurnsUsed()}<small>TURN</small></div></div><div class="raid-rank" style="--rank-color:#f08a45"><small>BOSS HP</small>${clearHpPct}%</div></div><div class="raid-turn">사용한 아군 행동 <b>${state.playerActions}회</b> · 누적 피해 <b>${state.score.toLocaleString()}</b></div><div class="raid-best">BOSS ${String(b.displayIndex).padStart(2,"0")} BEST <b>${clearRecordText(b.bossId)}</b></div><div class="raid-next"><i style="width:${clearProgress}%"></i></div><div class="raid-next-text">남은 HP ${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()}</div>`:`<div class="raid-hud-top"><div><div class="raid-hud-label">TOTAL DAMAGE · SCORE</div><div class="raid-score">${state.score.toLocaleString()}</div></div><div class="raid-rank" style="--rank-color:${rank.color}">${rank.name}</div></div><div class="raid-turn">완료한 사이클 <b>${state.roundsCompleted}/${RAID_TURN_LIMIT}</b> · 남은 사이클 <b>${RAID_TURN_LIMIT-state.roundsCompleted}</b></div><div class="raid-best">BOSS ${String(state.boss.displayIndex).padStart(2,"0")} · ${deck().name} BEST <b>${bestScoreText(state.boss.bossId)}</b></div><div class="raid-next"><i style="width:${rankProgress}%"></i></div><div class="raid-next-text">${next?`${next.name}까지 ${(next.min-state.score).toLocaleString()}점`:`최고 등급 달성`}</div>`;
+ document.getElementById("raidHud").innerHTML=state.mode==="clear"?`<div class="raid-hud-top"><div><div class="raid-hud-label">SPEED CLEAR · CURRENT</div><div class="raid-score">${formatAV(clearAVUsed())}<small>AV</small></div></div><div class="raid-rank" style="--rank-color:#f08a45"><small>BOSS HP</small>${clearHpPct}%</div></div><div class="raid-turn">사용 AV <b>${formatAV(state.avTime)}</b> · 아군 행동 <b>${state.playerActions}회</b> · 누적 피해 <b>${state.score.toLocaleString()}</b></div><div class="raid-best">BOSS ${String(b.displayIndex).padStart(2,"0")} BEST <b>${clearRecordText(b.bossId)}</b></div><div class="raid-next"><i style="width:${clearProgress}%"></i></div><div class="raid-next-text">남은 HP ${b.hp.toLocaleString()} / ${b.maxHp.toLocaleString()}</div>`:`<div class="raid-hud-top"><div><div class="raid-hud-label">TOTAL DAMAGE · SCORE</div><div class="raid-score">${state.score.toLocaleString()}</div></div><div class="raid-rank" style="--rank-color:${rank.color}">${rank.name}</div></div><div class="raid-turn">사용 AV <b>${formatAV(state.avTime)}/${RAID_AV_LIMIT}</b> · 남은 AV <b>${formatAV(Math.max(0,RAID_AV_LIMIT-state.avTime))}</b></div><div class="raid-best">BOSS ${String(state.boss.displayIndex).padStart(2,"0")} · ${deck().name} BEST <b>${bestScoreText(state.boss.bossId)}</b></div><div class="raid-next"><i style="width:${rankProgress}%"></i></div><div class="raid-next-text">${next?`${next.name}까지 ${(next.min-state.score).toLocaleString()}점`:`최고 등급 달성`}</div>`;
  const raidBar=raidBarState(state.score),raidHpRemain=raidBar.inside===0?RAID_BAR_HP:RAID_BAR_HP-raidBar.inside;
  const clearHpColor=clearHpPct>66?"#d84a4a":clearHpPct>33?"#e8883f":"#e6c84e";
  const oldBossFigure=document.querySelector('#bossCard .boss-figure'),keepBossFigure=oldBossFigure?.dataset.bossId===b.bossId;
@@ -3334,7 +3386,7 @@ function renderSelect(){
  const d=deck(),grid=document.getElementById("deckGrid"),bp=bossProfile();
  document.getElementById("modeKicker").textContent=selectedMode==="clear"?"SPEED CLEAR FORMATION":"RAID FORMATION";
  const modeSwitch=document.getElementById("modeSwitch");
- modeSwitch.innerHTML=`<button class="mode-option ${selectedMode==="raid"?"active":""}" data-mode="raid" type="button"><b>누적 피해</b><small>20사이클 · 최고 점수</small></button><button class="mode-option ${selectedMode==="clear"?"active":""}" data-mode="clear" type="button"><b>속전 토벌</b><small>HP 50만 · 최소 행동</small></button>`;
+ modeSwitch.innerHTML=`<button class="mode-option ${selectedMode==="raid"?"active":""}" data-mode="raid" type="button"><b>누적 피해</b><small>350AV · 최고 점수</small></button><button class="mode-option ${selectedMode==="clear"?"active":""}" data-mode="clear" type="button"><b>속전 토벌</b><small>HP 12만 · 최소 AV</small></button>`;
  modeSwitch.querySelectorAll("[data-mode]").forEach(x=>x.onclick=()=>{selectedMode=x.dataset.mode;renderSelect()});
  document.getElementById("currentDeckLabel").textContent=d.name;
  document.getElementById("loadoutCards").innerHTML=d.party.map((c,i)=>loadoutCardHTML(c,i,d)).join("");
@@ -3362,7 +3414,7 @@ function settleBattle(){
  VFX.reset();
  if(state.mode==="raid"){raidResult();return;}
  state.over=true;
- showResult("전투 종료",`토벌 중단 · ${deck().name}<br>누적 피해 <b>${state.score.toLocaleString()}</b><br>남은 보스 HP <b>${state.boss.hp.toLocaleString()} / ${state.boss.maxHp.toLocaleString()}</b><br>사용한 아군 행동 ${state.playerActions}회 · 완료한 사이클 ${state.roundsCompleted}<br>미완료 토벌은 최고 기록에 저장되지 않습니다.`);
+ showResult("전투 종료",`토벌 중단 · ${deck().name}<br>누적 피해 <b>${state.score.toLocaleString()}</b><br>남은 보스 HP <b>${state.boss.hp.toLocaleString()} / ${state.boss.maxHp.toLocaleString()}</b><br>사용한 아군 행동 ${state.playerActions}회 · 사용 AV ${formatAV(state.avTime)}<br>미완료 토벌은 최고 기록에 저장되지 않습니다.`);
 }
 function showResult(title,text){
  document.getElementById("settleBtn").disabled=true;
@@ -3604,3 +3656,4 @@ renderSelect();
 </script>
 </body>
 </html>
+

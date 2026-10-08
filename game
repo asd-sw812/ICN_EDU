@@ -990,6 +990,7 @@ body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail
  <button id="openDeckLibrary" class="loadout-deck-button" type="button"><span>▦</span><b>덱</b><small id="currentDeckLabel"></small></button>
  <div class="loadout-title"><span id="modeKicker">RAID FORMATION</span><b>출전 편성</b></div>
  <div id="modeSwitch" class="mode-switch" aria-label="전투 모드 선택"></div>
+ <button id="avHelpBtn" class="av-help-button" type="button" aria-haspopup="dialog" aria-controls="avHelpDialog">AV란?<span class="av-help-word"> · 도움말</span></button>
 </div>
 <div id="loadoutCards" class="loadout-cards" aria-live="polite"></div>
 <aside id="deckDetail" class="loadout-footer"></aside>
@@ -999,6 +1000,32 @@ body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail
  <section class="deck-library-panel"><div class="deck-library-head"><span>LOADOUT ARCHIVE</span><b>사용할 덱 선택</b></div><div id="deckGrid" class="deck-grid"></div></section>
 </div>
 </section>
+
+
+<style>
+.av-help-button{align-self:center;margin-left:10px;flex:0 0 auto;padding:10px 13px;border:1px solid #8daebf80;border-radius:5px;background:#0b1925e8;color:#d9eaf4;font:inherit;font-size:12px;cursor:pointer}
+.av-help-button:hover,.av-help-button:focus-visible{background:#21394c;outline:2px solid #b6d9ef;outline-offset:3px}
+#avHelpDialog{box-sizing:border-box;width:min(540px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:22px;border:1px solid #91b7cb80;border-radius:10px;background:#0b1724;color:#d5e5f1;box-shadow:0 20px 80px #000b}
+#avHelpDialog::backdrop{background:#020710bf}
+.av-help-heading{display:flex;align-items:center;justify-content:space-between;gap:16px}.av-help-heading h2{font-size:20px;margin:0}
+.av-help-intro{font-size:16px;line-height:1.7;color:#edf6fc}
+.av-help-example{padding:12px;background:#172a3b;border-left:3px solid #9fcde3;font-size:14px;line-height:1.7}
+.av-help-rules{padding-left:21px;font-size:14px;line-height:1.8}.av-help-rules li{margin:10px 0}
+.av-help-note{color:#a7bece;font-size:13px;line-height:1.7}
+@media(max-width:760px){.av-help-button{padding:7px 8px;margin-left:5px;font-size:10px}.av-help-button .av-help-word{display:none}#avHelpDialog{padding:16px}.av-help-heading h2{font-size:17px}}
+</style>
+<dialog id="avHelpDialog" aria-labelledby="avHelpTitle">
+ <div class="av-help-heading"><h2 id="avHelpTitle">AV란? · 전투의 시간</h2><button id="closeAvHelp" class="btn" type="button" aria-label="AV 설명 닫기">닫기</button></div>
+ <p class="av-help-intro"><b>AV는 다음 행동까지 얼마나 기다려야 하는지 나타내는 게임 속 시간</b>이야. 숫자가 작을수록 먼저 행동해.</p>
+ <div class="av-help-example">속도가 100이면 약 <b>100AV</b>마다, 속도가 200이면 약 <b>50AV</b>마다 행동해.<br>즉, 속도가 빠르면 같은 전투 시간 안에 더 자주 행동할 수 있어.</div>
+ <ul class="av-help-rules">
+  <li><b>행동 순서</b>의 AV가 0이 된 캐릭터가 행동해. 속도 증가와 행동 당김은 다음 행동을 앞당겨.</li>
+  <li><b>누적 피해</b>: 총 350AV 동안 준 피해로 점수를 정산해. 종료 및 정산 버튼으로 먼저 끝낼 수도 있어.</li>
+  <li><b>속전 토벌</b>: 보스를 쓰러뜨릴 때까지 사용한 AV가 적을수록 좋은 기록이야.</li>
+  <li><b>성장·버프·지속 피해</b>도 AV가 흐르면서 진행돼. 추가 공격과 반격은 별도 AV를 소비하지 않아.</li>
+ </ul>
+ <p class="av-help-note">AV는 실제 초나 분이 아니야. 스킬을 고르며 고민하는 동안에는 AV가 흐르지 않으니 천천히 선택해도 돼.</p>
+</dialog>
 
 <section id="battleScreen" class="hidden">
 <div id="raidHud" class="raid-hud"></div>
@@ -3638,6 +3665,10 @@ VFX.init();
  function syncMotion(){document.body.classList.toggle('character-motion-off',!enabled);button.textContent=enabled?'움직임: 켜짐':'움직임: 꺼짐';button.setAttribute('aria-pressed',String(enabled))}
  button.onclick=()=>{enabled=!enabled;try{localStorage.setItem('archive-character-motion',enabled?'on':'off')}catch(_){}syncMotion()};syncMotion()})();
 document.getElementById("selectBtn").onclick=returnSelect;
+const avHelpDialog=document.getElementById('avHelpDialog');
+document.getElementById('avHelpBtn').onclick=()=>avHelpDialog.showModal();
+document.getElementById('closeAvHelp').onclick=()=>avHelpDialog.close();
+avHelpDialog.addEventListener('click',event=>{if(event.target===avHelpDialog){const r=avHelpDialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)avHelpDialog.close()}});
 const deckInfoDialog=document.getElementById('deckInfoDialog');
 document.getElementById('deckInfoBtn').onclick=()=>deckInfoDialog.showModal();
 document.getElementById('closeDeckInfo').onclick=()=>deckInfoDialog.close();

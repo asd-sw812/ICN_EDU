@@ -31,7 +31,7 @@ app.whenReady().then(async()=>{
  await new Promise(resolve=>setTimeout(resolve,1800));
  const report=await window.webContents.executeJavaScript(`(async()=>{
   if(typeof Live2DCubismCore!=='object')throw Error('Cubism Core was not loaded locally');
-  if(document.querySelectorAll('#loadoutCards button').length!==4)throw Error('Formation failed');
+  if(document.querySelectorAll('#loadoutCards [data-character-card]').length!==4)throw Error('Formation failed');
   const manifest=await fetch('offline-manifest.json').then(r=>r.json());
   let checked=0;for(const file of manifest.files){const r=await fetch(file.path);if(!r.ok)throw Error('Missing local asset: '+file.path);const bytes=await r.arrayBuffer();if(bytes.byteLength!==file.bytes)throw Error('Asset size mismatch: '+file.path);checked++}
   document.getElementById('avHelpBtn').click();if(!document.getElementById('avHelpDialog').open)throw Error('AV dialog failed');document.getElementById('closeAvHelp').click();

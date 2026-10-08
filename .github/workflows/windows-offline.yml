@@ -1,0 +1,69 @@
+name: Build Windows offline EXE
+on:
+  push:
+    branches: [main]
+    paths: [game, 'assets/**', 'desktop/**', '.github/workflows/windows-offline.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-offline
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: desktop
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install pinned packaging dependencies
+        run: npm install --no-audit --no-fund
+      - name: Prepare complete local game and Live2D runtime
+        run: npm run prepare-site
+      - name: Build portable Windows x64 EXE
+        run: npm run build:win
+      - name: Verify packaged app with internet requests blocked
+        shell: pwsh
+        run: |
+          $env:ARCHIVE_SMOKE_OUTPUT = Join-Path $env:GITHUB_WORKSPACE 'desktop/smoke'
+          $exe = Join-Path $env:GITHUB_WORKSPACE 'desktop/dist/win-unpacked/The Endless Archive.exe'
+          $proc = Start-Process -FilePath $exe -ArgumentList '--offline-smoke-test' -PassThru -Wait -RedirectStandardOutput 'smoke-stdout.txt' -RedirectStandardError 'smoke-stderr.txt'
+          Get-Content smoke-stdout.txt
+          Get-Content smoke-stderr.txt
+          if ($proc.ExitCode -ne 0) { throw "Offline smoke test failed: $($proc.ExitCode)" }
+          if (!(Test-Path 'smoke/offline-smoke.json')) { throw 'Smoke test report missing' }
+      - name: Make download bundle and checksum
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force 'download' | Out-Null
+          Copy-Item 'dist/ICN_EDU-Offline-Windows-x64.exe' 'download/'
+          Copy-Item 'README-KO.txt' 'download/'
+          Copy-Item 'build-manifest.json' 'download/'
+          Copy-Item 'smoke/offline-smoke.json' 'download/'
+          $hash = (Get-FileHash 'download/ICN_EDU-Offline-Windows-x64.exe' -Algorithm SHA256).Hash.ToLower()
+          "$hash  ICN_EDU-Offline-Windows-x64.exe" | Set-Content 'download/SHA256SUMS.txt' -Encoding utf8
+          Get-Item 'download/ICN_EDU-Offline-Windows-x64.exe' | Select-Object Name,Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ICN_EDU-Offline-Windows-x64
+          path: desktop/download/
+          compression-level: 0
+          retention-days: 90
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Windows-offline-build-diagnostics
+          path: |
+            desktop/smoke/offline-smoke.json
+            desktop/smoke/offline-smoke.png
+            desktop/smoke-stdout.txt
+            desktop/smoke-stderr.txt
+            desktop/package-lock.json
+          if-no-files-found: ignore

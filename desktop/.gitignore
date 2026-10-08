@@ -1,0 +1,8 @@
+node_modules/
+site/
+dist/
+download/
+smoke/
+build-manifest.json
+smoke-stdout.txt
+smoke-stderr.txt

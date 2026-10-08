@@ -982,7 +982,7 @@ body.battle-mode .skill-detail .skill-coefficient,body.battle-mode .skill-detail
 <div class="app">
 <header>
 <div><h1>THE ENDLESS ARCHIVE</h1><div class="sub">Raid Protocol · 24 Decks · 96 Operatives</div></div>
-<div class="actions"><button id="selectBtn" class="btn hidden">덱 선택</button><button id="restartBtn" class="btn hidden">전투 재시작</button><button id="motionToggle" class="btn" type="button" aria-pressed="true">움직임: 켜짐</button><button id="vfxToggle" class="btn vfx-toggle" type="button" aria-pressed="false">연출: 전체</button></div>
+<div class="actions"><button id="selectBtn" class="btn hidden">덱 선택</button><button id="restartBtn" class="btn hidden">전투 재시작</button><button id="settleBtn" class="btn hidden" type="button">종료 및 정산</button><button id="motionToggle" class="btn" type="button" aria-pressed="true">움직임: 켜짐</button><button id="vfxToggle" class="btn vfx-toggle" type="button" aria-pressed="false">연출: 전체</button></div>
 </header>
 
 <section id="selectScreen" class="loadout-screen">
@@ -2129,7 +2129,7 @@ function startBattle(){
  document.querySelector(".battle-start-mark span").textContent=selectedMode==="clear"?"CLEAR":"RAID";
  document.body.classList.remove("selection-mode");document.body.classList.add("battle-mode");
  document.getElementById("selectScreen").classList.add("hidden");document.getElementById("battleScreen").classList.remove("hidden");
- document.getElementById("selectBtn").classList.remove("hidden");document.getElementById("restartBtn").classList.remove("hidden");
+ document.getElementById("selectBtn").classList.remove("hidden");document.getElementById("restartBtn").classList.remove("hidden");document.getElementById("settleBtn").classList.remove("hidden");document.getElementById("settleBtn").disabled=false;
  render();VFX.queue(nextTurn,250)
 }
 function processDeckCycleEnd(){
@@ -3352,7 +3352,19 @@ function renderSelect(){
  document.getElementById("deckLibraryBackdrop").onclick=()=>document.getElementById("deckLibrary").classList.add("hidden");
  VFX.sync();
 }
+function settleBattle(){
+ if(!state||state.over||VFX.busy)return;
+ const battle=state;
+ const message=state.mode==="clear"?"전투를 종료하고 현재 피해량과 남은 보스 체력을 정산할까요? 미완료 토벌은 최고 기록에 저장되지 않습니다.":"전투를 종료하고 현재 점수로 정산할까요? 점수는 이 덱의 최고 기록에 반영됩니다.";
+ if(!window.confirm(message)||state!==battle||state.over)return;
+ state.pendingSkill=null;state.pendingActorId=null;
+ VFX.reset();
+ if(state.mode==="raid"){raidResult();return;}
+ state.over=true;
+ showResult("전투 종료",`토벌 중단 · ${deck().name}<br>누적 피해 <b>${state.score.toLocaleString()}</b><br>남은 보스 HP <b>${state.boss.hp.toLocaleString()} / ${state.boss.maxHp.toLocaleString()}</b><br>사용한 아군 행동 ${state.playerActions}회 · 완료한 사이클 ${state.roundsCompleted}<br>미완료 토벌은 최고 기록에 저장되지 않습니다.`);
+}
 function showResult(title,text){
+ document.getElementById("settleBtn").disabled=true;
  document.getElementById("overlayRoot").innerHTML=`<div class="overlay"><div class="result"><h2>${title}</h2><p>${text}</p><button id="backResult" class="btn">다른 덱 선택</button></div></div>`;
  document.getElementById("backResult").onclick=returnSelect
 }
@@ -3362,7 +3374,7 @@ function returnSelect(){
  window.BossLive2D?.dispose();
  document.body.classList.remove("battle-mode");document.body.classList.add("selection-mode");
  document.getElementById("overlayRoot").innerHTML="";document.getElementById("battleScreen").classList.add("hidden");document.getElementById("selectScreen").classList.remove("hidden");
- document.getElementById("selectBtn").classList.add("hidden");document.getElementById("restartBtn").classList.add("hidden");renderSelect()
+ document.getElementById("selectBtn").classList.add("hidden");document.getElementById("restartBtn").classList.add("hidden");document.getElementById("settleBtn").classList.add("hidden");renderSelect()
 }
 // Rendering never consumes the combat RNG or changes damage, resources, or targets.
 const VFX = (() => {
@@ -3488,7 +3500,7 @@ const VFX = (() => {
   animate(clone,[{transform:'translate(0,0) scale(1)',opacity:1},{transform:`translate(${-Math.max(7,Math.abs(dx)*.12)}px,2px) scale(.98)`,opacity:1,offset:hit*.5},{transform:`translate(${dx}px,${meta.support?-8:-5}px) scale(1.025)`,opacity:1,offset:hit},{transform:`translate(${dx*.6}px,0) scale(1.01)`,opacity:1,offset:hit+.18},{transform:'translate(0,0) scale(1)',opacity:1}],{duration:meta.total,easing:'cubic-bezier(.2,.65,.3,1)',fill:'forwards'});
   meta.clone=clone;
  }
- function setBusy(value){busy=value;document.body.classList.toggle('vfx-busy',value);const p=el('skillPanel');if(p)p.setAttribute('aria-busy',String(value))}
+ function setBusy(value){busy=value;const settle=el('settleBtn');if(settle){settle.disabled=value||!!state?.over;settle.title=value?'공격 연출이 끝나면 정산할 수 있습니다':'현재 전투를 종료하고 결과를 확인합니다'}document.body.classList.toggle('vfx-busy',value);const p=el('skillPanel');if(p)p.setAttribute('aria-busy',String(value))}
  function resolve(meta,fn){
   if(!state||state!==meta.battle||state.over)return;
   const wasStaggered=state.boss.staggered,phase=state.boss.phase;
@@ -3578,6 +3590,7 @@ document.getElementById('deckInfoBtn').onclick=()=>deckInfoDialog.showModal();
 document.getElementById('closeDeckInfo').onclick=()=>deckInfoDialog.close();
 deckInfoDialog.addEventListener('click',event=>{if(event.target===deckInfoDialog){const r=deckInfoDialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)deckInfoDialog.close()}});
 document.getElementById("restartBtn").onclick=startBattle;
+document.getElementById("settleBtn").onclick=settleBattle;
 window.addEventListener("resize",syncMobileViewport,{passive:true});
 window.addEventListener("orientationchange",()=>{syncMobileViewport();setTimeout(syncMobileViewport,180)},{passive:true});
 if(window.visualViewport){
